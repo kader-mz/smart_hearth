@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#a1f0f6",
+                        "on-background": "#181c1d",
+                        "error": "#ba1a1a",
+                        "inverse-surface": "#2d3131",
+                        "inverse-primary": "#85d3da",
+                        "primary-container": "#01696f",
+                        "on-secondary-fixed": "#410006",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f7fafa",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb68d",
+                        "on-error-container": "#93000a",
+                        "surface": "#f7fafa",
+                        "secondary-fixed": "#ffdad8",
+                        "on-error": "#ffffff",
+                        "tertiary": "#6e3815",
+                        "outline": "#6f797a",
+                        "on-tertiary-fixed": "#331200",
+                        "on-surface": "#181c1d",
+                        "on-primary-fixed": "#002022",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-surface-variant": "#3f4949",
+                        "surface-container": "#ebeeee",
+                        "tertiary-container": "#8b4f2a",
+                        "surface-tint": "#01696f",
+                        "secondary-container": "#ff6b6b",
+                        "secondary-fixed-dim": "#ffb3b0",
+                        "outline-variant": "#bec8c9",
+                        "on-secondary-fixed-variant": "#8c1520",
+                        "surface-container-highest": "#e0e3e3",
+                        "inverse-on-surface": "#eef1f1",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#ae2f34",
+                        "primary": "#004f54",
+                        "on-tertiary-container": "#ffceb5",
+                        "surface-variant": "#e0e3e3",
+                        "on-tertiary-fixed-variant": "#6e3815"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Manrope"],
+                        "label-sm": ["Manrope"],
+                        "body-sm": ["Manrope"],
+                        "h1": ["Manrope"],
+                        "label-md": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "h3": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "h2": ["30px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "h3": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0a0a0a;
+            color: #e0e3e3;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(24, 28, 29, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body class="font-body-md bg-neutral-950 text-on-surface-variant antialiased">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-[240px] border-r border-neutral-800 bg-neutral-950 flex flex-col gap-2 py-6 px-0 z-50">
+<div class="px-6 mb-8">
+<h1 class="text-xl font-bold tracking-tight text-teal-100 font-h1">SmartHeart</h1>
+<p class="text-[10px] text-teal-400 font-label-sm uppercase tracking-widest mt-1">Dietary Intelligence</p>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-6 py-3 text-teal-400 bg-teal-900/20 border-r-4 border-[#01696F] font-semibold transition-all duration-200 ease-in-out hover:pl-7" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md">Accueil</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-neutral-400 hover:bg-neutral-900 transition-all duration-200 ease-in-out hover:pl-7" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-label-md">Recherche</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-neutral-400 hover:bg-neutral-900 transition-all duration-200 ease-in-out hover:pl-7" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-md">Carte</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-neutral-400 hover:bg-neutral-900 transition-all duration-200 ease-in-out hover:pl-7" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-label-md">Recettes</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-neutral-400 hover:bg-neutral-900 transition-all duration-200 ease-in-out hover:pl-7" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span class="font-label-md">Apprendre</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-neutral-400 hover:bg-neutral-900 transition-all duration-200 ease-in-out hover:pl-7" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md">Profil</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-neutral-400 hover:bg-neutral-900 transition-all duration-200 ease-in-out hover:pl-7" href="#">
+<span class="material-symbols-outlined" data-icon="handshake">handshake</span>
+<span class="font-label-md">Partenaires</span>
+</a>
+</nav>
+<div class="mt-auto px-6">
+<div class="p-4 rounded-xl bg-neutral-900 border border-neutral-800">
+<p class="text-xs text-neutral-500 font-label-sm">SANTÉ CARDIAQUE</p>
+<div class="mt-2 flex items-center justify-between">
+<span class="text-h3 font-h3 text-teal-400">88%</span>
+<span class="material-symbols-outlined text-teal-400" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 left-[240px] h-[60px] z-40 flex items-center justify-between px-6 gap-4 bg-neutral-950/80 backdrop-blur-md border-b border-neutral-800">
+<div class="flex items-center flex-1 max-w-md">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 text-lg">search</span>
+<input class="w-full bg-neutral-900 border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-teal-500/20 transition-all outline-none text-neutral-200" placeholder="Rechercher des nutriments, recettes..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-neutral-400 hover:bg-neutral-800 rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-secondary-container rounded-full border-2 border-neutral-950"></span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-neutral-800">
+<div class="text-right hidden sm:block">
+<p class="text-sm font-bold text-neutral-200">Dr. Claire</p>
+<p class="text-[10px] text-neutral-500 font-label-sm">Nutritionniste</p>
+</div>
+<img alt="User Profile Avatar" class="w-8 h-8 rounded-full bg-teal-900 border border-teal-800" data-alt="professional portrait of a medical professional with a friendly smile, soft clinical lighting, high quality photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWsab-qrFyA1h1kVE4RqKEO30wWfLksCYgW9NRFAgDkzJrawLkOYPNfT1GbvLnbLgpBlMddXPJh3nQR-n2GBD2LKq0lOiVI_ZGVSQhbdQcUhb8DfvwAUaYqeEsp8AVbeN4bji__5QmQ91QfhVS1dZZrshu2wfzztlI_tbfS82NxbBkpFZqwlSYEG3j8DgMIL7Ek6HanFuMG5XxGsRl2ZwsMN3zewPJiV0_Ud8hCssc0hzwrMiuNtCs5VBGrF9yJGGs8CHCNKxIqGqx"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-[240px] mt-[60px] p-gutter min-h-screen">
+<div class="max-w-[1440px] mx-auto space-y-8">
+<!-- Welcome Section -->
+<section class="flex flex-col md:flex-row justify-between items-end gap-6">
+<div>
+<h2 class="font-h1 text-h1 text-teal-100">Bonjour, Dr. Claire</h2>
+<p class="font-body-lg text-neutral-400 mt-2">Voici l'état de santé de votre communauté aujourd'hui.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-neutral-900 border border-neutral-800 text-neutral-200 rounded-lg font-label-md flex items-center gap-2 hover:bg-neutral-800 transition-colors">
+<span class="material-symbols-outlined text-lg">calendar_today</span>
+                        Aujourd'hui
+                    </button>
+<button class="px-6 py-2 bg-primary-container text-teal-100 rounded-lg font-label-md flex items-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-lg">add</span>
+                        Nouvelle Analyse
+                    </button>
+</div>
+</section>
+<!-- Bento Grid Dashboard -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Hero Metric: Heart Health Index -->
+<div class="md:col-span-8 glass-card rounded-xl p-8 relative overflow-hidden group">
+<div class="relative z-10 flex flex-col h-full justify-between">
+<div>
+<span class="px-3 py-1 bg-teal-900/30 text-teal-400 rounded-full text-xs font-label-sm border border-teal-800/30 uppercase tracking-wider">Métrique Critique</span>
+<h3 class="font-h2 text-h2 text-white mt-4">Stabilité Cardiovasculaire</h3>
+<p class="text-neutral-400 max-w-md mt-2">La moyenne de la cohorte est en hausse de 4% ce mois-ci grâce à l'adoption du régime méditerranéen.</p>
+</div>
+<div class="mt-8 flex items-baseline gap-4">
+<span class="text-6xl font-extrabold text-teal-400">92.4</span>
+<div class="flex flex-col">
+<span class="text-secondary-container flex items-center font-bold">
+<span class="material-symbols-outlined text-lg">arrow_upward</span>
+                                    1.2%
+                                </span>
+<span class="text-neutral-500 text-sm">vs mois dernier</span>
+</div>
+</div>
+</div>
+<!-- Decorative Chart Background -->
+<div class="absolute right-0 bottom-0 w-1/2 h-full opacity-20 pointer-events-none">
+<svg class="w-full h-full" viewbox="0 0 400 200">
+<path d="M0,150 Q50,140 100,100 T200,80 T300,120 T400,40" fill="none" stroke="#01696F" stroke-width="4"></path>
+<path d="M0,150 Q50,140 100,100 T200,80 T300,120 T400,40 L400,200 L0,200 Z" fill="url(#grad1)"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#01696F;stop-opacity:0.5"></stop>
+<stop offset="100%" style="stop-color:#01696F;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+</div>
+<!-- Circular Progress: Daily Intake -->
+<div class="md:col-span-4 bg-neutral-900 rounded-xl p-8 border border-neutral-800 flex flex-col items-center justify-center text-center">
+<h4 class="font-label-md text-neutral-400 uppercase tracking-widest mb-6">Objectif Nutriments</h4>
+<div class="relative w-40 h-40">
+<svg class="w-full h-full -rotate-90">
+<circle class="text-neutral-800" cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" stroke-width="12"></circle>
+<circle class="text-secondary-container" cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" stroke-dasharray="440" stroke-dashoffset="110" stroke-width="12"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-3xl font-black text-white">75%</span>
+<span class="text-[10px] text-neutral-500">PROTÉINES</span>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-2 gap-4 w-full">
+<div class="p-3 bg-neutral-800/50 rounded-lg">
+<p class="text-[10px] text-neutral-500 uppercase">Lipides</p>
+<p class="text-lg font-bold text-white">12g <span class="text-xs text-secondary-container">↑</span></p>
+</div>
+<div class="p-3 bg-neutral-800/50 rounded-lg">
+<p class="text-[10px] text-neutral-500 uppercase">Sodium</p>
+<p class="text-lg font-bold text-white">2.1g <span class="text-xs text-teal-400">↓</span></p>
+</div>
+</div>
+</div>
+<!-- Patient/User List Card -->
+<div class="md:col-span-5 glass-card rounded-xl overflow-hidden border border-neutral-800">
+<div class="p-6 border-b border-neutral-800 flex justify-between items-center">
+<h4 class="font-h3 text-lg text-white">Alertes Patients</h4>
+<span class="px-2 py-1 bg-secondary-container/10 text-secondary-container text-[10px] font-black rounded">3 ACTIFS</span>
+</div>
+<div class="divide-y divide-neutral-800">
+<div class="p-4 flex items-center gap-4 hover:bg-neutral-800/30 transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-error-container/20 flex items-center justify-center border border-error/20">
+<span class="material-symbols-outlined text-secondary-container" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-neutral-200">Jean Dupont</p>
+<p class="text-xs text-neutral-500">Pic de sodium détecté (4.2g)</p>
+</div>
+<span class="text-[10px] text-neutral-600">Il y a 5m</span>
+</div>
+<div class="p-4 flex items-center gap-4 hover:bg-neutral-800/30 transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-teal-900/20 flex items-center justify-center border border-teal-800/20">
+<span class="material-symbols-outlined text-teal-400" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-neutral-200">Marie Lefebvre</p>
+<p class="text-xs text-neutral-500">Objectif fibres atteint (30g)</p>
+</div>
+<span class="text-[10px] text-neutral-600">Il y a 1h</span>
+</div>
+<div class="p-4 flex items-center gap-4 hover:bg-neutral-800/30 transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center border border-neutral-700">
+<span class="material-symbols-outlined text-neutral-400" data-icon="person">person</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-neutral-200">Marc Antoine</p>
+<p class="text-xs text-neutral-500">Nouvelle analyse sang téléchargée</p>
+</div>
+<span class="text-[10px] text-neutral-600">Il y a 3h</span>
+</div>
+</div>
+<button class="w-full p-4 text-center text-sm font-label-md text-teal-400 hover:bg-teal-900/10 transition-colors">Voir tous les patients</button>
+</div>
+<!-- Recipe Recommendations Asymmetric Layout -->
+<div class="md:col-span-7 grid grid-cols-2 gap-4">
+<div class="col-span-2 md:col-span-1 glass-card rounded-xl overflow-hidden group">
+<div class="h-40 bg-neutral-800 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="vibrant mediterranean salad with fresh greens, feta cheese, and olives in a ceramic bowl, artistic food photography, soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCv8CR7PZofxNwUB05sZwKwWwsSH6so0h_EshLx9eTghOkQQ-_m13DfpJf3mE9MQLuR9NZrEZL2xABgaE9oGZE6f1HRCuVK82472NgTil2U9PT3HdkzYNOid1HjVgvKlnHSVNmSxwWsupnVLviPSWeAbSMcTJvIOf8kcZgIaJ4ejw147BiMWiXCfWs0vovt9aCahY4Zae-OdG2HNdHjjDRQINUZf8M62DD9V0LLo9n42IgEQ97U6_PjgPE9JyYMtaOMeFVOJRSihp9p"/>
+</div>
+<div class="p-4">
+<p class="text-[10px] text-teal-400 font-label-sm mb-1">PROTÉINE MAIGRE</p>
+<h5 class="font-bold text-neutral-200">Salade de Quinoa &amp; Saumon</h5>
+<div class="mt-3 flex items-center gap-3">
+<span class="flex items-center gap-1 text-[10px] text-neutral-500">
+<span class="material-symbols-outlined text-xs">timer</span> 15 min
+                                </span>
+<span class="flex items-center gap-1 text-[10px] text-neutral-500">
+<span class="material-symbols-outlined text-xs">local_fire_department</span> 420 kcal
+                                </span>
+</div>
+</div>
+</div>
+<div class="col-span-2 md:col-span-1 glass-card rounded-xl overflow-hidden group">
+<div class="h-40 bg-neutral-800 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="creamy roasted tomato soup with fresh basil garnish, dark moody lighting, high-end culinary presentation" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNm2ZI46WLUe4RyL2xUbCBUrK5abcijcMvaznA49tP1c4e9kvRRdWAy_bcqsQKcUW9zYk7EcKs6Sc_PqgnIAlgY6fsQd0J7bxU6qjJ5OuVFwwHXCP3nDghQxT1l_oDkD4OjY6xE-Q2AM6YxQyMQcWfJ2rBhOj-BkXggh7lK3hkRFrJXsoVGxDOc1MMq-RUgE2FlXDs-dyP2SjEQRvI8r7pmNe3jlDNh9PWFf5elAKn4P3foMXYRRhWa7DBLKieRDelNT2LZKg7FLmB"/>
+</div>
+<div class="p-4">
+<p class="text-[10px] text-secondary-container font-label-sm mb-1">BAS SODIUM</p>
+<h5 class="font-bold text-neutral-200">Soupe de Tomates Rôties</h5>
+<div class="mt-3 flex items-center gap-3">
+<span class="flex items-center gap-1 text-[10px] text-neutral-500">
+<span class="material-symbols-outlined text-xs">timer</span> 30 min
+                                </span>
+<span class="flex items-center gap-1 text-[10px] text-neutral-500">
+<span class="material-symbols-outlined text-xs">local_fire_department</span> 210 kcal
+                                </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Learning/Resources Section (Full Width) -->
+<div class="md:col-span-12 bg-teal-900/10 border border-teal-900/30 rounded-xl p-6 flex flex-col md:flex-row items-center gap-6">
+<div class="w-16 h-16 rounded-full bg-teal-900/40 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-3xl text-teal-400" data-icon="school">school</span>
+</div>
+<div class="flex-1 text-center md:text-left">
+<h4 class="text-lg font-bold text-teal-100">Nouvelle étude : L'impact de l'Omega-3 sur l'arythmie</h4>
+<p class="text-sm text-neutral-400 mt-1">Découvrez comment les ajustements nutritionnels récents transforment le suivi post-opératoire.</p>
+</div>
+<button class="px-6 py-2 border border-teal-500/30 text-teal-400 rounded-lg font-label-md hover:bg-teal-900/20 transition-colors shrink-0">Lire l'article</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB (Hidden on Dashboard per instructions, but kept as comment for logic) -->
+<!-- FAB would only be on mobile or specific action screens -->
+</body></html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#ffdad6",
+                    "primary-fixed": "#a1f0f6",
+                    "on-background": "#181c1d",
+                    "error": "#ba1a1a",
+                    "inverse-surface": "#2d3131",
+                    "inverse-primary": "#85d3da",
+                    "primary-container": "#01696f",
+                    "on-secondary-fixed": "#410006",
+                    "on-primary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "background": "#f7fafa",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb68d",
+                    "on-error-container": "#93000a",
+                    "surface": "#f7fafa",
+                    "secondary-fixed": "#ffdad8",
+                    "surface-container-high": "#e6e9e9",
+                    "surface-container-low": "#f1f4f4",
+                    "on-secondary-container": "#6d0010",
+                    "surface-bright": "#f7fafa",
+                    "surface-dim": "#d7dbda",
+                    "primary-fixed-dim": "#85d3da",
+                    "on-primary-container": "#97e6ec",
+                    "tertiary-fixed": "#ffdbc9",
+                    "on-error": "#ffffff",
+                    "tertiary": "#6e3815",
+                    "outline": "#6f797a",
+                    "on-tertiary-fixed": "#331200",
+                    "on-surface": "#181c1d",
+                    "on-primary-fixed": "#002022",
+                    "on-primary-fixed-variant": "#004f54",
+                    "on-surface-variant": "#3f4949",
+                    "surface-container": "#ebeeee",
+                    "tertiary-container": "#8b4f2a",
+                    "surface-tint": "#01696f",
+                    "secondary-container": "#ff6b6b",
+                    "secondary-fixed-dim": "#ffb3b0",
+                    "outline-variant": "#bec8c9",
+                    "on-secondary-fixed-variant": "#8c1520",
+                    "surface-container-highest": "#e0e3e3",
+                    "inverse-on-surface": "#eef1f1",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#ae2f34",
+                    "primary": "#004f54",
+                    "on-tertiary-container": "#ffceb5",
+                    "surface-variant": "#e0e3e3",
+                    "on-tertiary-fixed-variant": "#6e3815"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "grid_unit": "8px",
+                    "margin": "32px",
+                    "container_max_width": "1440px",
+                    "header_height": "60px",
+                    "sidebar_width": "240px"
+            },
+            "fontFamily": {
+                    "h2": ["Manrope"],
+                    "label-sm": ["Manrope"],
+                    "body-sm": ["Manrope"],
+                    "h1": ["Manrope"],
+                    "label-md": ["Manrope"],
+                    "body-md": ["Manrope"],
+                    "body-lg": ["Manrope"],
+                    "h3": ["Manrope"]
+            },
+            "fontSize": {
+                    "h2": ["30px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "h3": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .zebra-table tr:nth-child(even) {
+            background-color: #f1f4f4;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen">
+<!-- SideNavBar (Execution from JSON Mapping) -->
+<aside class="fixed left-0 top-0 h-full w-[240px] border-r border-neutral-200 bg-[#F9F8F5] flex flex-col gap-2 py-6 px-0 font-manrope antialiased text-sm font-medium z-50">
+<div class="px-6 mb-8">
+<h1 class="text-xl font-bold tracking-tight text-[#01696F]">SmartHeart</h1>
+<p class="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Dietary Intelligence</p>
+</div>
+<nav class="flex-1">
+<a class="flex items-center gap-3 px-6 py-3 transition-all duration-200 ease-in-out hover:pl-7 text-[#01696F] bg-teal-50 border-r-4 border-[#01696F] font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Tableau de bord
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 transition-all duration-200 ease-in-out hover:pl-7 text-neutral-500 hover:bg-neutral-100" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+                Inventaire
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 transition-all duration-200 ease-in-out hover:pl-7 text-neutral-500 hover:bg-neutral-100" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                Analytics
+            </a>
+<a class="flex items-center gap-3 px-6 py-3 transition-all duration-200 ease-in-out hover:pl-7 text-neutral-500 hover:bg-neutral-100" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Paramètres
+            </a>
+<div class="mt-8 px-6">
+<p class="text-[10px] font-bold text-neutral-400 uppercase mb-2">Partenaires</p>
+<a class="flex items-center gap-3 py-2 text-neutral-500 hover:text-[#01696F]" href="#">
+<span class="material-symbols-outlined" data-icon="handshake">handshake</span>
+                    Partenaires
+                </a>
+</div>
+</nav>
+<div class="px-6 mt-auto">
+<div class="flex items-center gap-3 p-2 bg-white rounded-xl shadow-sm border border-neutral-100">
+<img alt="Store Avatar" class="w-10 h-10 rounded-lg object-cover" data-alt="Modern retail storefront with clean glass windows and minimalist organic signage in soft daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQqYAgexZIf1edyxQxJt2U3RbXMA62i4vGeJ3o80LQ77rgIYSjgJ5pw_c1mSq_yg3qFP9nrM4ZV3KCt-e8AkdQjnxXnzKBpsulGneazudQGDp_5rK_3ZqJqBhdCbuTm9gffwGpLlz4nNqcoWWCwnTvIiId2SELJtZufE4jyumI0UOT0kIRjgnV6w-uyOT6zhZbpRfZ4GY1cE-jxwOTBK1UyIxYwvmwZV4MeEyBrYKhXRxqRq0hyR9LqWTn_kSgTCm1vGJCsNZhsHD2"/>
+<div class="overflow-hidden">
+<p class="font-bold text-xs truncate">BioMarché Étoile</p>
+<p class="text-[10px] text-neutral-400">ID: 8829-SH</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopAppBar (Execution from JSON Mapping) -->
+<header class="fixed top-0 right-0 left-[240px] h-[60px] bg-[#F9F8F5]/80 backdrop-blur-md border-b border-neutral-200 flex items-center justify-between px-6 gap-4 z-40">
+<div class="flex items-center bg-white border border-neutral-200 rounded-full px-4 py-1.5 w-full max-w-md focus-within:ring-2 focus-within:ring-teal-500/20">
+<span class="material-symbols-outlined text-neutral-400 text-lg" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full font-manrope" placeholder="Rechercher dans l'inventaire..." type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-neutral-200/50 rounded-full transition-colors relative">
+<span class="material-symbols-outlined text-neutral-600" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full border-2 border-white"></span>
+</button>
+<div class="h-8 w-[1px] bg-neutral-200 mx-1"></div>
+<div class="flex items-center gap-2">
+<span class="text-sm font-bold text-[#01696F]">Admin</span>
+<img alt="User Profile Avatar" class="w-8 h-8 rounded-full object-cover border border-neutral-200" data-alt="Close-up portrait of a professional male store manager with a friendly expression in a bright retail environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFpdMJ4qrdo1F9SUFiex20uhdKYXd02LNrRBHJ0BCOMg93Aq3dOYrnK7-9xvceCVMbfPdcDcqLz3eMYJPtF0-K0Qbe3oUedZ6jv2hwBmv3LK-Mq0dKHDsYm4f8GQW48PG7W1lKGfl13mvvlv2fF3iDYy7zD_844oJJ6MIOfQBm_vKWhv1GYMlZP_x8EUDwjqYXipHvApw7jperilaGvpJAPnwAkgI6s6vATEBAniENb74iUGw0pycPtFtIPr_N7Cio3XK6Oo3Md_z3"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="pl-[240px] pt-[60px]">
+<div class="p-8 max-w-7xl mx-auto">
+<!-- Alert Banner -->
+<div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-8 flex items-center gap-4">
+<div class="bg-yellow-400 text-yellow-900 w-10 h-10 rounded-lg flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined" data-icon="warning" data-weight="fill" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-yellow-900 text-sm">Action requise : Rupture de stock imminente</h4>
+<p class="text-yellow-800 text-xs">3 produits de la catégorie "Sans Gluten" seront épuisés d'ici 48 heures selon vos prévisions de vente.</p>
+</div>
+<button class="bg-yellow-100 hover:bg-yellow-200 text-yellow-900 px-4 py-2 rounded-lg text-xs font-bold transition-colors">
+                    Gérer le stock
+                </button>
+</div>
+<!-- KPI Strip -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+<div class="bg-white p-6 rounded-xl shadow-[0px_2px_4px_rgba(40,37,29,0.05)] border border-neutral-100">
+<p class="text-neutral-500 text-xs font-bold uppercase mb-1">Ventes du jour</p>
+<div class="flex items-baseline gap-2">
+<span class="text-h2 font-h2 text-on-surface">1,284 €</span>
+<span class="text-xs font-bold text-teal-600">+12%</span>
+</div>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-[0px_2px_4px_rgba(40,37,29,0.05)] border border-neutral-100">
+<p class="text-neutral-500 text-xs font-bold uppercase mb-1">Vues Total</p>
+<div class="flex items-baseline gap-2">
+<span class="text-h2 font-h2 text-on-surface">8.4k</span>
+<span class="text-xs font-bold text-teal-600">+5.2%</span>
+</div>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-[0px_2px_4px_rgba(40,37,29,0.05)] border border-neutral-100">
+<p class="text-neutral-500 text-xs font-bold uppercase mb-1">Articles Actifs</p>
+<div class="flex items-baseline gap-2">
+<span class="text-h2 font-h2 text-on-surface">152</span>
+<span class="text-xs font-bold text-neutral-400">Stable</span>
+</div>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-[0px_2px_4px_rgba(40,37,29,0.05)] border border-neutral-100">
+<p class="text-neutral-500 text-xs font-bold uppercase mb-1">Alertes Stock</p>
+<div class="flex items-baseline gap-2">
+<span class="text-h2 font-h2 text-secondary">08</span>
+<span class="text-xs font-bold text-secondary">Important</span>
+</div>
+</div>
+</div>
+<!-- Dashboard Charts Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+<!-- Line Chart: Page Views -->
+<div class="bg-white p-6 rounded-xl shadow-[0px_2px_4px_rgba(40,37,29,0.05)] border border-neutral-100">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-h3 font-h3 text-on-surface">Vues des produits</h3>
+<select class="text-xs font-bold text-neutral-500 border-none bg-neutral-100 rounded-lg py-1 px-3">
+<option>7 derniers jours</option>
+<option>30 derniers jours</option>
+</select>
+</div>
+<!-- Visual Mock of Line Chart -->
+<div class="h-64 flex flex-col justify-end gap-2 px-2">
+<div class="flex items-end justify-between h-full gap-4 relative">
+<!-- Background grid lines -->
+<div class="absolute inset-0 border-b border-neutral-100 pointer-events-none"></div>
+<div class="absolute inset-0 bottom-1/4 border-b border-neutral-100 pointer-events-none"></div>
+<div class="absolute inset-0 bottom-2/4 border-b border-neutral-100 pointer-events-none"></div>
+<div class="absolute inset-0 bottom-3/4 border-b border-neutral-100 pointer-events-none"></div>
+<!-- Simple Line Polyline Mock -->
+<svg class="absolute inset-0 h-full w-full overflow-visible" preserveaspectratio="none">
+<polyline fill="none" points="0,150 50,130 100,160 150,80 200,90 250,40 300,70 350,110 400,60 450,50 500,20" stroke="#01696F" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></polyline>
+<path d="M0,150 50,130 100,160 150,80 200,90 250,40 300,70 350,110 400,60 450,50 500,20 V250 H0 Z" fill="url(#gradient-line)" opacity="0.1"></path>
+<defs>
+<lineargradient id="gradient-line" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#01696F;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#01696F;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+<div class="flex justify-between text-[10px] font-bold text-neutral-400 mt-2">
+<span>LUN</span><span>MAR</span><span>MER</span><span>JEU</span><span>VEN</span><span>SAM</span><span>DIM</span>
+</div>
+</div>
+</div>
+<!-- Bar Chart: Top Searched -->
+<div class="bg-white p-6 rounded-xl shadow-[0px_2px_4px_rgba(40,37,29,0.05)] border border-neutral-100">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-h3 font-h3 text-on-surface">Produits les plus recherchés</h3>
+<span class="material-symbols-outlined text-neutral-400" data-icon="more_horiz">more_horiz</span>
+</div>
+<div class="space-y-4">
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-bold text-on-surface mb-1">
+<span>Pain sans gluten</span>
+<span>850 pts</span>
+</div>
+<div class="h-2 w-full bg-neutral-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 85%"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-bold text-on-surface mb-1">
+<span>Lait d'Amande Bio</span>
+<span>620 pts</span>
+</div>
+<div class="h-2 w-full bg-neutral-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 62%"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-bold text-on-surface mb-1">
+<span>Huile d'Olive Extra</span>
+<span>510 pts</span>
+</div>
+<div class="h-2 w-full bg-neutral-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 51%"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-bold text-on-surface mb-1">
+<span>Muesli Keto</span>
+<span>480 pts</span>
+</div>
+<div class="h-2 w-full bg-neutral-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 48%"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-bold text-on-surface mb-1">
+<span>Tofu Soyeux</span>
+<span>390 pts</span>
+</div>
+<div class="h-2 w-full bg-neutral-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 39%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Inventory Management Section -->
+<div class="bg-white rounded-xl shadow-[0px_2px_4px_rgba(40,37,29,0.05)] border border-neutral-100 overflow-hidden">
+<div class="p-6 border-b border-neutral-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h2 class="text-h2 font-h2 text-on-surface">Gestion de l'Inventaire</h2>
+<p class="text-body-sm font-body-sm text-neutral-500">Gérez vos produits et leur visibilité en temps réel.</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-2 border border-neutral-200 rounded-lg text-sm font-manrope w-64 focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500" placeholder="Filtrer..." type="text"/>
+</div>
+<button class="bg-[#01696F] hover:bg-primary-container text-white px-6 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="add">add</span>
+                            Ajouter un produit
+                        </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left zebra-table">
+<thead>
+<tr class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider bg-neutral-50">
+<th class="px-6 py-4">Produit</th>
+<th class="px-6 py-4">Catégorie</th>
+<th class="px-6 py-4">Prix (€)</th>
+<th class="px-6 py-4">Quantité</th>
+<th class="px-6 py-4">Disponibilité</th>
+<th class="px-6 py-4 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-neutral-100">
+<!-- Row 1 -->
+<tr class="group hover:bg-teal-50/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img alt="Bread" class="w-10 h-10 rounded-lg object-cover" data-alt="Artisan sourdough loaf with dusting of flour on a wooden surface with warm sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCeE9b6Gq0R7k31UQvCgYXXPjBFY9tdy8nn0yz1oj5SBR2T5JydLaShOugPlx_kyGnL92cN8HVZQ0K5ypU4rAa5iMtbHfJEEDSu5Dgq1GdYf_ypWBSIuBNZ88gozv3Mkh6GEUYwEFYIIhBXjXTY6fBshC1Lq9_Pir7k4pce5yy423dbo_WBtQGpsrjG0e7fxD9r2H5_wqvriGAkOSbDJwYyDL53crjq5rz7VpZwpzOyRGOvn-wLtAOjiqh7Q4CQBaBX9OVuAoMbsD7"/>
+<span class="font-bold text-sm">Pain Artisanal S.G.</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-neutral-100 text-neutral-600 text-[10px] font-bold px-2 py-1 rounded-full">Boulangerie</span>
+</td>
+<td class="px-6 py-4">
+<input class="w-16 bg-transparent border-none p-0 text-sm font-bold focus:ring-0" type="text" value="4.50"/>
+</td>
+<td class="px-6 py-4">
+<input class="w-16 bg-transparent border-none p-0 text-sm font-bold focus:ring-0" type="number" value="24"/>
+</td>
+<td class="px-6 py-4">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-neutral-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-600"></div>
+</label>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-1 hover:bg-neutral-100 rounded text-neutral-400">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-teal-50/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img alt="Milk" class="w-10 h-10 rounded-lg object-cover" data-alt="Glass bottle of organic almond milk with scattered almonds around on a light clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdWvAFGYAqNABmrWDMzinAVkqhX4KUM8xIGlNoAi8yke-wDa-zfXxtMiroVOsoTdWA-UoKDSOv4FdbLEZ62RKBLi2X5hylth1yvJTDFu31xqs6d2P_UwKWbR6H8TZ47-b4XDmb61HElKnupfLvHKoewHHNVzUpkTpso8xSPhUqFJ3awmSU34iGaxy0Bk2m2ZGRp0Tux8hh9LcHc_g-9e0cuh5UOil4sStdt7GCshYN2G2d0I_gK8qRSkN8FO3KV52W4My9RTF-khby"/>
+<span class="font-bold text-sm">Lait Amande Bio 1L</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-neutral-100 text-neutral-600 text-[10px] font-bold px-2 py-1 rounded-full">Boissons</span>
+</td>
+<td class="px-6 py-4">
+<input class="w-16 bg-transparent border-none p-0 text-sm font-bold focus:ring-0" type="text" value="3.20"/>
+</td>
+<td class="px-6 py-4 text-secondary font-bold">
+<input class="w-16 bg-transparent border-none p-0 text-sm font-bold focus:ring-0 text-secondary" type="number" value="3"/>
+</td>
+<td class="px-6 py-4">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-neutral-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-600"></div>
+</label>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-1 hover:bg-neutral-100 rounded text-neutral-400">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-teal-50/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img alt="Chocolate" class="w-10 h-10 rounded-lg object-cover" data-alt="Dark chocolate bar with nuts on a rustic wooden board with moody soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANy0-7dTeY4WSRLcC_xjeF6208oRQc_g3hSdTBK_DM0WWJn3vvzgu1WsSiN_j1knYFR36LSGh1XciOGBXbO5p_gIWqIVXZfMmlJ40eZSzDva1aaHCD8F3e2XWDF4F4dolbOLPClevOAHSbUFp6nyvdIGZwf05GwSKvbVLBRLAhh-INA-uiRtcBgO9I_uJ0kgO3w4YKktPfJI4CQLJiqn__WyKuahexKf5j2vn1iIdPCGJY6z17HIL9GUPHfGHKGA7lLM2tEj83Dz3Z"/>
+<span class="font-bold text-sm">Chocolat Noir 85%</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-neutral-100 text-neutral-600 text-[10px] font-bold px-2 py-1 rounded-full">Épicerie</span>
+</td>
+<td class="px-6 py-4">
+<input class="w-16 bg-transparent border-none p-0 text-sm font-bold focus:ring-0" type="text" value="2.95"/>
+</td>
+<td class="px-6 py-4">
+<input class="w-16 bg-transparent border-none p-0 text-sm font-bold focus:ring-0" type="number" value="48"/>
+</td>
+<td class="px-6 py-4">
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-neutral-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-600"></div>
+</label>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-1 hover:bg-neutral-100 rounded text-neutral-400">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-6 border-t border-neutral-100 flex items-center justify-between text-sm text-neutral-500">
+<span>Affichage de 1-3 sur 152 produits</span>
+<div class="flex gap-2">
+<button class="p-2 border border-neutral-200 rounded-lg hover:bg-neutral-50"><span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span></button>
+<button class="p-2 border border-neutral-200 rounded-lg hover:bg-neutral-50"><span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

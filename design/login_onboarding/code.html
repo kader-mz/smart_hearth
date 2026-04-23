@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error-container": "#ffdad6",
+                      "primary-fixed": "#a1f0f6",
+                      "on-background": "#181c1d",
+                      "error": "#ba1a1a",
+                      "inverse-surface": "#2d3131",
+                      "inverse-primary": "#85d3da",
+                      "primary-container": "#01696f",
+                      "on-secondary-fixed": "#410006",
+                      "on-primary": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "background": "#f7fafa",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed-dim": "#ffb68d",
+                      "on-error-container": "#93000a",
+                      "surface": "#f7fafa",
+                      "secondary-fixed": "#ffdad8",
+                      "surface-container-high": "#e6e9e9",
+                      "surface-container-low": "#f1f4f4",
+                      "on-secondary-container": "#6d0010",
+                      "surface-bright": "#f7fafa",
+                      "surface-dim": "#d7dbda",
+                      "primary-fixed-dim": "#85d3da",
+                      "on-primary-container": "#97e6ec",
+                      "tertiary-fixed": "#ffdbc9",
+                      "on-error": "#ffffff",
+                      "tertiary": "#6e3815",
+                      "outline": "#6f797a",
+                      "on-tertiary-fixed": "#331200",
+                      "on-surface": "#181c1d",
+                      "on-primary-fixed": "#002022",
+                      "on-primary-fixed-variant": "#004f54",
+                      "on-surface-variant": "#3f4949",
+                      "surface-container": "#ebeeee",
+                      "tertiary-container": "#8b4f2a",
+                      "surface-tint": "#01696f",
+                      "secondary-container": "#ff6b6b",
+                      "secondary-fixed-dim": "#ffb3b0",
+                      "outline-variant": "#bec8c9",
+                      "on-secondary-fixed-variant": "#8c1520",
+                      "surface-container-highest": "#e0e3e3",
+                      "inverse-on-surface": "#eef1f1",
+                      "on-secondary": "#ffffff",
+                      "secondary": "#ae2f34",
+                      "primary": "#004f54",
+                      "on-tertiary-container": "#ffceb5",
+                      "surface-variant": "#e0e3e3",
+                      "on-tertiary-fixed-variant": "#6e3815"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "grid_unit": "8px",
+                      "margin": "32px",
+                      "container_max_width": "1440px",
+                      "header_height": "60px",
+                      "sidebar_width": "240px"
+              },
+              "fontFamily": {
+                      "h2": ["Manrope"],
+                      "label-sm": ["Manrope"],
+                      "body-sm": ["Manrope"],
+                      "h1": ["Manrope"],
+                      "label-md": ["Manrope"],
+                      "body-md": ["Manrope"],
+                      "body-lg": ["Manrope"],
+                      "h3": ["Manrope"]
+              },
+              "fontSize": {
+                      "h2": ["30px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "h3": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body {
+            background-color: #F7F6F2;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-shadow {
+            box-shadow: 0px 2px 4px rgba(40, 37, 29, 0.05);
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface antialiased min-h-screen">
+<main class="flex min-h-screen">
+<!-- Left Side: Login Form -->
+<div class="flex-1 flex items-center justify-center p-gutter">
+<div class="w-full max-w-[480px] bg-surface-container-lowest p-margin rounded-xl custom-shadow">
+<!-- Brand Identity -->
+<div class="flex flex-col items-center mb-8">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-[32px]" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="material-symbols-outlined text-primary text-[28px] -ml-4 mt-2" data-icon="eco" style="font-variation-settings: 'FILL' 1;">eco</span>
+</div>
+<h1 class="font-h1 text-primary tracking-tight">SmartHeart</h1>
+<p class="font-body-sm text-outline">Dietary Intelligence</p>
+</div>
+<!-- Tab Switcher -->
+<div class="flex bg-surface-container-low p-1 rounded-lg mb-8">
+<button class="flex-1 py-2 font-label-md bg-surface-container-lowest text-primary rounded-md shadow-sm transition-all">Se connecter</button>
+<button class="flex-1 py-2 font-label-md text-outline hover:text-on-surface transition-all">S'inscrire</button>
+</div>
+<!-- Login Form -->
+<form class="space-y-6">
+<div>
+<label class="block font-label-sm text-outline mb-2">Email</label>
+<input class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary-container focus:border-primary-container outline-none transition-all font-body-sm" placeholder="votre@email.com" type="email"/>
+</div>
+<div>
+<div class="flex justify-between items-center mb-2">
+<label class="block font-label-sm text-outline">Mot de passe</label>
+<a class="font-label-sm text-primary hover:underline" href="#">Mot de passe oublié ?</a>
+</div>
+<input class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary-container focus:border-primary-container outline-none transition-all font-body-sm" placeholder="••••••••" type="password"/>
+</div>
+<button class="w-full bg-primary-container text-on-primary py-3 px-6 rounded-lg font-label-md hover:opacity-90 active:scale-[0.98] transition-all" type="submit">
+                        Connexion
+                    </button>
+<div class="relative flex items-center justify-center py-2">
+<div class="w-full border-t border-outline-variant"></div>
+<span class="absolute px-4 bg-surface-container-lowest font-label-sm text-outline">OU</span>
+</div>
+<button class="w-full flex items-center justify-center gap-3 border border-outline-variant py-3 px-6 rounded-lg font-label-md text-on-surface hover:bg-surface-container-low transition-all" type="button">
+<svg class="w-5 h-5" viewbox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+                        Continuer avec Google
+                    </button>
+</form>
+</div>
+</div>
+<!-- Right Side: Illustrated Onboarding -->
+<div class="hidden lg:flex lg:w-1/2 bg-primary-container/10 p-margin flex-col justify-center relative overflow-hidden">
+<div class="relative z-10 max-w-lg mx-auto space-y-gutter">
+<div class="space-y-4 text-center lg:text-left">
+<h2 class="font-h1 text-primary-container">Nutrition adaptée, vie simplifiée.</h2>
+<p class="font-body-lg text-on-surface-variant">Rejoignez une communauté qui prend soin de sa santé avec intelligence.</p>
+</div>
+<!-- Profile Cards Grid (Asymmetric) -->
+<div class="grid grid-cols-1 gap-6">
+<!-- Profile 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl custom-shadow flex items-center gap-6 translate-x-4">
+<div class="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-secondary-fixed">
+<img class="w-full h-full object-cover" data-alt="portrait of a confident smiling mature woman with gentle lighting and natural background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeIh-EwEd_U3EifzO_LtAQur-S-ZQZJt22-1ZmkCsGxVRsSVfPdEYiIyhb7E9-zhiYwTY_7gDMh1oN6Wjmdz_R0MDm7WsLXJFUooqqR3PSp7kbQcsw3melI1NRCNUcRl-O1FZQT2GT6bwhkfiYOqG0mXw2XQyAqpVNWasnCPPTSGWQ_NsTwx9Q_cvbLcJAalMHJuoxb14OjAz_ybB-xARIxKYcDFN9pqdL1fM6somdWXinb7LPmJ1giNAjK5OgdVjONnis6C_0csCx"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<h3 class="font-label-md text-on-surface">Marie, 42 ans</h3>
+<span class="px-2 py-1 bg-primary-fixed text-on-primary-fixed rounded-full text-[10px] font-bold uppercase tracking-wider">Diabétique</span>
+</div>
+<p class="font-body-sm text-outline">Suivi de l'index glycémique et conseils personnalisés en temps réel.</p>
+</div>
+</div>
+<!-- Profile 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl custom-shadow flex items-center gap-6 -translate-x-4">
+<div class="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-tertiary-fixed">
+<img class="w-full h-full object-cover" data-alt="portrait of a young man in outdoor sunlight with soft focus green foliage in background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNWvxMq1JP82nyOLhL6nC5TtujHtU-ayS68UgEjyA0uxlqyPHbemJS11QhZpVKSXEGQNfYCZXo6olYhWzSZ0w6aN6CFjQ6SjBWiIc-4hriEMc5pcndXC7q1KMAaGWW0-19FQUnjg7JY3ebjmxjl6xP3KcopTSiSy6VNvBFdKVHqJPvIiM0scyOiESleIHbqLiQ3jaz_9rTJfc49NFw8GdzGjs684JXtwZxGAGqrSEMT00uHUdxt79AVjHtuYDeNWbqsF01hKBiWNL8"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<h3 class="font-label-md text-on-surface">Thomas, 28 ans</h3>
+<span class="px-2 py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded-full text-[10px] font-bold uppercase tracking-wider">Cœliaque</span>
+</div>
+<p class="font-body-sm text-outline">Scan de produits instantané pour détecter toute trace de gluten.</p>
+</div>
+</div>
+<!-- Profile 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl custom-shadow flex items-center gap-6 translate-x-8">
+<div class="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-primary-fixed-dim">
+<img class="w-full h-full object-cover" data-alt="portrait of a happy young professional woman in a bright airy modern office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAd1_z87vFvICOlN5R6jBkgzcKZ8q9KQ50E2RouSQIDbnUSiWFnXNcCgZvX2yP9AcOO7qBW_v-Ho_OWyYV-WzBWzdtZJ4wuteaFtNqcSxNAdRel3UEFLiTqCVFSp2QCiSO2oMuJmoRA1JuQhSfDVE36BqPR4nGS6s86GcS6nsC2oacQuQd-Ug_9AKX3pmYuQi9GzZl1bz9sfjhHHh-AuVWu_UGafUkaOJeyXc2A4o0AMt6ooD7IxXo1kkK2-dkX6-3Z7R7NxDNS7M-m"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<h3 class="font-label-md text-on-surface">Sophie, 35 ans</h3>
+<span class="px-2 py-1 bg-secondary-container text-on-secondary rounded-full text-[10px] font-bold uppercase tracking-wider">Healthy</span>
+</div>
+<p class="font-body-sm text-outline">Optimisation des apports en micronutriments et recettes vitalité.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Background Decorations -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-container/5 rounded-full -mr-32 -mt-32"></div>
+<div class="absolute bottom-0 left-0 w-96 h-96 bg-tertiary/5 rounded-full -ml-48 -mb-48"></div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SmartHeart — Nutrition Education Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#ffdad6",
+                    "primary-fixed": "#a1f0f6",
+                    "on-background": "#181c1d",
+                    "error": "#ba1a1a",
+                    "inverse-surface": "#2d3131",
+                    "inverse-primary": "#85d3da",
+                    "primary-container": "#01696f",
+                    "on-secondary-fixed": "#410006",
+                    "on-primary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "background": "#f7fafa",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb68d",
+                    "on-error-container": "#93000a",
+                    "surface": "#f7fafa",
+                    "secondary-fixed": "#ffdad8",
+                    "on-error": "#ffffff",
+                    "tertiary": "#6e3815",
+                    "outline": "#6f797a",
+                    "on-tertiary-fixed": "#331200",
+                    "on-surface": "#181c1d",
+                    "on-primary-fixed": "#002022",
+                    "on-primary-fixed-variant": "#004f54",
+                    "on-surface-variant": "#3f4949",
+                    "surface-container": "#ebeeee",
+                    "tertiary-container": "#8b4f2a",
+                    "surface-tint": "#01696f",
+                    "secondary-container": "#ff6b6b",
+                    "secondary-fixed-dim": "#ffb3b0",
+                    "outline-variant": "#bec8c9",
+                    "on-secondary-fixed-variant": "#8c1520",
+                    "surface-container-highest": "#e0e3e3",
+                    "inverse-on-surface": "#eef1f1",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#ae2f34",
+                    "primary": "#004f54",
+                    "on-tertiary-container": "#ffceb5",
+                    "surface-variant": "#e0e3e3",
+                    "on-tertiary-fixed-variant": "#6e3815"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "grid_unit": "8px",
+                    "margin": "32px",
+                    "container_max_width": "1440px",
+                    "header_height": "60px",
+                    "sidebar_width": "240px"
+            },
+            "fontFamily": {
+                    "h2": ["Manrope"],
+                    "label-sm": ["Manrope"],
+                    "body-sm": ["Manrope"],
+                    "h1": ["Manrope"],
+                    "label-md": ["Manrope"],
+                    "body-md": ["Manrope"],
+                    "body-lg": ["Manrope"],
+                    "h3": ["Manrope"]
+            },
+            "fontSize": {
+                    "h2": ["30px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "h3": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f7fafa;
+            color: #181c1d;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #bec8c9;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-[240px] border-r border-neutral-200 bg-[#F9F8F5] flex flex-col gap-2 py-6 px-0 z-50">
+<div class="px-6 mb-8">
+<h1 class="text-xl font-bold tracking-tight text-[#01696F]">SmartHeart</h1>
+<p class="text-[10px] uppercase tracking-widest text-neutral-500 font-bold">Dietary Intelligence</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 text-neutral-500 hover:bg-neutral-100 transition-all duration-200 ease-in-out hover:pl-7 font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined mr-3">home</span> Accueil
+            </a>
+<a class="flex items-center px-6 py-3 text-neutral-500 hover:bg-neutral-100 transition-all duration-200 ease-in-out hover:pl-7 font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined mr-3">search</span> Recherche
+            </a>
+<a class="flex items-center px-6 py-3 text-neutral-500 hover:bg-neutral-100 transition-all duration-200 ease-in-out hover:pl-7 font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined mr-3">map</span> Carte
+            </a>
+<a class="flex items-center px-6 py-3 text-neutral-500 hover:bg-neutral-100 transition-all duration-200 ease-in-out hover:pl-7 font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined mr-3">restaurant_menu</span> Recettes
+            </a>
+<a class="flex items-center px-6 py-3 text-[#01696F] bg-teal-50 border-r-4 border-[#01696F] font-semibold transition-all duration-200 ease-in-out hover:pl-7 font-manrope text-sm" href="#">
+<span class="material-symbols-outlined mr-3">school</span> Apprendre
+            </a>
+<a class="flex items-center px-6 py-3 text-neutral-500 hover:bg-neutral-100 transition-all duration-200 ease-in-out hover:pl-7 font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined mr-3">person</span> Profil
+            </a>
+<a class="flex items-center px-6 py-3 text-neutral-500 hover:bg-neutral-100 transition-all duration-200 ease-in-out hover:pl-7 font-manrope text-sm font-medium" href="#">
+<span class="material-symbols-outlined mr-3">handshake</span> Partenaires
+            </a>
+</nav>
+</aside>
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 left-[240px] h-[60px] bg-[#F9F8F5]/80 backdrop-blur-md border-b border-neutral-200 flex items-center justify-between px-6 gap-4 z-40">
+<div class="flex items-center flex-1 max-w-md bg-surface-container-low rounded-full px-4 py-1.5 focus-within:ring-2 focus-within:ring-primary/20">
+<span class="material-symbols-outlined text-outline text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full font-body-sm" placeholder="Rechercher un article, un guide..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-neutral-200/50 rounded-full transition-colors relative">
+<span class="material-symbols-outlined text-primary">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full border-2 border-[#F9F8F5]"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="close-up portrait of a smiling woman with glasses and professional attire in a bright medical office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBX5WzTi-TLCJkEyAfQajr8vJjylmmt5u6p243ZvSCJV9Cmx9VYcHlWIU7TJMP5U4KgOB-Wtmlmpu2gZTSvWwnsUQFaBTYKBUAQ8atLUFOLEf2q5ITVvBYGikvSl8nq9sO7YoMsLpQyLeBjp7GB7Gg7kPP3HhH4rjblNeAOE2noTgxyBvXl4hOGda5LUCyhdOvMDeQzakVQCauEMWAjTpRD_5rZppZJYa3WnG6fc8MF3KQQIJ-9AUd61B5mKLNCtLZWhkCJOpH_vDe7"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-[240px] pt-[60px] min-h-screen">
+<div class="max-w-[1200px] mx-auto p-gutter">
+<!-- Progress Banner -->
+<section class="mb-gutter">
+<div class="bg-primary-container rounded-xl p-6 text-on-primary-container relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="relative z-10">
+<h2 class="font-h3 text-h3 mb-2 text-primary-fixed">Votre parcours nutritionnel</h2>
+<p class="font-body-md opacity-90 max-w-md">Continuez à apprendre pour maîtriser les bases d'une alimentation saine pour votre cœur.</p>
+</div>
+<div class="relative z-10 flex flex-col items-end gap-2">
+<div class="flex items-center gap-4">
+<span class="font-label-md text-primary-fixed">3 articles sur 10</span>
+<div class="w-48 h-3 bg-white/20 rounded-full overflow-hidden">
+<div class="w-[30%] h-full bg-primary-fixed"></div>
+</div>
+</div>
+<p class="text-xs font-label-sm italic text-primary-fixed/80">Prochaine étape : Comprendre les étiquettes</p>
+</div>
+<div class="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-white/10 to-transparent pointer-events-none"></div>
+</div>
+</section>
+<!-- Grid Layout for Hub -->
+<div class="grid grid-cols-12 gap-gutter items-start">
+<!-- Left Column: Navigation & List -->
+<div class="col-span-12 lg:col-span-5 flex flex-col gap-6">
+<!-- Category Tabs Row -->
+<div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+<button class="whitespace-nowrap px-4 py-2 bg-primary text-on-primary rounded-full font-label-md">Tout</button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container hover:bg-surface-container-high transition-colors rounded-full font-label-md text-on-surface-variant">Indice Glycémique</button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container hover:bg-surface-container-high transition-colors rounded-full font-label-md text-on-surface-variant">Labels</button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container hover:bg-surface-container-high transition-colors rounded-full font-label-md text-on-surface-variant">Fibres</button>
+</div>
+<!-- Article List -->
+<div class="space-y-3">
+<!-- Card 1 (Active/Selected) -->
+<div class="group bg-surface-container-lowest border-2 border-primary rounded-xl p-4 shadow-sm cursor-pointer transition-all">
+<div class="flex gap-4">
+<div class="w-16 h-16 rounded-lg bg-primary-fixed/30 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-3xl">nutrition</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-label-md text-primary">Indice Glycémique : Le Guide</h4>
+<span class="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 bg-green-100 text-green-700 rounded-full">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">check_circle</span> LU
+                                        </span>
+</div>
+<div class="flex items-center gap-3 text-xs text-outline">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">schedule</span> 8 min</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">bar_chart</span> Débutant</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group bg-surface-container-lowest hover:bg-surface-container border border-outline-variant rounded-xl p-4 transition-all cursor-pointer">
+<div class="flex gap-4">
+<div class="w-16 h-16 rounded-lg bg-surface-container-high flex items-center justify-center text-on-surface-variant shrink-0 group-hover:bg-primary-fixed/20 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">label</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-label-md">Lire les étiquettes sans stress</h4>
+</div>
+<div class="flex items-center gap-3 text-xs text-outline">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">schedule</span> 12 min</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">bar_chart</span> Intermédiaire</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group bg-surface-container-lowest hover:bg-surface-container border border-outline-variant rounded-xl p-4 transition-all cursor-pointer">
+<div class="flex gap-4">
+<div class="w-16 h-16 rounded-lg bg-surface-container-high flex items-center justify-center text-on-surface-variant shrink-0 group-hover:bg-primary-fixed/20 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">heart_plus</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-label-md">Les Bonnes vs Mauvaises Graisses</h4>
+</div>
+<div class="flex items-center gap-3 text-xs text-outline">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">schedule</span> 10 min</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">bar_chart</span> Débutant</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group bg-surface-container-lowest hover:bg-surface-container border border-outline-variant rounded-xl p-4 transition-all cursor-pointer">
+<div class="flex gap-4">
+<div class="w-16 h-16 rounded-lg bg-surface-container-high flex items-center justify-center text-on-surface-variant shrink-0 group-hover:bg-primary-fixed/20 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">bakery_dining</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-label-md">Le secret des céréales complètes</h4>
+</div>
+<div class="flex items-center gap-3 text-xs text-outline">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">schedule</span> 6 min</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">bar_chart</span> Débutant</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Detail View Area -->
+<div class="col-span-12 lg:col-span-7">
+<article class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant overflow-hidden">
+<!-- Hero Image Detail -->
+<div class="h-64 relative">
+<img alt="Nutrition Detail Hero" class="w-full h-full object-cover" data-alt="overhead shot of a vibrant grain bowl with fresh vegetables, quinoa, and seeds on a minimalist light grey table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgIAg2n245NmoiNXa0EQ4Rp7LGoqoWqD6FhmnRE2hoedzfsQW2TaV1JxnioN1x88ocmRtxo-99TEQdj9HJ4LnjyRnPqtfPuBplWN38jhlRXp0vmyD0Qb_7zQscCaD5kXsZ7gRwmx6sgn20UUCnm16_GPepEqMia169i5ECyn-B9ekTd4HFykjiFFJHfM7gCPhnrF_oD29J5ZJ7LZmJte7mTvIenzoOoAorCMXu3AGqoMx2ENVJHMfs9stQoAfBh7aYtjDQL-0YHCTx"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
+<div>
+<span class="px-3 py-1 bg-primary text-on-primary rounded-full text-xs font-label-sm mb-3 inline-block uppercase tracking-wider">Nutrition de Base</span>
+<h1 class="text-white font-h2 text-h2">Comprendre l'Indice Glycémique (IG)</h1>
+</div>
+</div>
+</div>
+<div class="p-8">
+<!-- Article Content -->
+<div class="prose prose-teal max-w-none">
+<p class="text-body-lg text-on-surface-variant mb-6 leading-relaxed">
+                                    L'indice glycémique (IG) est un critère de classement des aliments contenant des glucides, basé sur leur effet sur le taux de glucose dans le sang (glycémie) durant les deux heures suivant leur ingestion. 
+                                </p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+<!-- Fact Box 1 -->
+<div class="bg-surface-container-low p-5 rounded-xl border-l-4 border-primary">
+<div class="flex items-center gap-2 mb-2 text-primary">
+<span class="material-symbols-outlined">lightbulb</span>
+<span class="font-label-md">À retenir</span>
+</div>
+<p class="text-sm font-body-sm text-on-surface-variant">Plus l'IG est élevé, plus le pic de glycémie est important, provoquant une sécrétion massive d'insuline.</p>
+</div>
+<!-- Fact Box 2 -->
+<div class="bg-tertiary-container/10 p-5 rounded-xl border-l-4 border-tertiary">
+<div class="flex items-center gap-2 mb-2 text-tertiary">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-label-md">Le Saviez-vous ?</span>
+</div>
+<p class="text-sm font-body-sm text-on-surface-variant">La cuisson augmente généralement l'IG des aliments (ex: pâtes al dente vs bien cuites).</p>
+</div>
+</div>
+<h3 class="font-h3 text-h3 mb-4 text-primary">Comment utiliser l'IG au quotidien ?</h3>
+<p class="text-body-md text-on-surface-variant mb-4">
+                                    Pour une santé cardiaque optimale et une gestion stable du poids, il est recommandé de privilégier les aliments à IG bas ou moyen :
+                                </p>
+<ul class="space-y-3 mb-8">
+<li class="flex items-start gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary mt-1">check_circle</span>
+<span><strong>Légumineuses :</strong> Lentilles, pois chiches, haricots rouges (IG bas).</span>
+</li>
+<li class="flex items-start gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary mt-1">check_circle</span>
+<span><strong>Fruits entiers :</strong> Pommes, baies, agrumes (IG bas à modéré).</span>
+</li>
+<li class="flex items-start gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary mt-1">cancel</span>
+<span><strong>Produits raffinés :</strong> Pain blanc, riz instantané, sodas (IG élevé - à limiter).</span>
+</li>
+</ul>
+<div class="p-6 bg-surface-container-highest rounded-2xl flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">quiz</span>
+</div>
+<div>
+<h4 class="font-label-md">Prêt pour un quiz ?</h4>
+<p class="text-xs text-outline">Testez vos connaissances sur l'IG</p>
+</div>
+</div>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label-md hover:opacity-90 transition-opacity">Commencer</button>
+</div>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="px-8 py-6 bg-surface-container border-t border-outline-variant flex justify-between items-center">
+<button class="flex items-center gap-2 text-primary font-label-md">
+<span class="material-symbols-outlined">arrow_back</span> Article précédent
+                            </button>
+<div class="flex items-center gap-4">
+<button class="p-2 text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+<button class="p-2 text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-label-md flex items-center gap-2">
+                                    Suivant <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB for Quick Actions -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-secondary-container text-on-secondary-container rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform z-50">
+<span class="material-symbols-outlined text-3xl">question_answer</span>
+</button>
+</body></html>

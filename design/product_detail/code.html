@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Détails du Produit - SmartHeart</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#a1f0f6",
+                        "on-background": "#181c1d",
+                        "error": "#ba1a1a",
+                        "inverse-surface": "#2d3131",
+                        "inverse-primary": "#85d3da",
+                        "primary-container": "#01696f",
+                        "on-secondary-fixed": "#410006",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f7fafa",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb68d",
+                        "on-error-container": "#93000a",
+                        "surface": "#f7fafa",
+                        "secondary-fixed": "#ffdad8",
+                        "on-error": "#ffffff",
+                        "tertiary": "#6e3815",
+                        "outline": "#6f797a",
+                        "on-tertiary-fixed": "#331200",
+                        "on-surface": "#181c1d",
+                        "on-primary-fixed": "#002022",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-surface-variant": "#3f4949",
+                        "surface-container": "#ebeeee",
+                        "tertiary-container": "#8b4f2a",
+                        "surface-tint": "#01696f",
+                        "secondary-container": "#ff6b6b",
+                        "secondary-fixed-dim": "#ffb3b0",
+                        "outline-variant": "#bec8c9",
+                        "on-secondary-fixed-variant": "#8c1520",
+                        "surface-container-highest": "#e0e3e3",
+                        "inverse-on-surface": "#eef1f1",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#ae2f34",
+                        "primary": "#004f54",
+                        "on-tertiary-container": "#ffceb5",
+                        "surface-variant": "#e0e3e3",
+                        "on-tertiary-fixed-variant": "#6e3815"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Manrope"], "h2": ["Manrope"], "h3": ["Manrope"],
+                        "label-sm": ["Manrope"], "label-md": ["Manrope"],
+                        "body-sm": ["Manrope"], "body-md": ["Manrope"], "body-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "h2": ["30px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "h3": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .nutri-score-a { background-color: #038141; color: white; }
+        .nutri-score-b { background-color: #85bb2f; color: white; }
+        .nutri-score-c { background-color: #fecb02; color: white; }
+        .nutri-score-d { background-color: #ee8100; color: white; }
+        .nutri-score-e { background-color: #e63e11; color: white; }
+        
+        .shadow-subtle {
+            box-shadow: 0px 2px 4px rgba(40, 37, 29, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full w-[240px] border-r border-neutral-200 dark:border-neutral-800 bg-[#F9F8F5] dark:bg-neutral-950 flex flex-col gap-2 py-6 px-0 z-[60] shadow-none font-manrope antialiased text-sm font-medium">
+<div class="px-6 mb-8">
+<h1 class="text-xl font-bold tracking-tight text-[#01696F] dark:text-teal-100">SmartHeart</h1>
+<p class="text-[10px] uppercase tracking-widest text-neutral-400">Dietary Intelligence</p>
+</div>
+<nav class="flex flex-col gap-1 px-3">
+<a class="flex items-center gap-3 px-3 py-2.5 transition-all duration-200 ease-in-out hover:pl-4 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span>Accueil</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 transition-all duration-200 ease-in-out hover:pl-4 text-[#01696F] dark:text-teal-400 bg-teal-50 dark:bg-teal-900/20 border-r-4 border-[#01696F] font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span>Recherche</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 transition-all duration-200 ease-in-out hover:pl-4 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span>Carte</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 transition-all duration-200 ease-in-out hover:pl-4 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span>Recettes</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 transition-all duration-200 ease-in-out hover:pl-4 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span>Apprendre</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 transition-all duration-200 ease-in-out hover:pl-4 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span>Profil</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 transition-all duration-200 ease-in-out hover:pl-4 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="handshake">handshake</span>
+<span>Partenaires</span>
+</a>
+</nav>
+</aside>
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 right-0 left-[240px] h-[60px] z-50 bg-[#F9F8F5]/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between px-6 gap-4 shadow-sm dark:shadow-none">
+<div class="flex items-center gap-4 flex-1">
+<div class="flex items-center bg-surface-container-low px-4 py-1.5 rounded-full w-full max-w-md border border-outline-variant focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+<span class="material-symbols-outlined text-outline" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full font-manrope" placeholder="Rechercher un aliment, une marque..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-full transition-colors relative">
+<span class="material-symbols-outlined text-primary" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full"></span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-primary/20">
+<img alt="User Profile Avatar" data-alt="close up portrait of a friendly professional nutritionist in a bright modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8rmfLF9IwBAlXAnjdRWEnBxil5OxAwOnoKdC6w6hpQlTcoyg0m2IvBfnYgRO0eba05n7x0NkVmLQarYKt9WHgaBeScjYikuTwtOml6ErHHYDpeoGDYROoCyOP5o5Nd01oQsQ_PXVX0pAooCIaXKy-8sGPyWObwrvd-YFZ80mq_7YLBx2pJ2W4XOpc5v3HfLcKEOsviHGYAZV6GxROs8tb1gNUskbmU--301OQFfFqpHUw2I-aJBnZzooPGlJe03n6zl6d6QsLmsdX"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-[240px] pt-[60px] min-h-screen">
+<div class="max-w-6xl mx-auto px-8 py-8">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-2 text-label-sm text-on-surface-variant mb-6">
+<a class="hover:text-primary" href="#">Produits</a>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<a class="hover:text-primary" href="#">Céréales</a>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-on-surface font-bold">Flocons d'Avoine Bio</span>
+</nav>
+<div class="flex flex-col lg:flex-row gap-gutter">
+<!-- Left Column (55%) -->
+<div class="lg:w-[55%] flex flex-col gap-6">
+<div class="bg-surface p-6 rounded-xl shadow-subtle flex flex-col items-center">
+<div class="w-full h-[400px] rounded-lg overflow-hidden mb-6 bg-white flex items-center justify-center">
+<img alt="Product Large Image" class="w-full h-full object-contain p-8" data-alt="clean studio shot of organic oat flakes in a modern glass jar with minimalist eco-friendly packaging in soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCriwq-7Tbr2Tq3S8E2JAUpUciqgyBdKefciawUMibBccQND4poiFclbZiDwzvvd6Qzb0UvjJPPXQ38vjsBy_UBZICjzOhBdU0ml4RTWSfnMEmC2Pc88Gpx49y4-BiKu4L5IyNPzNK-YbuI_szhCDAmlf-ICveDTtyCQVJh7qWBwSjRGxG3ivzyr9eQtec6LbQnUNrPaTls5CbYviXc9-eH8NVzmVV4JKTa1gPkYF57yJWo0Nc0W7gjynJfmTtZiptLv0tfhgNzFsRB"/>
+</div>
+<div class="grid grid-cols-2 w-full gap-4">
+<div class="bg-surface-container-low p-4 rounded-lg">
+<span class="text-label-sm text-outline block mb-1">Marque</span>
+<span class="text-body-md font-bold text-primary">NaturaBio France</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg">
+<span class="text-label-sm text-outline block mb-1">Labels</span>
+<div class="flex gap-2">
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded uppercase">BIO</span>
+<span class="bg-secondary/10 text-secondary text-[10px] font-bold px-2 py-0.5 rounded uppercase">VEGAN</span>
+</div>
+</div>
+</div>
+<div class="mt-6 w-full p-4 border-2 border-dashed border-outline-variant rounded-lg flex flex-col items-center gap-2 opacity-60">
+<span class="material-symbols-outlined text-4xl" data-icon="barcode">barcode</span>
+<span class="text-label-sm font-mono">3 560070 139622</span>
+</div>
+</div>
+</div>
+<!-- Right Column (45%) -->
+<div class="lg:w-[45%] flex flex-col gap-6">
+<div>
+<h1 class="font-h1 text-h1 text-on-surface mb-2">Flocons d'Avoine Entiers Bio</h1>
+<div class="flex items-center gap-3">
+<span class="bg-[#e7f5e9] text-[#2e7d32] font-bold px-3 py-1 rounded-full text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="check_circle" data-weight="fill">check_circle</span>
+                                Compatible diabétique
+                            </span>
+</div>
+</div>
+<!-- Nutri-Score -->
+<div class="bg-surface p-6 rounded-xl shadow-subtle">
+<span class="text-label-md text-on-surface-variant block mb-4">Profil Nutritionnel Global</span>
+<div class="flex items-center gap-1 h-14 w-full rounded-lg overflow-hidden">
+<div class="flex-1 nutri-score-a h-full flex flex-col items-center justify-center border-4 border-white">
+<span class="font-black text-2xl">A</span>
+</div>
+<div class="flex-1 nutri-score-b h-full opacity-30 flex items-center justify-center">
+<span class="font-black text-lg">B</span>
+</div>
+<div class="flex-1 nutri-score-c h-full opacity-30 flex items-center justify-center">
+<span class="font-black text-lg">C</span>
+</div>
+<div class="flex-1 nutri-score-d h-full opacity-30 flex items-center justify-center">
+<span class="font-black text-lg">D</span>
+</div>
+<div class="flex-1 nutri-score-e h-full opacity-30 flex items-center justify-center">
+<span class="font-black text-lg">E</span>
+</div>
+</div>
+</div>
+<!-- Glycemic Index Gauge -->
+<div class="bg-surface p-6 rounded-xl shadow-subtle">
+<div class="flex justify-between items-end mb-4">
+<span class="text-label-md text-on-surface-variant">Indice Glycémique (IG)</span>
+<span class="text-h3 text-[#2e7d32] font-bold">40</span>
+</div>
+<div class="relative h-4 bg-surface-container-highest rounded-full overflow-hidden flex">
+<div class="h-full w-[35%] bg-green-500"></div>
+<div class="h-full w-[35%] bg-orange-400"></div>
+<div class="h-full w-[30%] bg-red-500"></div>
+<div class="absolute top-0 left-[40%] h-full w-1 bg-white shadow-lg border-x-2 border-primary z-10"></div>
+</div>
+<div class="flex justify-between text-[10px] font-bold mt-2 text-outline">
+<span>BAS (0-55)</span>
+<span>MOYEN (56-69)</span>
+<span>ÉLEVÉ (70+)</span>
+</div>
+</div>
+<!-- Nutrition Table -->
+<div class="bg-surface p-6 rounded-xl shadow-subtle">
+<span class="text-label-md text-on-surface-variant block mb-4">Tableau Nutritionnel (pour 100g)</span>
+<div class="space-y-3">
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/30">
+<span class="text-body-sm">Énergie</span>
+<span class="font-bold text-on-surface">375 kcal</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/30">
+<span class="text-body-sm">Glucides (dont sucres)</span>
+<div class="text-right">
+<span class="font-bold text-on-surface">59g</span>
+<span class="text-xs text-secondary block">(0.7g sucres)</span>
+</div>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/30">
+<span class="text-body-sm">Fibres alimentaires</span>
+<span class="font-bold text-[#2e7d32]">10.2g</span>
+</div>
+<div class="flex justify-between items-center py-2">
+<span class="text-body-sm">Protéines</span>
+<span class="font-bold text-on-surface">13g</span>
+</div>
+</div>
+</div>
+<!-- Educational Tip -->
+<div class="bg-primary/5 p-5 rounded-xl border border-primary/20">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="lightbulb">lightbulb</span>
+<div>
+<h4 class="font-bold text-primary text-body-sm mb-1">Le conseil du nutritionniste</h4>
+<p class="text-body-sm text-on-surface-variant mb-2">Les flocons d'avoine entiers contiennent des bêta-glucanes qui aident à réguler la glycémie post-prandiale...</p>
+<button class="text-primary font-bold text-label-sm hover:underline flex items-center">
+                                    Lire la suite
+                                    <span class="material-symbols-outlined text-[16px]" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Table Section -->
+<section class="mt-12 bg-surface rounded-2xl shadow-subtle overflow-hidden">
+<div class="p-6 border-b border-outline-variant">
+<h2 class="font-h3 text-h3 text-on-surface flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="shopping_cart">shopping_cart</span>
+                        Où acheter ce produit à Annaba
+                    </h2>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low text-label-sm text-outline uppercase tracking-wider">
+<th class="px-6 py-4">Commerce</th>
+<th class="px-6 py-4">Quartier</th>
+<th class="px-6 py-4">Distance</th>
+<th class="px-6 py-4">Prix</th>
+<th class="px-6 py-4">Stock</th>
+<th class="px-6 py-4">Horaires</th>
+<th class="px-6 py-4">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Cevital Hypermarket</span>
+<span class="text-xs text-outline">Supermarché</span>
+</div>
+</td>
+<td class="px-6 py-4 text-body-sm">Sidi Brahim</td>
+<td class="px-6 py-4 text-body-sm">1.2 km</td>
+<td class="px-6 py-4 font-bold text-primary">450 DZD</td>
+<td class="px-6 py-4">
+<span class="text-[#2e7d32] bg-[#e7f5e9] px-2 py-0.5 rounded text-[11px] font-bold">EN STOCK</span>
+</td>
+<td class="px-6 py-4 text-body-sm">08:00 - 22:00</td>
+<td class="px-6 py-4">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg text-label-sm font-bold shadow-sm hover:opacity-90 transition-opacity">Y aller</button>
+</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Épicerie Bio-Santé</span>
+<span class="text-xs text-outline">Spécialisé</span>
+</div>
+</td>
+<td class="px-6 py-4 text-body-sm">Cours de la Révolution</td>
+<td class="px-6 py-4 text-body-sm">0.5 km</td>
+<td class="px-6 py-4 font-bold text-primary">490 DZD</td>
+<td class="px-6 py-4">
+<span class="text-secondary bg-secondary/10 px-2 py-0.5 rounded text-[11px] font-bold">3 RESTANTS</span>
+</td>
+<td class="px-6 py-4 text-body-sm">09:00 - 19:30</td>
+<td class="px-6 py-4">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg text-label-sm font-bold shadow-sm hover:opacity-90 transition-opacity">Y aller</button>
+</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Supérette Le Printemps</span>
+<span class="text-xs text-outline">Proximité</span>
+</div>
+</td>
+<td class="px-6 py-4 text-body-sm">Les Plaines</td>
+<td class="px-6 py-4 text-body-sm">2.8 km</td>
+<td class="px-6 py-4 font-bold text-primary">460 DZD</td>
+<td class="px-6 py-4">
+<span class="text-[#2e7d32] bg-[#e7f5e9] px-2 py-0.5 rounded text-[11px] font-bold">EN STOCK</span>
+</td>
+<td class="px-6 py-4 text-body-sm">07:00 - 23:00</td>
+<td class="px-6 py-4">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg text-label-sm font-bold shadow-sm hover:opacity-90 transition-opacity">Y aller</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+</body></html>

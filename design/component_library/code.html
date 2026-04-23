@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#a1f0f6",
+                        "on-background": "#181c1d",
+                        "error": "#ba1a1a",
+                        "inverse-surface": "#2d3131",
+                        "inverse-primary": "#85d3da",
+                        "primary-container": "#01696f",
+                        "on-secondary-fixed": "#410006",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f7fafa",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb68d",
+                        "on-error-container": "#93000a",
+                        "surface": "#f7fafa",
+                        "secondary-fixed": "#ffdad8",
+                        "surface-container-high": "#e6e9e9",
+                        "surface-container-low": "#f1f4f4",
+                        "on-secondary-container": "#6d0010",
+                        "surface-bright": "#f7fafa",
+                        "surface-dim": "#d7dbda",
+                        "primary-fixed-dim": "#85d3da",
+                        "on-primary-container": "#97e6ec",
+                        "tertiary-fixed": "#ffdbc9",
+                        "on-error": "#ffffff",
+                        "tertiary": "#6e3815",
+                        "outline": "#6f797a",
+                        "on-tertiary-fixed": "#331200",
+                        "on-surface": "#181c1d",
+                        "on-primary-fixed": "#002022",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-surface-variant": "#3f4949",
+                        "surface-container": "#ebeeee",
+                        "tertiary-container": "#8b4f2a",
+                        "surface-tint": "#01696f",
+                        "secondary-container": "#ff6b6b",
+                        "secondary-fixed-dim": "#ffb3b0",
+                        "outline-variant": "#bec8c9",
+                        "on-secondary-fixed-variant": "#8c1520",
+                        "surface-container-highest": "#e0e3e3",
+                        "inverse-on-surface": "#eef1f1",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#ae2f34",
+                        "primary": "#004f54",
+                        "on-tertiary-container": "#ffceb5",
+                        "surface-variant": "#e0e3e3",
+                        "on-tertiary-fixed-variant": "#6e3815"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "grid_unit": "8px",
+                        "margin": "32px",
+                        "container_max_width": "1440px",
+                        "header_height": "60px",
+                        "sidebar_width": "240px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Manrope"],
+                        "label-sm": ["Manrope"],
+                        "body-sm": ["Manrope"],
+                        "h1": ["Manrope"],
+                        "label-md": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "h3": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "h2": ["30px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "h3": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 right-0 left-0 md:left-[240px] h-[60px] z-50 bg-[#F9F8F5]/80 backdrop-blur-md flex items-center justify-between px-6 gap-4 border-b border-neutral-200">
+<div class="flex items-center gap-4">
+<span class="hidden md:block text-lg font-black text-[#01696F]">SmartHeart</span>
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline scale-75">search</span>
+<input class="w-full h-9 pl-9 pr-4 rounded-full bg-surface-container-low border-none text-body-sm focus:ring-2 focus:ring-primary/20" placeholder="Rechercher..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-neutral-200/50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[#01696F]">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-neutral-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a smiling woman with clear skin and natural lighting in a professional setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC46f4y2ExUeyvsFm14mfomLPtpZde0zEWnvYJBBVCmu2Cb9cRnBu3UhwgoJrD7zaac-oieQUQfemurxfo27o6XFbKNvdPOA6XLhHmHMXBuC7ztsiUFtGiusLdpXyEyOSlBELwu9baZqSRjNQVPFUzxT15qdKkHzCHyCgIB9O_-qgAU28rI0KDZ-uQsGW6jo3YbOSYAPz2kXhf36SdXiFjEit4wu2VpVe-qJ2ftDVZ25J6agCTJfV7ws5v3R7z6zU1qyUOXMTP2gdPO"/>
+</div>
+</div>
+</header>
+<!-- Sidebar Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-[240px] border-r border-neutral-200 bg-[#F9F8F5] hidden md:flex flex-col gap-2 py-6 px-0 font-manrope antialiased text-sm font-medium">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-xl" data-weight="fill">favorite</span>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tight text-[#01696F]">SmartHeart</h1>
+<p class="text-[10px] uppercase tracking-wider text-outline">Dietary Intelligence</p>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#01696F] bg-teal-50 border-r-4 border-[#01696F] font-semibold transition-all duration-200 ease-in-out hover:pl-5" href="#">
+<span class="material-symbols-outlined">home</span> Accueil
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-neutral-500 hover:bg-neutral-100 transition-all duration-200 ease-in-out hover:pl-5" href="#">
+<span class="material-symbols-outlined">search</span> Recherche
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-neutral-500 hover:bg-neutral-100 transition-all duration-200 ease-in-out hover:pl-5" href="#">
+<span class="material-symbols-outlined">map</span> Carte
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-neutral-500 hover:bg-neutral-100 transition-all duration-200 ease-in-out hover:pl-5" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span> Recettes
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-neutral-500 hover:bg-neutral-100 transition-all duration-200 ease-in-out hover:pl-5" href="#">
+<span class="material-symbols-outlined">school</span> Apprendre
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-neutral-500 hover:bg-neutral-100 transition-all duration-200 ease-in-out hover:pl-5" href="#">
+<span class="material-symbols-outlined">person</span> Profil
+            </a>
+</nav>
+</aside>
+<!-- Main Canvas -->
+<main class="mt-[60px] md:ml-[240px] p-8 space-y-12">
+<!-- Header Section -->
+<section class="mb-12">
+<h2 class="font-h1 text-h1 text-[#01696F]">Library Components</h2>
+<p class="font-body-lg text-body-lg text-outline">Guide de style et composants visuels pour l'écosystème SmartHeart.</p>
+</section>
+<!-- Buttons & Inputs Bento Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Button Variants -->
+<div class="bg-surface-container-lowest p-gutter rounded-xl shadow-[0px_2px_4px_rgba(40,37,29,0.05)] space-y-6">
+<h3 class="font-h3 text-h3 text-on-surface">Boutons</h3>
+<div class="flex flex-wrap gap-4 items-center">
+<button class="px-6 py-3 bg-[#01696F] text-on-primary font-label-md rounded-lg active:opacity-90 active:scale-[0.98] transition-all">Primary</button>
+<button class="px-6 py-3 border border-outline text-on-surface font-label-md rounded-lg hover:bg-neutral-50 transition-all">Secondary</button>
+<button class="px-6 py-3 text-[#01696F] font-label-md rounded-lg hover:bg-teal-50 transition-all">Ghost Action</button>
+<button class="px-6 py-3 bg-[#AE2F34] text-on-primary font-label-md rounded-lg hover:opacity-90 transition-all">Danger Action</button>
+<button class="px-6 py-3 bg-neutral-200 text-neutral-400 font-label-md rounded-lg cursor-not-allowed" disabled="">Disabled</button>
+</div>
+</div>
+<!-- Input Variants -->
+<div class="bg-surface-container-lowest p-gutter rounded-xl shadow-[0px_2px_4px_rgba(40,37,29,0.05)] space-y-6">
+<h3 class="font-h3 text-h3 text-on-surface">Champs de saisie</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-1">
+<label class="font-label-sm text-outline">Default</label>
+<input class="w-full border-outline-variant bg-surface rounded-lg px-4 py-2 font-body-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Entrez du texte..." type="text"/>
+</div>
+<div class="space-y-1">
+<label class="font-label-sm text-primary">Focus</label>
+<input class="w-full border-primary bg-surface rounded-lg px-4 py-2 font-body-sm ring-2 ring-primary/10" type="text" value="Saisie en cours"/>
+</div>
+<div class="space-y-1">
+<label class="font-label-sm text-error">Error</label>
+<input class="w-full border-error bg-surface rounded-lg px-4 py-2 font-body-sm focus:ring-0" type="text" value="Valeur incorrecte"/>
+<span class="text-[10px] text-error font-medium">Ce champ est requis</span>
+</div>
+<div class="space-y-1">
+<label class="font-label-sm text-neutral-400">Disabled</label>
+<input class="w-full border-neutral-100 bg-neutral-50 rounded-lg px-4 py-2 font-body-sm cursor-not-allowed" disabled="" placeholder="Non modifiable" type="text"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Badges & Chips Section -->
+<section class="bg-surface-container-lowest p-gutter rounded-xl shadow-[0px_2px_4px_rgba(40,37,29,0.05)] space-y-8">
+<h3 class="font-h3 text-h3 text-on-surface">Badges &amp; Indicateurs</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Nutri-Score -->
+<div class="space-y-3">
+<p class="font-label-sm text-outline uppercase tracking-wider">Nutri-Score</p>
+<div class="flex gap-1 items-center">
+<span class="w-8 h-8 flex items-center justify-center rounded-sm bg-[#008b4c] text-white font-bold text-lg">A</span>
+<span class="w-6 h-6 flex items-center justify-center rounded-sm bg-[#85bb2f] text-white/50 font-bold text-sm">B</span>
+<span class="w-6 h-6 flex items-center justify-center rounded-sm bg-[#fecb02] text-white/50 font-bold text-sm">C</span>
+<span class="w-6 h-6 flex items-center justify-center rounded-sm bg-[#ee8100] text-white/50 font-bold text-sm">D</span>
+<span class="w-6 h-6 flex items-center justify-center rounded-sm bg-[#e63e11] text-white/50 font-bold text-sm">E</span>
+</div>
+</div>
+<!-- GI Level -->
+<div class="space-y-3">
+<p class="font-label-sm text-outline uppercase tracking-wider">Indice Glycémique</p>
+<div class="flex flex-col gap-2">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-bold w-fit">BAS IG</span>
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-orange-100 text-orange-800 text-xs font-bold w-fit">MODÉRÉ IG</span>
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-red-800 text-xs font-bold w-fit">ÉLEVÉ IG</span>
+</div>
+</div>
+<!-- Stock Status -->
+<div class="space-y-3">
+<p class="font-label-sm text-outline uppercase tracking-wider">Disponibilité</p>
+<div class="flex flex-col gap-2">
+<span class="flex items-center gap-2 text-green-600 font-label-md">
+<span class="w-2 h-2 rounded-full bg-green-600"></span> En stock
+                        </span>
+<span class="flex items-center gap-2 text-red-600 font-label-md">
+<span class="w-2 h-2 rounded-full bg-red-600"></span> Rupture
+                        </span>
+</div>
+</div>
+<!-- Labels -->
+<div class="space-y-3">
+<p class="font-label-sm text-outline uppercase tracking-wider">Régime &amp; Labels</p>
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-surface-container-high rounded text-body-sm border border-outline-variant">Sans Gluten</span>
+<span class="px-2 py-1 bg-primary/10 text-primary rounded text-body-sm font-semibold flex items-center gap-1">Bio <span class="material-symbols-outlined text-[14px]">check</span></span>
+<span class="px-2 py-1 bg-surface-container-high rounded text-body-sm border border-outline-variant">Diabétique</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Complex Card Variants -->
+<section class="space-y-6">
+<h3 class="font-h3 text-h3 text-on-surface px-2">Composants Complexes</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gutter">
+<!-- Recipe Card -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_2px_4px_rgba(40,37,29,0.05)] border border-transparent hover:border-primary/20 transition-all">
+<div class="h-48 w-full relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="vibrant salad bowl with fresh greens, avocados, seeds and colorful vegetables in soft natural morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdztMLwvP0K66VJd1mLygr7WZwsn2qOqFm6ckiQdUTZZvbBGZwixpR5xFXC-bjbt_QoNhHniKKSScTOIRhM-b4J2NezIs8ax792tyXSo9hTqZi6q0ZFgpAYMhvcnZR0p9l_sYsLNc8Wn9QQ2k-sMlYhwcyeO0IR1gRvp5x4u9H_r0PsZoIVs9fCx8kpUhbathFPJk7Z8nHwvIVE8Rj3RbGekCDg00UcrjyhBSAszWg3j6azzBxlOX9DOvEkcs-xyWsEtHfxXKVP-bA"/>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md text-[10px] font-bold">15 MIN</div>
+</div>
+<div class="p-6 space-y-3">
+<div class="flex justify-between items-start">
+<h4 class="font-h3 text-[18px]">Salade d'Été Détox</h4>
+<span class="material-symbols-outlined text-outline cursor-pointer hover:text-red-500">favorite</span>
+</div>
+<div class="flex gap-2">
+<span class="text-[10px] px-2 py-0.5 bg-green-50 text-green-700 font-bold rounded">KETO FRIENDLY</span>
+<span class="text-[10px] px-2 py-0.5 bg-orange-50 text-orange-700 font-bold rounded">BAS GI</span>
+</div>
+<p class="text-body-sm text-outline line-clamp-2">Une combinaison rafraîchissante de pousses d'épinards, avocat crémeux et graines de chia.</p>
+<button class="w-full py-2 bg-primary/5 text-primary font-label-md rounded-lg hover:bg-primary hover:text-on-primary transition-colors">Voir la recette</button>
+</div>
+</div>
+<!-- KPI Card -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_2px_4px_rgba(40,37,29,0.05)] flex flex-col justify-between border border-neutral-100">
+<div class="flex justify-between items-center">
+<div class="p-3 bg-teal-50 rounded-xl">
+<span class="material-symbols-outlined text-[#01696F]">monitor_heart</span>
+</div>
+<span class="text-green-600 font-bold text-sm">+12%</span>
+</div>
+<div class="mt-8">
+<p class="text-outline font-label-sm">Glycémie Moyenne</p>
+<h4 class="text-3xl font-bold text-[#01696F]">0.94 <span class="text-lg font-normal text-outline">g/L</span></h4>
+</div>
+<div class="mt-4 pt-4 border-t border-neutral-50 flex items-center gap-2">
+<div class="flex-1 h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+<div class="w-3/4 h-full bg-[#01696F]"></div>
+</div>
+<span class="text-[10px] text-outline font-bold">STABLE</span>
+</div>
+</div>
+<!-- Store Card -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_2px_4px_rgba(40,37,29,0.05)] space-y-4">
+<div class="flex gap-4">
+<div class="w-16 h-16 rounded-xl bg-neutral-50 border border-neutral-100 flex items-center justify-center p-2">
+<img class="w-full object-contain grayscale" data-alt="generic minimalist grocery brand logo icon on clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcYnKPS_sSPUy-ng_PnfBcFVKvd5Fm6tuJDJfw4Gcwi2T928thzw7_XTYNF6L9en2umk6OwrdVjt3Xkv6hGubBwR-H76VeToCxrBtEgJoiPR9zJ5yHto2uznoRshwvtVtPr0P4g5Vi6b97ZrAraYHgP6vH9XRr8vPSsZVNrgb8tut7j4-ZVo0QzZYDrLHfjAdChE83UW3Bq5xOnyLkaN6VAq-di8R2WkBXFPqPZFm8ScFiH367IpCoo0GvxyJyWSRNV4gwHzEcBqSI"/>
+</div>
+<div class="flex-1">
+<h4 class="font-label-md text-lg">Bio C' Bon Paris</h4>
+<p class="text-body-sm text-outline">Rue des Archives, 75004</p>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-body-sm">
+<span class="text-outline">Distance</span>
+<span class="font-bold">450m</span>
+</div>
+<div class="flex justify-between text-body-sm">
+<span class="text-outline">Produits compatibles</span>
+<span class="text-primary font-bold">42 articles</span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-2 border border-outline-variant rounded-lg font-label-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">directions</span> Itinéraire
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Tables & States -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0px_2px_4px_rgba(40,37,29,0.05)] overflow-hidden">
+<div class="p-6 border-b border-neutral-100 flex justify-between items-center">
+<h3 class="font-h3 text-h3">Historique des Analyses</h3>
+<div class="flex gap-4 items-center">
+<!-- Toggle -->
+<div class="flex items-center gap-2">
+<span class="text-body-sm text-outline">Filtrer Bio</span>
+<div class="w-10 h-5 bg-primary rounded-full relative cursor-pointer">
+<div class="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low text-outline font-label-sm uppercase tracking-wider">
+<tr>
+<th class="px-6 py-4">Produit</th>
+<th class="px-6 py-4">Score</th>
+<th class="px-6 py-4">Glucides</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4"></th>
+</tr>
+</thead>
+<tbody class="text-body-sm">
+<!-- Default Row -->
+<tr class="border-b border-neutral-50">
+<td class="px-6 py-4 font-medium">Flocons d'Avoine Bio</td>
+<td class="px-6 py-4"><span class="px-2 py-0.5 bg-[#008b4c] text-white text-[10px] font-bold rounded">A</span></td>
+<td class="px-6 py-4">58g / 100g</td>
+<td class="px-6 py-4"><span class="text-green-600 font-bold">Sain</span></td>
+<td class="px-6 py-4 text-right"><span class="material-symbols-outlined text-outline cursor-pointer">more_vert</span></td>
+</tr>
+<!-- Hover State Simulation -->
+<tr class="border-b border-neutral-50 bg-neutral-50">
+<td class="px-6 py-4 font-medium">Yaourt Nature 0%</td>
+<td class="px-6 py-4"><span class="px-2 py-0.5 bg-[#85bb2f] text-white text-[10px] font-bold rounded">B</span></td>
+<td class="px-6 py-4">4g / 100g</td>
+<td class="px-6 py-4"><span class="text-green-600 font-bold">Sain</span></td>
+<td class="px-6 py-4 text-right"><span class="material-symbols-outlined text-outline">more_vert</span></td>
+</tr>
+<!-- Selected State -->
+<tr class="border-b border-primary/10 bg-teal-50/30">
+<td class="px-6 py-4 font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+                                Jus d'Orange Frais
+                            </td>
+<td class="px-6 py-4"><span class="px-2 py-0.5 bg-[#fecb02] text-white text-[10px] font-bold rounded">C</span></td>
+<td class="px-6 py-4">12g / 100g</td>
+<td class="px-6 py-4"><span class="text-orange-600 font-bold">Modéré</span></td>
+<td class="px-6 py-4 text-right"><span class="material-symbols-outlined text-primary">more_vert</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Skeletons & Toasts Bento -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<!-- Skeletons -->
+<div class="bg-surface-container-lowest p-gutter rounded-xl shadow-[0px_2px_4px_rgba(40,37,29,0.05)] space-y-6">
+<h3 class="font-h3 text-h3">Skeleton Loaders</h3>
+<!-- Card Skeleton -->
+<div class="border border-neutral-100 rounded-xl p-4 flex gap-4 animate-pulse">
+<div class="w-24 h-24 bg-neutral-100 rounded-lg"></div>
+<div class="flex-1 space-y-3 py-1">
+<div class="h-4 bg-neutral-100 rounded w-3/4"></div>
+<div class="h-3 bg-neutral-100 rounded w-1/2"></div>
+<div class="flex gap-2">
+<div class="h-5 bg-neutral-100 rounded w-16"></div>
+<div class="h-5 bg-neutral-100 rounded w-16"></div>
+</div>
+</div>
+</div>
+<!-- Table Row Skeleton -->
+<div class="space-y-4 animate-pulse">
+<div class="flex justify-between items-center border-b border-neutral-50 pb-4">
+<div class="h-4 bg-neutral-100 rounded w-48"></div>
+<div class="h-4 bg-neutral-100 rounded w-12"></div>
+<div class="h-4 bg-neutral-100 rounded w-24"></div>
+<div class="h-4 bg-neutral-100 rounded w-16"></div>
+</div>
+<div class="flex justify-between items-center border-b border-neutral-50 pb-4">
+<div class="h-4 bg-neutral-100 rounded w-40"></div>
+<div class="h-4 bg-neutral-100 rounded w-12"></div>
+<div class="h-4 bg-neutral-100 rounded w-28"></div>
+<div class="h-4 bg-neutral-100 rounded w-16"></div>
+</div>
+</div>
+</div>
+<!-- Notifications / Toasts -->
+<div class="bg-surface-container-lowest p-gutter rounded-xl shadow-[0px_2px_4px_rgba(40,37,29,0.05)] space-y-4">
+<h3 class="font-h3 text-h3">Toasts &amp; Alertes</h3>
+<!-- Success Toast -->
+<div class="flex items-center gap-3 p-4 bg-green-50 text-green-800 rounded-xl border border-green-100">
+<span class="material-symbols-outlined" data-weight="fill">check_circle</span>
+<div class="flex-1">
+<p class="font-label-md">Profil mis à jour</p>
+<p class="text-xs opacity-80">Vos préférences alimentaires ont été enregistrées.</p>
+</div>
+<span class="material-symbols-outlined text-sm cursor-pointer">close</span>
+</div>
+<!-- Warning Toast -->
+<div class="flex items-center gap-3 p-4 bg-orange-50 text-orange-800 rounded-xl border border-orange-100">
+<span class="material-symbols-outlined" data-weight="fill">warning</span>
+<div class="flex-1">
+<p class="font-label-md">Alerte Glycémique</p>
+<p class="text-xs opacity-80">Ce produit contient des sucres ajoutés cachés.</p>
+</div>
+<span class="material-symbols-outlined text-sm cursor-pointer">close</span>
+</div>
+<!-- Error Toast -->
+<div class="flex items-center gap-3 p-4 bg-red-50 text-red-800 rounded-xl border border-red-100">
+<span class="material-symbols-outlined" data-weight="fill">error</span>
+<div class="flex-1">
+<p class="font-label-md">Erreur de scan</p>
+<p class="text-xs opacity-80">Impossible d'identifier le code-barres. Réessayez.</p>
+</div>
+<span class="material-symbols-outlined text-sm cursor-pointer">close</span>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB Action Button -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-all z-40">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+</button>
+</body></html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SmartHeart - Health Profile Setup</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#a1f0f6",
+                        "on-background": "#181c1d",
+                        "error": "#ba1a1a",
+                        "inverse-surface": "#2d3131",
+                        "inverse-primary": "#85d3da",
+                        "primary-container": "#01696f",
+                        "on-secondary-fixed": "#410006",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f7fafa",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb68d",
+                        "on-error-container": "#93000a",
+                        "surface": "#f7fafa",
+                        "secondary-fixed": "#ffdad8",
+                        "surface-container-high": "#e6e9e9",
+                        "surface-container-low": "#f1f4f4",
+                        "on-secondary-container": "#6d0010",
+                        "surface-bright": "#f7fafa",
+                        "surface-dim": "#d7dbda",
+                        "primary-fixed-dim": "#85d3da",
+                        "on-primary-container": "#97e6ec",
+                        "tertiary-fixed": "#ffdbc9",
+                        "on-error": "#ffffff",
+                        "tertiary": "#6e3815",
+                        "outline": "#6f797a",
+                        "on-tertiary-fixed": "#331200",
+                        "on-surface": "#181c1d",
+                        "on-primary-fixed": "#002022",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-surface-variant": "#3f4949",
+                        "surface-container": "#ebeeee",
+                        "tertiary-container": "#8b4f2a",
+                        "surface-tint": "#01696f",
+                        "secondary-container": "#ff6b6b",
+                        "secondary-fixed-dim": "#ffb3b0",
+                        "outline-variant": "#bec8c9",
+                        "on-secondary-fixed-variant": "#8c1520",
+                        "surface-container-highest": "#e0e3e3",
+                        "inverse-on-surface": "#eef1f1",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#ae2f34",
+                        "primary": "#004f54",
+                        "on-tertiary-container": "#ffceb5",
+                        "surface-variant": "#e0e3e3",
+                        "on-tertiary-fixed-variant": "#6e3815"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "grid_unit": "8px",
+                        "margin": "32px",
+                        "container_max_width": "1440px",
+                        "header_height": "60px",
+                        "sidebar_width": "240px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Manrope"],
+                        "label-sm": ["Manrope"],
+                        "body-sm": ["Manrope"],
+                        "h1": ["Manrope"],
+                        "label-md": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "h3": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "h2": ["30px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "h3": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f7fafa;
+        }
+        .bento-card {
+            background: #ffffff;
+            box-shadow: 0px 2px 4px rgba(40, 37, 29, 0.05);
+            transition: all 0.2s ease-in-out;
+        }
+        .bento-card:hover {
+            box-shadow: 0px 4px 12px rgba(40, 37, 29, 0.08);
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<div class="min-h-screen flex flex-col items-center justify-center p-gutter">
+<div class="w-full max-w-4xl">
+<header class="mb-12 text-center">
+<div class="flex items-center justify-center gap-2 mb-4">
+<div class="h-1 w-12 rounded-full bg-primary-container"></div>
+<div class="h-1 w-12 rounded-full bg-primary-container"></div>
+<div class="h-1 w-12 rounded-full bg-surface-container-highest"></div>
+</div>
+<h1 class="font-h1 text-h1 text-primary mb-2">Votre condition de santé</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Personnalisez votre expérience selon vos besoins médicaux et vos choix de vie.</p>
+</header>
+<main class="space-y-12">
+<section>
+<h2 class="font-h3 text-h3 text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="medical_information">medical_information</span>
+                        Profil nutritionnel
+                    </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="bento-card border-2 border-primary bg-primary/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 text-center cursor-pointer relative" style="width: 200px; height: 120px; margin: 0 auto;">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="stethoscope">stethoscope</span>
+<span class="font-label-md text-label-md text-primary">Diabétique</span>
+<div class="absolute top-2 right-2 bg-primary text-white rounded-full p-1 flex items-center justify-center">
+<span class="material-symbols-outlined text-sm" data-icon="check" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+</div>
+<div class="bento-card border-2 border-transparent hover:border-outline-variant rounded-xl p-6 flex flex-col items-center justify-center gap-3 text-center cursor-pointer" style="width: 200px; height: 120px; margin: 0 auto;">
+<span class="material-symbols-outlined text-outline text-3xl" data-icon="grass">grass</span>
+<span class="font-label-md text-label-md text-on-surface">Cœliaque</span>
+</div>
+<div class="bento-card border-2 border-primary bg-primary/5 rounded-xl p-6 flex flex-col items-center justify-center gap-3 text-center cursor-pointer relative" style="width: 200px; height: 120px; margin: 0 auto;">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="nutrition">nutrition</span>
+<span class="font-label-md text-label-md text-primary">Mode Sain</span>
+<div class="absolute top-2 right-2 bg-primary text-white rounded-full p-1 flex items-center justify-center">
+<span class="material-symbols-outlined text-sm" data-icon="check" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+</div>
+<div class="bento-card border-2 border-transparent hover:border-outline-variant rounded-xl p-6 flex flex-col items-center justify-center gap-3 text-center cursor-pointer" style="width: 200px; height: 120px; margin: 0 auto;">
+<span class="material-symbols-outlined text-outline text-3xl" data-icon="broccoli">crop</span>
+<span class="font-label-md text-label-md text-on-surface">Végétarien</span>
+</div>
+</div>
+</section>
+<section>
+<h2 class="font-h3 text-h3 text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="target">target</span>
+                        Vos objectifs prioritaires
+                    </h2>
+<div class="flex flex-wrap gap-3">
+<button class="px-6 py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-sm flex items-center gap-2 transition-transform active:scale-95">
+                            Gérer le diabète
+                            <span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+</button>
+<button class="px-6 py-3 rounded-full bg-surface-container-high text-on-surface-variant font-label-md text-label-md hover:bg-outline-variant hover:text-on-surface transition-colors">
+                            Perdre du poids
+                        </button>
+<button class="px-6 py-3 rounded-full bg-surface-container-high text-on-surface-variant font-label-md text-label-md hover:bg-outline-variant hover:text-on-surface transition-colors">
+                            Éviter les allergènes
+                        </button>
+<button class="px-6 py-3 rounded-full bg-surface-container-high text-on-surface-variant font-label-md text-label-md hover:bg-outline-variant hover:text-on-surface transition-colors">
+                            Maintenir mon poids
+                        </button>
+</div>
+</section>
+<section class="mt-16 flex items-center justify-between pt-8 border-t border-outline-variant">
+<button class="flex items-center gap-2 px-6 py-3 text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors group">
+<span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform" data-icon="arrow_back">arrow_back</span>
+                        Retour
+                    </button>
+<button class="flex items-center gap-2 px-8 py-3 bg-primary text-on-primary rounded-xl font-label-md text-label-md shadow-lg hover:bg-primary-container transition-all active:scale-[0.98]">
+                        Suivant
+                        <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</section>
+</main>
+<aside class="mt-12 flex justify-center">
+<div class="bento-card max-w-sm p-4 rounded-xl flex items-center gap-4 border border-outline-variant/30">
+<div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+<img alt="Assistant" data-alt="close-up portrait of a friendly digital assistant avatar with soft studio lighting and clean interface aesthetics" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL8aqKi2qgAu_0ZHGHVFpUJEg5EtkSH-RV-1hpglGTHdRFploNQ0p3zoxT4-9RTCx0g1naPP7WqGfpLhLTnMMWs727KcbtOxPkdWEGru1nWsWGJrZ-NB87k8kF_TpQr46U038U6r3AwJgmix0wDhJu_xtqG75Z92wbgppRikbB7Xj9BjRy6LVnC_3Tgro87bd5PAFc1keXqhJj_VXZtFlyKkAQtrcxZLXVnyWqkpM-8zuN0vhk2YR3hT83otl0ByuZZ981xJ5FiBzt"/>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                        "En choisissant 'Mode Sain', nous privilégierons les aliments à faible index glycémique."
+                    </p>
+</div>
+</aside>
+</div>
+</div>
+</body></html>
