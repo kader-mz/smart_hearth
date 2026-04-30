@@ -1,7 +1,7 @@
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
 import { requireAuth, getHealthProfile } from "@/lib/auth";
-import { logoutAction } from "@/app/(auth)/login/_actions/logout.action";
+import { LogoutButton } from "./_components/LogoutButton";
 
 const activityLabels: Record<string, string> = {
   sedentary: "Sédentaire",
@@ -66,15 +66,7 @@ export default async function ProfilePage() {
                 {profile.role}
               </span>
             </div>
-            <form action={logoutAction}>
-              <button
-                type="submit"
-                className="flex items-center gap-2 px-5 py-2.5 border border-outline-variant rounded-lg text-sm font-semibold text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors"
-              >
-                <span className="material-symbols-outlined text-lg">logout</span>
-                Déconnexion
-              </button>
-            </form>
+            <LogoutButton />
           </div>
 
           {/* Données biométriques */}
