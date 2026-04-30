@@ -635,49 +635,246 @@ values
 
 
 insert into public.products (
-  name, brand, category_id, nutri_score, glycemic_index,
+  name, brand, image_url, category_id, nutri_score, glycemic_index,
   labels, compatible_with,
   energy_kcal, carbs_g, sugars_g, protein_g, fat_g, fiber_g, sodium_g
-)
-select
-  'Produit ' || gs,
-  (array['Candia','Soummam','Rouiba','Isla','Barilla','Local'])[floor(random()*6)+1],
-  (select id from public.product_categories order by random() limit 1),
-  (array['A','B','C','D','E'])[floor(random()*5)+1],
-  (random()*80)::int,
+) values
 
-  -- labels
-  case when random() > 0.7 then array['bio'] else array[]::text[] end,
+-- ── Épicerie salée ─────────────────────────────────────────────
+(
+  'Flocons d''Avoine Entiers Bio', 'Soummam',
+  'https://images.unsplash.com/photo-1490818153-adcd67e2eca0?w=600&q=80',
+  (select id from public.product_categories where slug = 'epicerie-salee'),
+  'A', 40, array['bio'], array['diabetic','healthy'],
+  375, 59, 1, 13, 7, 10, 0.01
+),
+(
+  'Quinoa Royal des Andes', 'BioNature',
+  'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&q=80',
+  (select id from public.product_categories where slug = 'epicerie-salee'),
+  'A', 35, array['bio','sans_gluten'], array['diabetic','celiac','vegetarian'],
+  368, 64, 0, 14, 6, 7, 0.01
+),
+(
+  'Lentilles Vertes Sèches', 'Bonne Cuisine',
+  'https://images.unsplash.com/photo-1547592166-523488f65f54?w=600&q=80',
+  (select id from public.product_categories where slug = 'epicerie-salee'),
+  'A', 25, array[]::text[], array['diabetic','vegetarian','healthy'],
+  353, 60, 2, 25, 1, 11, 0.01
+),
+(
+  'Pois Chiches Secs Bio', 'Terroir Algérien',
+  'https://images.unsplash.com/photo-1515543904379-3d757fe11d73?w=600&q=80',
+  (select id from public.product_categories where slug = 'epicerie-salee'),
+  'A', 28, array['bio'], array['diabetic','celiac','vegetarian'],
+  364, 61, 11, 19, 6, 17, 0.02
+),
+(
+  'Pâtes Complètes Spaghetti', 'Barilla',
+  'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600&q=80',
+  (select id from public.product_categories where slug = 'epicerie-salee'),
+  'B', 45, array[]::text[], array['healthy'],
+  352, 70, 3, 13, 2, 6, 0.01
+),
+(
+  'Riz Complet Bio', 'Riviana',
+  'https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=600&q=80',
+  (select id from public.product_categories where slug = 'epicerie-salee'),
+  'B', 55, array['bio'], array['celiac','healthy'],
+  362, 76, 0, 7, 3, 4, 0.01
+),
+(
+  'Sardines à l''Huile d''Olive', 'Seybouse',
+  'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80',
+  (select id from public.product_categories where slug = 'epicerie-salee'),
+  'A', 0, array[]::text[], array['diabetic','celiac','healthy'],
+  208, 0, 0, 25, 12, 0, 0.5
+),
+(
+  'Thon au Naturel', 'Seybouse',
+  'https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=600&q=80',
+  (select id from public.product_categories where slug = 'epicerie-salee'),
+  'A', 0, array[]::text[], array['diabetic','celiac','healthy'],
+  116, 0, 0, 26, 1, 0, 0.4
+),
+(
+  'Huile d''Olive Extra Vierge', 'Amlou',
+  'https://images.unsplash.com/photo-1474979078301-a3b8e69c8073?w=600&q=80',
+  (select id from public.product_categories where slug = 'epicerie-salee'),
+  'A', 0, array['bio'], array['diabetic','celiac','vegetarian'],
+  884, 0, 0, 0, 100, 0, 0
+),
+(
+  'Couscous Moyen Complet', 'Moulin de la Seybouse',
+  'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80',
+  (select id from public.product_categories where slug = 'epicerie-salee'),
+  'B', 52, array[]::text[], array['healthy'],
+  376, 72, 0, 13, 2, 5, 0.01
+),
+(
+  'Chocolat Noir 85% Cacao', 'Lindt',
+  'https://images.unsplash.com/photo-1511381939415-e44d8fb6dfd1?w=600&q=80',
+  (select id from public.product_categories where slug = 'epicerie-sucree'),
+  'C', 25, array[]::text[], array['diabetic','celiac'],
+  598, 15, 8, 12, 52, 9, 0.01
+),
+(
+  'Miel Naturel Pur de Jijel', 'Miels du Nord',
+  'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=600&q=80',
+  (select id from public.product_categories where slug = 'epicerie-sucree'),
+  'C', 65, array['bio'], array['healthy'],
+  304, 82, 82, 0, 0, 0, 0.01
+),
+(
+  'Dattes Deglet Nour Premium', 'Oasis du Sahara',
+  'https://images.unsplash.com/photo-1593571085688-f45820d6c4c8?w=600&q=80',
+  (select id from public.product_categories where slug = 'epicerie-sucree'),
+  'B', 50, array[]::text[], array['healthy','vegetarian'],
+  282, 75, 63, 2, 0, 7, 0.01
+),
+(
+  'Amandes Naturelles Grillées', 'Terroir Algérien',
+  'https://images.unsplash.com/photo-1508835277982-1c21bccdfded?w=600&q=80',
+  (select id from public.product_categories where slug = 'epicerie-sucree'),
+  'A', 15, array[]::text[], array['diabetic','celiac','vegetarian'],
+  579, 22, 5, 21, 50, 13, 0.01
+),
+(
+  'Beurre de Cacahuète Naturel', 'Natural Bio',
+  'https://images.unsplash.com/photo-1542990253-0b46a1de8b1e?w=600&q=80',
+  (select id from public.product_categories where slug = 'epicerie-sucree'),
+  'B', 30, array[]::text[], array['diabetic','vegetarian'],
+  588, 20, 9, 25, 50, 6, 0.01
+),
 
-  -- compatibilité
-  case 
-    when random() > 0.6 then array['diabetic']
-    when random() > 0.3 then array['celiac']
-    else array['healthy']
-  end,
+-- ── Produits laitiers ──────────────────────────────────────────
+(
+  'Yaourt Grec Nature 0%', 'Soummam',
+  'https://images.unsplash.com/photo-1488477181212-4328f3cffe36?w=600&q=80',
+  (select id from public.product_categories where slug = 'produits-laitiers'),
+  'A', 15, array[]::text[], array['diabetic','healthy'],
+  59, 4, 4, 10, 0, 0, 0.05
+),
+(
+  'Fromage Blanc 0% Allégé', 'Soummam',
+  'https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=600&q=80',
+  (select id from public.product_categories where slug = 'produits-laitiers'),
+  'A', 15, array[]::text[], array['diabetic','healthy'],
+  45, 4, 4, 7, 0, 0, 0.06
+),
+(
+  'Lait Entier Frais', 'Candia',
+  'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600&q=80',
+  (select id from public.product_categories where slug = 'produits-laitiers'),
+  'B', 31, array[]::text[], array['healthy'],
+  61, 5, 5, 3, 3, 0, 0.05
+),
+(
+  'Œufs Frais de Poules Élevées en Plein Air', 'Ferme du Soleil',
+  'https://images.unsplash.com/photo-1587486913049-53fc88980cfc?w=600&q=80',
+  (select id from public.product_categories where slug = 'produits-laitiers'),
+  'A', 0, array[]::text[], array['diabetic','celiac','healthy'],
+  155, 1, 1, 13, 11, 0, 0.12
+),
 
-  (random()*400 + 50),
-  (random()*80),
-  (random()*40),
-  (random()*30),
-  (random()*30),
-  (random()*10),
-  (random()*2)
+-- ── Boissons ───────────────────────────────────────────────────
+(
+  'Lait d''Amande Non Sucré', 'Rouiba',
+  'https://images.unsplash.com/photo-1529042355636-9b8c85e7bb8a?w=600&q=80',
+  (select id from public.product_categories where slug = 'boissons'),
+  'A', 30, array['sans_gluten'], array['diabetic','celiac','vegetarian'],
+  17, 1, 0, 1, 1, 0, 0.07
+),
+(
+  'Jus de Tomate Pur 100%', 'Rouiba',
+  'https://images.unsplash.com/photo-1592841200221-a6898f969ada?w=600&q=80',
+  (select id from public.product_categories where slug = 'boissons'),
+  'A', 30, array[]::text[], array['diabetic','healthy','vegetarian'],
+  17, 4, 3, 1, 0, 0, 0.02
+),
+(
+  'Eau Minérale Naturelle Rif', 'Rif',
+  'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=600&q=80',
+  (select id from public.product_categories where slug = 'boissons'),
+  'A', 0, array[]::text[], array['diabetic','celiac','healthy'],
+  0, 0, 0, 0, 0, 0, 0
+),
 
-from generate_series(1,1000) gs;
+-- ── Boulangerie ────────────────────────────────────────────────
+(
+  'Pain de Seigle Complet Bio', 'Boulangerie Artisanale',
+  'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80',
+  (select id from public.product_categories where slug = 'boulangerie'),
+  'B', 50, array['bio'], array['healthy','vegetarian'],
+  259, 48, 2, 9, 3, 6, 0.5
+),
+(
+  'Pain de Mie Complet Sans Sucre', 'Harry''s',
+  'https://images.unsplash.com/photo-1486887396153-fa416526c108?w=600&q=80',
+  (select id from public.product_categories where slug = 'boulangerie'),
+  'B', 52, array[]::text[], array['healthy'],
+  247, 44, 5, 9, 4, 6, 0.6
+),
+
+-- ── Fruits & Légumes ───────────────────────────────────────────
+(
+  'Carottes Bio 1kg', 'Terroir Algérien',
+  'https://images.unsplash.com/photo-1447175008436-054170c2e979?w=600&q=80',
+  (select id from public.product_categories where slug = 'fruits-legumes'),
+  'A', 35, array['bio'], array['diabetic','celiac','vegetarian','healthy'],
+  41, 10, 5, 1, 0, 3, 0.07
+),
+(
+  'Épinards Frais Sachet 500g', 'Primeur du Sahel',
+  'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=600&q=80',
+  (select id from public.product_categories where slug = 'fruits-legumes'),
+  'A', 15, array[]::text[], array['diabetic','celiac','vegetarian','healthy'],
+  23, 4, 0, 3, 0, 2, 0.08
+),
+(
+  'Avocat Hass Mûr', 'Primeur du Sahel',
+  'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=600&q=80',
+  (select id from public.product_categories where slug = 'fruits-legumes'),
+  'A', 10, array[]::text[], array['diabetic','celiac','vegetarian','healthy'],
+  160, 9, 1, 2, 15, 7, 0.01
+),
+(
+  'Tomates Cerises Bio 250g', 'Terroir Algérien',
+  'https://images.unsplash.com/photo-1592841200221-a6898f969ada?w=600&q=80',
+  (select id from public.product_categories where slug = 'fruits-legumes'),
+  'A', 15, array['bio'], array['diabetic','celiac','vegetarian','healthy'],
+  18, 4, 2, 1, 0, 1, 0.01
+),
+(
+  'Pommes Royale Gala 1kg', 'Vergers du Tell',
+  'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600&q=80',
+  (select id from public.product_categories where slug = 'fruits-legumes'),
+  'A', 36, array[]::text[], array['diabetic','celiac','vegetarian','healthy'],
+  52, 14, 10, 0, 0, 2, 0.01
+),
+(
+  'Bananes Bio 1kg', 'Primeur du Sahel',
+  'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=600&q=80',
+  (select id from public.product_categories where slug = 'fruits-legumes'),
+  'A', 51, array['bio'], array['healthy','vegetarian'],
+  89, 23, 12, 1, 0, 3, 0.01
+);
 
 
 
+-- Inventaire : chaque commerce propose une sélection de produits avec des prix réalistes
 insert into public.partner_inventory (partner_id, product_id, price, quantity, is_available)
 select
   p.id,
   pr.id,
-  (random()*400 + 50)::int,
-  (random()*50)::int,
-  (random() > 0.1)
+  -- Prix en DZD adapté au type de produit (énergie kcal comme approximation)
+  round((pr.energy_kcal * 0.8 + random() * 200 + 80)::numeric, 0),
+  (random() * 45 + 5)::int,
+  (random() > 0.08)   -- 92% des produits en stock
 from public.partners p
 cross join public.products pr
-limit 2000;
+-- Chaque commerce ne propose pas forcément tous les produits
+where random() > 0.15;  -- ~85% de couverture produit par commerce
 
 
 
