@@ -20,7 +20,7 @@ export async function getPartnerWithInventory(partnerId: string) {
       *,
       partner_inventory(
         id, price, currency, quantity, is_available, low_stock_threshold,
-        products(id, name, image_url, nutri_score, glycemic_index, labels)
+        products(id, name, image_url, nutri_score, glycemic_index, labels, product_categories(name))
       )
     `)
     .eq("id", partnerId)

@@ -1,138 +1,90 @@
--- ============================================================
--- SmartHeart — Schéma Supabase Complet
--- Basé sur les 11 écrans de l'application
--- ============================================================
+-- Extension UUID
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Extension UUID (activée par défaut sur Supabase)
-create extension if not exists "uuid-ossp";
-
-
--- ============================================================
--- 1. PROFILS UTILISATEURS
---    Étend auth.users de Supabase (déclenché à l'inscription)
--- ============================================================
-
-create table public.profiles (
-  id            uuid primary key references auth.users(id) on delete cascade,
-  email         text not null,
+-- ── 1. PROFILES ──────────────────────────────────────────────
+CREATE TABLE public.profiles (
+  id            uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email         text NOT NULL,
   full_name     text,
   avatar_url    text,
-  role          text not null default 'user'
-                  check (role in ('user', 'nutritionist', 'partner_admin', 'admin')),
-  created_at    timestamptz not null default now(),
-  updated_at    timestamptz not null default now()
+  role          text NOT NULL DEFAULT 'user'
+                  CHECK (role IN ('user','nutritionist','partner_admin','admin')),
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  updated_at    timestamptz NOT NULL DEFAULT now()
 );
 
--- Trigger : créer le profil automatiquement après inscription
-create or replace function public.handle_new_user()
-returns trigger language plpgsql security definer as $$
-begin
-  insert into public.profiles (id, email, full_name, avatar_url)
-  values (
-    new.id,
-    new.email,
-    new.raw_user_meta_data->>'full_name',
-    new.raw_user_meta_data->>'avatar_url'
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, full_name, avatar_url)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    NEW.raw_user_meta_data->>'full_name',
+    NEW.raw_user_meta_data->>'avatar_url'
   );
-  return new;
-end;
+  RETURN NEW;
+END;
 $$;
 
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute procedure public.handle_new_user();
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
-
--- ============================================================
--- 2. DONNÉES DE SANTÉ UTILISATEUR
---    Écrans : profile_setup_step_1, profile_setup_step_2
--- ============================================================
-
-create table public.user_health_profiles (
-  id              uuid primary key default uuid_generate_v4(),
-  user_id         uuid not null references public.profiles(id) on delete cascade,
-
-  -- Étape 1 : données biométriques
-  age             smallint check (age > 0 and age < 130),
-  weight_kg       numeric(5,2) check (weight_kg > 0),
-  height_cm       numeric(5,2) check (height_cm > 0),
-  activity_level  text check (activity_level in ('sedentary', 'moderate', 'active')),
-
-  -- Étape 2 : conditions médicales (tableau de valeurs)
-  health_conditions text[] default '{}',
-  -- ex : ['diabetic', 'celiac', 'healthy', 'vegetarian', 'vegan', 'keto']
-
-  -- Objectifs prioritaires
-  goals           text[] default '{}',
-  -- ex : ['manage_diabetes', 'lose_weight', 'avoid_allergens', 'maintain_weight']
-
-  -- Calculé à partir des biométriques
-  bmr_kcal        numeric(7,2),  -- métabolisme de base (TMB)
-  tdee_kcal       numeric(7,2),  -- dépense énergétique totale
-
-  is_complete     boolean not null default false,
-  created_at      timestamptz not null default now(),
-  updated_at      timestamptz not null default now(),
-
-  unique (user_id)
+-- ── 2. USER HEALTH PROFILES ───────────────────────────────────
+CREATE TABLE public.user_health_profiles (
+  id                uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id           uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  age               smallint CHECK (age > 0 AND age < 130),
+  weight_kg         numeric(5,2) CHECK (weight_kg > 0),
+  height_cm         numeric(5,2) CHECK (height_cm > 0),
+  activity_level    text CHECK (activity_level IN ('sedentary','moderate','active')),
+  health_conditions text[] DEFAULT '{}',
+  goals             text[] DEFAULT '{}',
+  bmr_kcal          numeric(7,2),
+  tdee_kcal         numeric(7,2),
+  is_complete       boolean NOT NULL DEFAULT false,
+  created_at        timestamptz NOT NULL DEFAULT now(),
+  updated_at        timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (user_id)
 );
 
-
--- ============================================================
--- 3. PARTENAIRES (COMMERCES)
---    Écrans : store_locator_map, product_detail, partner_dashboard
--- ============================================================
-
-create table public.partners (
-  id              uuid primary key default uuid_generate_v4(),
-  owner_id        uuid references public.profiles(id) on delete set null,
-
-  name            text not null,
-  description     text,
-  logo_url        text,
-  cover_url       text,
-
-  -- Adresse
-  address_line    text,
-  city            text,
-  postal_code     text,
-  country         text not null default 'DZ',
-
-  -- Géolocalisation (PostGIS-lite via lat/lng)
-  latitude        numeric(9,6),
-  longitude       numeric(9,6),
-
-  -- Infos opérationnelles
-  phone           text,
-  email           text,
-  website         text,
-  opening_hours   jsonb,
-  -- ex : {"monday":{"open":"08:00","close":"22:00"}, ...}
-
-  partner_code    text unique,         -- ID affiché dans le dashboard (ex : 8829-SH)
-  is_active       boolean not null default true,
-  is_verified     boolean not null default false,
-
-  created_at      timestamptz not null default now(),
-  updated_at      timestamptz not null default now()
+-- ── 3. PARTNERS ───────────────────────────────────────────────
+CREATE TABLE public.partners (
+  id            uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  owner_id      uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
+  name          text NOT NULL,
+  description   text,
+  logo_url      text,
+  cover_url     text,
+  address_line  text,
+  city          text,
+  postal_code   text,
+  country       text NOT NULL DEFAULT 'DZ',
+  latitude      numeric(9,6),
+  longitude     numeric(9,6),
+  phone         text,
+  email         text,
+  website       text,
+  opening_hours jsonb,
+  partner_code  text UNIQUE,
+  is_active     boolean NOT NULL DEFAULT true,
+  is_verified   boolean NOT NULL DEFAULT false,
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  updated_at    timestamptz NOT NULL DEFAULT now()
 );
 
-
--- ============================================================
--- 4. CATÉGORIES DE PRODUITS
--- ============================================================
-
-create table public.product_categories (
-  id          uuid primary key default uuid_generate_v4(),
-  name        text not null unique,
-  slug        text not null unique,
-  icon        text,          -- nom d'icône Material Symbols
-  parent_id   uuid references public.product_categories(id) on delete set null,
-  sort_order  smallint not null default 0
+-- ── 4. PRODUCT CATEGORIES ─────────────────────────────────────
+CREATE TABLE public.product_categories (
+  id          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name        text NOT NULL UNIQUE,
+  slug        text NOT NULL UNIQUE,
+  icon        text,
+  parent_id   uuid REFERENCES public.product_categories(id) ON DELETE SET NULL,
+  sort_order  smallint NOT NULL DEFAULT 0
 );
 
--- Données initiales
-insert into public.product_categories (name, slug, icon) values
+INSERT INTO public.product_categories (name, slug, icon) VALUES
   ('Épicerie salée',    'epicerie-salee',    'rice_bowl'),
   ('Produits laitiers', 'produits-laitiers', 'egg'),
   ('Boissons',          'boissons',          'local_drink'),
@@ -140,824 +92,1026 @@ insert into public.product_categories (name, slug, icon) values
   ('Fruits & Légumes',  'fruits-legumes',    'nutrition'),
   ('Épicerie sucrée',   'epicerie-sucree',   'cake');
 
-
--- ============================================================
--- 5. PRODUITS
---    Écrans : product_catalog, product_detail, home_dashboard_light
--- ============================================================
-
-create table public.products (
-  id                uuid primary key default uuid_generate_v4(),
-  category_id       uuid references public.product_categories(id) on delete set null,
-
-  -- Identité
-  name              text not null,
-  brand             text,
-  description       text,
-  barcode           text unique,
-  image_url         text,
-  image_urls        text[] default '{}',
-
-  -- Scores nutritionnels (écran product_detail)
-  nutri_score       char(1) check (nutri_score in ('A','B','C','D','E')),
-  glycemic_index    smallint check (glycemic_index >= 0 and glycemic_index <= 100),
-
-  -- Labels / certifications
-  labels            text[] default '{}',
-  -- ex : ['bio', 'vegan', 'sans_gluten', 'sans_lactose', 'halal']
-
-  -- Profils de santé compatibles
-  compatible_with   text[] default '{}',
-  -- ex : ['diabetic', 'celiac', 'vegetarian']
-
-  -- Tableau nutritionnel (pour 100g)
-  energy_kcal       numeric(7,2),
-  carbs_g           numeric(6,2),
-  sugars_g          numeric(6,2),
-  fat_g             numeric(6,2),
-  saturated_fat_g   numeric(6,2),
-  fiber_g           numeric(6,2),
-  protein_g         numeric(6,2),
-  sodium_g          numeric(6,2),
-
-  -- Méta
-  is_published      boolean not null default true,
-  created_at        timestamptz not null default now(),
-  updated_at        timestamptz not null default now()
+-- ── 5. PRODUCTS ───────────────────────────────────────────────
+CREATE TABLE public.products (
+  id               uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  category_id      uuid REFERENCES public.product_categories(id) ON DELETE SET NULL,
+  name             text NOT NULL,
+  brand            text,
+  description      text,
+  barcode          text UNIQUE,
+  image_url        text,
+  image_urls       text[] DEFAULT '{}',
+  nutri_score      char(1) CHECK (nutri_score IN ('A','B','C','D','E')),
+  glycemic_index   smallint CHECK (glycemic_index >= 0 AND glycemic_index <= 100),
+  labels           text[] DEFAULT '{}',
+  compatible_with  text[] DEFAULT '{}',
+  energy_kcal      numeric(7,2),
+  carbs_g          numeric(6,2),
+  sugars_g         numeric(6,2),
+  fat_g            numeric(6,2),
+  saturated_fat_g  numeric(6,2),
+  fiber_g          numeric(6,2),
+  protein_g        numeric(6,2),
+  sodium_g         numeric(6,2),
+  is_published     boolean NOT NULL DEFAULT true,
+  created_at       timestamptz NOT NULL DEFAULT now(),
+  updated_at       timestamptz NOT NULL DEFAULT now()
 );
 
--- Index sur glycemic_index et nutri_score pour les filtres du catalog
-create index idx_products_gi      on public.products(glycemic_index);
-create index idx_products_score   on public.products(nutri_score);
-create index idx_products_labels  on public.products using gin(labels);
-create index idx_products_compat  on public.products using gin(compatible_with);
+CREATE INDEX idx_products_gi     ON public.products(glycemic_index);
+CREATE INDEX idx_products_score  ON public.products(nutri_score);
+CREATE INDEX idx_products_labels ON public.products USING gin(labels);
+CREATE INDEX idx_products_compat ON public.products USING gin(compatible_with);
 
-
--- ============================================================
--- 6. INVENTAIRE PARTENAIRE ↔ PRODUIT
---    Écrans : product_detail (tableau "Où acheter"), store_locator_map
--- ============================================================
-
-create table public.partner_inventory (
-  id              uuid primary key default uuid_generate_v4(),
-  partner_id      uuid not null references public.partners(id) on delete cascade,
-  product_id      uuid not null references public.products(id) on delete cascade,
-
-  price           numeric(10,2) not null check (price >= 0),
-  currency        char(3) not null default 'DZD',
-  quantity        integer not null default 0 check (quantity >= 0),
-  is_available    boolean not null default true,
-
-  -- Seuil d'alerte stock faible (écran partner_dashboard)
-  low_stock_threshold integer not null default 5,
-
-  updated_at      timestamptz not null default now(),
-
-  unique (partner_id, product_id)
+-- ── 6. PARTNER INVENTORY ─────────────────────────────────────
+CREATE TABLE public.partner_inventory (
+  id                   uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  partner_id           uuid NOT NULL REFERENCES public.partners(id) ON DELETE CASCADE,
+  product_id           uuid NOT NULL REFERENCES public.products(id) ON DELETE CASCADE,
+  price                numeric(10,2) NOT NULL CHECK (price >= 0),
+  currency             char(3) NOT NULL DEFAULT 'DZD',
+  quantity             integer NOT NULL DEFAULT 0 CHECK (quantity >= 0),
+  is_available         boolean NOT NULL DEFAULT true,
+  low_stock_threshold  integer NOT NULL DEFAULT 5,
+  updated_at           timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (partner_id, product_id)
 );
 
-create index idx_inventory_partner on public.partner_inventory(partner_id);
-create index idx_inventory_product on public.partner_inventory(product_id);
-create index idx_inventory_avail   on public.partner_inventory(is_available);
+CREATE INDEX idx_inventory_partner ON public.partner_inventory(partner_id);
+CREATE INDEX idx_inventory_product ON public.partner_inventory(product_id);
+CREATE INDEX idx_inventory_avail   ON public.partner_inventory(is_available);
 
-
--- ============================================================
--- 7. RECETTES
---    Écrans : recipe_recommender, home_dashboard_light/dark
--- ============================================================
-
-create table public.recipes (
-  id              uuid primary key default uuid_generate_v4(),
-  created_by      uuid references public.profiles(id) on delete set null,
-
-  title           text not null,
+-- ── 7. RECIPES ────────────────────────────────────────────────
+CREATE TABLE public.recipes (
+  id              uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  created_by      uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
+  title           text NOT NULL,
   description     text,
   image_url       text,
-
-  -- Méta cuisine
-  prep_time_min   smallint check (prep_time_min >= 0),
-  cook_time_min   smallint check (cook_time_min >= 0),
-  servings        smallint check (servings > 0) default 2,
-  difficulty      text check (difficulty in ('easy', 'medium', 'hard')) default 'medium',
-
-  -- Nutritionnel (par portion)
+  prep_time_min   smallint CHECK (prep_time_min >= 0),
+  cook_time_min   smallint CHECK (cook_time_min >= 0),
+  servings        smallint CHECK (servings > 0) DEFAULT 2,
+  difficulty      text CHECK (difficulty IN ('easy','medium','hard')) DEFAULT 'medium',
   calories_kcal   numeric(7,2),
-  price_estimate  numeric(6,2),    -- budget estimé (écran recipe_recommender)
-
-  -- Filtres IA (écran recipe_recommender)
-  diet_tags       text[] default '{}',
-  -- ex : ['faible_ig', 'sans_gluten', 'vegetalien', 'keto', 'premium', 'eco']
-
-  compatible_with text[] default '{}',
-
-  is_published    boolean not null default true,
-  is_featured     boolean not null default false,
-
-  created_at      timestamptz not null default now(),
-  updated_at      timestamptz not null default now()
+  price_estimate  numeric(6,2),
+  diet_tags       text[] DEFAULT '{}',
+  compatible_with text[] DEFAULT '{}',
+  is_published    boolean NOT NULL DEFAULT true,
+  is_featured     boolean NOT NULL DEFAULT false,
+  created_at      timestamptz NOT NULL DEFAULT now(),
+  updated_at      timestamptz NOT NULL DEFAULT now()
 );
 
-create index idx_recipes_tags   on public.recipes using gin(diet_tags);
-create index idx_recipes_compat on public.recipes using gin(compatible_with);
+CREATE INDEX idx_recipes_tags   ON public.recipes USING gin(diet_tags);
+CREATE INDEX idx_recipes_compat ON public.recipes USING gin(compatible_with);
 
-
--- ============================================================
--- 8. INGRÉDIENTS DE RECETTE
---    Écran : recipe_recommender (drawer détail)
--- ============================================================
-
-create table public.recipe_ingredients (
-  id          uuid primary key default uuid_generate_v4(),
-  recipe_id   uuid not null references public.recipes(id) on delete cascade,
-  product_id  uuid references public.products(id) on delete set null,
-
-  name        text not null,           -- nom affiché (ex: "Blanc de poulet grillé")
-  quantity    text not null,           -- ex : "150g", "1/2", "2 c.s."
-  sort_order  smallint not null default 0
+-- ── 8. RECIPE INGREDIENTS ────────────────────────────────────
+CREATE TABLE public.recipe_ingredients (
+  id          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  recipe_id   uuid NOT NULL REFERENCES public.recipes(id) ON DELETE CASCADE,
+  product_id  uuid REFERENCES public.products(id) ON DELETE SET NULL,
+  name        text NOT NULL,
+  quantity    text NOT NULL,
+  sort_order  smallint NOT NULL DEFAULT 0
 );
 
-create index idx_recipe_ingredients_recipe on public.recipe_ingredients(recipe_id);
+CREATE INDEX idx_recipe_ingredients_recipe ON public.recipe_ingredients(recipe_id);
 
-
--- ============================================================
--- 9. ÉTAPES DE RECETTE
---    Écran : recipe_recommender (drawer détail — Préparation)
--- ============================================================
-
-create table public.recipe_steps (
-  id          uuid primary key default uuid_generate_v4(),
-  recipe_id   uuid not null references public.recipes(id) on delete cascade,
-  step_number smallint not null,
-  instruction text not null,
-
-  unique (recipe_id, step_number)
+-- ── 9. RECIPE STEPS ──────────────────────────────────────────
+CREATE TABLE public.recipe_steps (
+  id          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  recipe_id   uuid NOT NULL REFERENCES public.recipes(id) ON DELETE CASCADE,
+  step_number smallint NOT NULL,
+  instruction text NOT NULL,
+  UNIQUE (recipe_id, step_number)
 );
 
-
--- ============================================================
--- 10. ARTICLES ÉDUCATIFS
---     Écran : education_hub
--- ============================================================
-
-create table public.articles (
-  id            uuid primary key default uuid_generate_v4(),
-  author_id     uuid references public.profiles(id) on delete set null,
-
-  title         text not null,
-  slug          text not null unique,
+-- ── 10. ARTICLES ─────────────────────────────────────────────
+CREATE TABLE public.articles (
+  id            uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  author_id     uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
+  title         text NOT NULL,
+  slug          text NOT NULL UNIQUE,
   excerpt       text,
-  content       text,                  -- Markdown / HTML
+  content       text,
   image_url     text,
-
-  category      text not null default 'general',
-  -- ex : 'glycemic_index', 'labels', 'fiber', 'fats', 'general'
-
-  read_time_min smallint check (read_time_min > 0),
-  difficulty    text check (difficulty in ('beginner', 'intermediate', 'advanced'))
-                  default 'beginner',
-
-  tags          text[] default '{}',
-
-  is_published  boolean not null default true,
+  category      text NOT NULL DEFAULT 'general',
+  read_time_min smallint CHECK (read_time_min > 0),
+  difficulty    text CHECK (difficulty IN ('beginner','intermediate','advanced')) DEFAULT 'beginner',
+  tags          text[] DEFAULT '{}',
+  is_published  boolean NOT NULL DEFAULT true,
   published_at  timestamptz,
-
-  created_at    timestamptz not null default now(),
-  updated_at    timestamptz not null default now()
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  updated_at    timestamptz NOT NULL DEFAULT now()
 );
 
-create index idx_articles_category on public.articles(category);
-create index idx_articles_tags     on public.articles using gin(tags);
+CREATE INDEX idx_articles_category ON public.articles(category);
+CREATE INDEX idx_articles_tags     ON public.articles USING gin(tags);
 
-
--- ============================================================
--- 11. QUIZ (Écran education_hub — "Prêt pour un quiz ?")
--- ============================================================
-
-create table public.quizzes (
-  id          uuid primary key default uuid_generate_v4(),
-  article_id  uuid references public.articles(id) on delete cascade,
-  title       text not null,
-  created_at  timestamptz not null default now()
+-- ── 11. QUIZZES ───────────────────────────────────────────────
+CREATE TABLE public.quizzes (
+  id          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  article_id  uuid REFERENCES public.articles(id) ON DELETE CASCADE,
+  title       text NOT NULL,
+  created_at  timestamptz NOT NULL DEFAULT now()
 );
 
-create table public.quiz_questions (
-  id          uuid primary key default uuid_generate_v4(),
-  quiz_id     uuid not null references public.quizzes(id) on delete cascade,
-  question    text not null,
-  sort_order  smallint not null default 0
+CREATE TABLE public.quiz_questions (
+  id          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  quiz_id     uuid NOT NULL REFERENCES public.quizzes(id) ON DELETE CASCADE,
+  question    text NOT NULL,
+  sort_order  smallint NOT NULL DEFAULT 0
 );
 
-create table public.quiz_answers (
-  id           uuid primary key default uuid_generate_v4(),
-  question_id  uuid not null references public.quiz_questions(id) on delete cascade,
-  answer_text  text not null,
-  is_correct   boolean not null default false,
+CREATE TABLE public.quiz_answers (
+  id           uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  question_id  uuid NOT NULL REFERENCES public.quiz_questions(id) ON DELETE CASCADE,
+  answer_text  text NOT NULL,
+  is_correct   boolean NOT NULL DEFAULT false,
   explanation  text,
-  sort_order   smallint not null default 0
+  sort_order   smallint NOT NULL DEFAULT 0
 );
 
-create table public.user_quiz_results (
-  id            uuid primary key default uuid_generate_v4(),
-  user_id       uuid not null references public.profiles(id) on delete cascade,
-  quiz_id       uuid not null references public.quizzes(id) on delete cascade,
-  score         smallint not null,
-  max_score     smallint not null,
-  completed_at  timestamptz not null default now()
+CREATE TABLE public.user_quiz_results (
+  id            uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id       uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  quiz_id       uuid NOT NULL REFERENCES public.quizzes(id) ON DELETE CASCADE,
+  score         smallint NOT NULL,
+  max_score     smallint NOT NULL,
+  completed_at  timestamptz NOT NULL DEFAULT now()
 );
 
-
--- ============================================================
--- 12. FAVORIS UTILISATEUR
---     Écrans : product_catalog (cœur), recipe_recommender (cœur)
--- ============================================================
-
-create table public.user_saved_products (
-  user_id     uuid not null references public.profiles(id) on delete cascade,
-  product_id  uuid not null references public.products(id) on delete cascade,
-  saved_at    timestamptz not null default now(),
-  primary key (user_id, product_id)
+-- ── 12. FAVORIS ───────────────────────────────────────────────
+CREATE TABLE public.user_saved_products (
+  user_id     uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  product_id  uuid NOT NULL REFERENCES public.products(id) ON DELETE CASCADE,
+  saved_at    timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (user_id, product_id)
 );
 
-create table public.user_saved_recipes (
-  user_id    uuid not null references public.profiles(id) on delete cascade,
-  recipe_id  uuid not null references public.recipes(id) on delete cascade,
-  saved_at   timestamptz not null default now(),
-  primary key (user_id, recipe_id)
+CREATE TABLE public.user_saved_recipes (
+  user_id    uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  recipe_id  uuid NOT NULL REFERENCES public.recipes(id) ON DELETE CASCADE,
+  saved_at   timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (user_id, recipe_id)
 );
 
-create table public.user_read_articles (
-  user_id     uuid not null references public.profiles(id) on delete cascade,
-  article_id  uuid not null references public.articles(id) on delete cascade,
-  read_at     timestamptz not null default now(),
-  primary key (user_id, article_id)
+CREATE TABLE public.user_read_articles (
+  user_id     uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  article_id  uuid NOT NULL REFERENCES public.articles(id) ON DELETE CASCADE,
+  read_at     timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (user_id, article_id)
 );
 
-
--- ============================================================
--- 13. LISTES DE COURSES
---     Écran : product_catalog (FAB "Voir ma liste")
--- ============================================================
-
-create table public.shopping_lists (
-  id          uuid primary key default uuid_generate_v4(),
-  user_id     uuid not null references public.profiles(id) on delete cascade,
-  name        text not null default 'Ma liste',
-  is_active   boolean not null default true,
-  created_at  timestamptz not null default now()
+-- ── 13. SHOPPING LISTS ────────────────────────────────────────
+CREATE TABLE public.shopping_lists (
+  id          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id     uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  name        text NOT NULL DEFAULT 'Ma liste',
+  is_active   boolean NOT NULL DEFAULT true,
+  created_at  timestamptz NOT NULL DEFAULT now()
 );
 
-create table public.shopping_list_items (
-  id               uuid primary key default uuid_generate_v4(),
-  shopping_list_id uuid not null references public.shopping_lists(id) on delete cascade,
-  product_id       uuid references public.products(id) on delete set null,
-  product_name     text not null,     -- dénormalisé en cas de suppression produit
-  quantity         smallint not null default 1,
-  is_checked       boolean not null default false,
-  added_at         timestamptz not null default now()
+CREATE TABLE public.shopping_list_items (
+  id               uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  shopping_list_id uuid NOT NULL REFERENCES public.shopping_lists(id) ON DELETE CASCADE,
+  product_id       uuid REFERENCES public.products(id) ON DELETE SET NULL,
+  product_name     text NOT NULL,
+  quantity         smallint NOT NULL DEFAULT 1,
+  is_checked       boolean NOT NULL DEFAULT false,
+  added_at         timestamptz NOT NULL DEFAULT now()
 );
 
-
--- ============================================================
--- 14. ALERTES PATIENTS (Écran home_dashboard_dark)
---     Fonctionnalité nutritionniste / médecin
--- ============================================================
-
-create table public.patient_alerts (
-  id              uuid primary key default uuid_generate_v4(),
-  nutritionist_id uuid not null references public.profiles(id) on delete cascade,
-  patient_id      uuid not null references public.profiles(id) on delete cascade,
-
-  type            text not null check (type in ('warning', 'success', 'info')),
-  title           text not null,
-  message         text not null,
-
-  is_read         boolean not null default false,
-  created_at      timestamptz not null default now()
+-- ── 14. PATIENT ALERTS ────────────────────────────────────────
+CREATE TABLE public.patient_alerts (
+  id              uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  nutritionist_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  patient_id      uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  type            text NOT NULL CHECK (type IN ('warning','success','info')),
+  title           text NOT NULL,
+  message         text NOT NULL,
+  is_read         boolean NOT NULL DEFAULT false,
+  created_at      timestamptz NOT NULL DEFAULT now()
 );
 
-create index idx_alerts_nutritionist on public.patient_alerts(nutritionist_id, is_read);
+CREATE INDEX idx_alerts_nutritionist ON public.patient_alerts(nutritionist_id, is_read);
 
-
--- ============================================================
--- 15. ANALYTICS PARTENAIRE (Écran partner_dashboard)
---     Vues de produits quotidiennes (dénormalisé pour perf)
--- ============================================================
-
-create table public.partner_product_views (
-  id          uuid primary key default uuid_generate_v4(),
-  partner_id  uuid not null references public.partners(id) on delete cascade,
-  product_id  uuid not null references public.products(id) on delete cascade,
-  user_id     uuid references public.profiles(id) on delete set null,
-  viewed_at   timestamptz not null default now()
+-- ── 15. ANALYTICS ─────────────────────────────────────────────
+CREATE TABLE public.partner_product_views (
+  id          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  partner_id  uuid NOT NULL REFERENCES public.partners(id) ON DELETE CASCADE,
+  product_id  uuid NOT NULL REFERENCES public.products(id) ON DELETE CASCADE,
+  user_id     uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
+  viewed_at   timestamptz NOT NULL DEFAULT now()
 );
 
-create index idx_views_partner on public.partner_product_views(partner_id, viewed_at desc);
+CREATE INDEX idx_views_partner ON public.partner_product_views(partner_id, viewed_at DESC);
 
--- Vue agrégée pour le graphique "Vues des produits" (7 derniers jours)
-create or replace view public.partner_daily_views as
-  select
+CREATE OR REPLACE VIEW public.partner_daily_views AS
+  SELECT
     partner_id,
-    date_trunc('day', viewed_at) as day,
-    count(*) as total_views
-  from public.partner_product_views
-  where viewed_at >= now() - interval '30 days'
-  group by partner_id, day
-  order by day;
+    date_trunc('day', viewed_at) AS day,
+    count(*) AS total_views
+  FROM public.partner_product_views
+  WHERE viewed_at >= now() - INTERVAL '30 days'
+  GROUP BY partner_id, day
+  ORDER BY day;
 
--- Vue pour les produits les plus recherchés
-create table public.product_search_logs (
-  id          uuid primary key default uuid_generate_v4(),
-  partner_id  uuid references public.partners(id) on delete cascade,
-  product_id  uuid references public.products(id) on delete cascade,
+CREATE TABLE public.product_search_logs (
+  id          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  partner_id  uuid REFERENCES public.partners(id) ON DELETE CASCADE,
+  product_id  uuid REFERENCES public.products(id) ON DELETE CASCADE,
   search_term text,
-  user_id     uuid references public.profiles(id) on delete set null,
-  searched_at timestamptz not null default now()
+  user_id     uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
+  searched_at timestamptz NOT NULL DEFAULT now()
 );
 
-
--- ============================================================
--- 16. UPDATED_AT AUTOMATIQUE
---     Trigger générique pour toutes les tables concernées
--- ============================================================
-
-create or replace function public.set_updated_at()
-returns trigger language plpgsql as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
+-- ── 16. UPDATED_AT TRIGGER ────────────────────────────────────
+CREATE OR REPLACE FUNCTION public.set_updated_at()
+RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
 $$;
 
-create trigger set_updated_at before update on public.profiles
-  for each row execute procedure public.set_updated_at();
+CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.profiles
+  FOR EACH ROW EXECUTE PROCEDURE public.set_updated_at();
+CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.user_health_profiles
+  FOR EACH ROW EXECUTE PROCEDURE public.set_updated_at();
+CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.partners
+  FOR EACH ROW EXECUTE PROCEDURE public.set_updated_at();
+CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.products
+  FOR EACH ROW EXECUTE PROCEDURE public.set_updated_at();
+CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.partner_inventory
+  FOR EACH ROW EXECUTE PROCEDURE public.set_updated_at();
+CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.recipes
+  FOR EACH ROW EXECUTE PROCEDURE public.set_updated_at();
+CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.articles
+  FOR EACH ROW EXECUTE PROCEDURE public.set_updated_at();
 
-create trigger set_updated_at before update on public.user_health_profiles
-  for each row execute procedure public.set_updated_at();
+-- ── 17. RLS ───────────────────────────────────────────────────
+ALTER TABLE public.profiles             ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_health_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.partners             ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.partner_inventory    ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.products             ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.product_categories   ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.recipes              ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.recipe_ingredients   ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.recipe_steps         ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.articles             ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_saved_products  ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_saved_recipes   ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_read_articles   ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.shopping_lists       ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.shopping_list_items  ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.patient_alerts       ENABLE ROW LEVEL SECURITY;
 
-create trigger set_updated_at before update on public.partners
-  for each row execute procedure public.set_updated_at();
+CREATE POLICY "Lecture publique des profils"
+  ON public.profiles FOR SELECT USING (true);
+CREATE POLICY "Modification de son propre profil"
+  ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
-create trigger set_updated_at before update on public.products
-  for each row execute procedure public.set_updated_at();
+CREATE POLICY "Accès à son propre profil santé"
+  ON public.user_health_profiles FOR ALL USING (auth.uid() = user_id);
 
-create trigger set_updated_at before update on public.partner_inventory
-  for each row execute procedure public.set_updated_at();
+CREATE POLICY "Lecture publique des produits"
+  ON public.products FOR SELECT USING (is_published = true);
+CREATE POLICY "Lecture publique des catégories"
+  ON public.product_categories FOR SELECT USING (true);
 
-create trigger set_updated_at before update on public.recipes
-  for each row execute procedure public.set_updated_at();
+CREATE POLICY "Lecture publique des recettes publiées"
+  ON public.recipes FOR SELECT USING (is_published = true);
+CREATE POLICY "Lecture publique des ingrédients"
+  ON public.recipe_ingredients FOR SELECT USING (true);
+CREATE POLICY "Lecture publique des étapes"
+  ON public.recipe_steps FOR SELECT USING (true);
 
-create trigger set_updated_at before update on public.articles
-  for each row execute procedure public.set_updated_at();
+CREATE POLICY "Lecture publique des articles publiés"
+  ON public.articles FOR SELECT USING (is_published = true);
 
+CREATE POLICY "Gestion de ses produits favoris"
+  ON public.user_saved_products FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Gestion de ses recettes favorites"
+  ON public.user_saved_recipes FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Gestion de ses articles lus"
+  ON public.user_read_articles FOR ALL USING (auth.uid() = user_id);
 
--- ============================================================
--- 17. ROW LEVEL SECURITY (RLS)
--- ============================================================
+CREATE POLICY "Gestion de ses listes de courses"
+  ON public.shopping_lists FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Gestion des items de ses listes"
+  ON public.shopping_list_items FOR ALL
+  USING (EXISTS (
+    SELECT 1 FROM public.shopping_lists sl
+    WHERE sl.id = shopping_list_id AND sl.user_id = auth.uid()
+  ));
 
--- Activer RLS sur toutes les tables publiques
-alter table public.profiles                enable row level security;
-alter table public.user_health_profiles    enable row level security;
-alter table public.partners                enable row level security;
-alter table public.partner_inventory       enable row level security;
-alter table public.products                enable row level security;
-alter table public.product_categories      enable row level security;
-alter table public.recipes                 enable row level security;
-alter table public.recipe_ingredients      enable row level security;
-alter table public.recipe_steps            enable row level security;
-alter table public.articles                enable row level security;
-alter table public.user_saved_products     enable row level security;
-alter table public.user_saved_recipes      enable row level security;
-alter table public.user_read_articles      enable row level security;
-alter table public.shopping_lists          enable row level security;
-alter table public.shopping_list_items     enable row level security;
-alter table public.patient_alerts          enable row level security;
+CREATE POLICY "Lecture publique des partenaires actifs"
+  ON public.partners FOR SELECT USING (is_active = true);
+CREATE POLICY "Modification par le propriétaire du commerce"
+  ON public.partners FOR UPDATE USING (auth.uid() = owner_id);
 
--- ── profiles ──────────────────────────────────────────────────
-create policy "Lecture publique des profils"
-  on public.profiles for select using (true);
+CREATE POLICY "Lecture publique de l'inventaire disponible"
+  ON public.partner_inventory FOR SELECT USING (is_available = true);
+CREATE POLICY "Gestion de l'inventaire par le partenaire"
+  ON public.partner_inventory FOR ALL
+  USING (EXISTS (
+    SELECT 1 FROM public.partners p
+    WHERE p.id = partner_id AND p.owner_id = auth.uid()
+  ));
 
-create policy "Modification de son propre profil"
-  on public.profiles for update using (auth.uid() = id);
+CREATE POLICY "Alertes visibles par le nutritionniste et le patient"
+  ON public.patient_alerts FOR SELECT
+  USING (auth.uid() = nutritionist_id OR auth.uid() = patient_id);
+CREATE POLICY "Création d'alertes par le nutritionniste"
+  ON public.patient_alerts FOR INSERT
+  WITH CHECK (auth.uid() = nutritionist_id);
 
--- ── user_health_profiles ─────────────────────────────────────
-create policy "Accès à son propre profil santé"
-  on public.user_health_profiles for all
-  using (auth.uid() = user_id);
+-- ── 18. DONNÉES INITIALES ─────────────────────────────────────
 
--- ── products & categories ────────────────────────────────────
-create policy "Lecture publique des produits"
-  on public.products for select using (is_published = true);
-
-create policy "Lecture publique des catégories"
-  on public.product_categories for select using (true);
-
--- ── recipes ──────────────────────────────────────────────────
-create policy "Lecture publique des recettes publiées"
-  on public.recipes for select using (is_published = true);
-
-create policy "Lecture publique des ingrédients"
-  on public.recipe_ingredients for select using (true);
-
-create policy "Lecture publique des étapes"
-  on public.recipe_steps for select using (true);
-
--- ── articles ─────────────────────────────────────────────────
-create policy "Lecture publique des articles publiés"
-  on public.articles for select using (is_published = true);
-
--- ── user_saved_products ──────────────────────────────────────
-create policy "Gestion de ses produits favoris"
-  on public.user_saved_products for all
-  using (auth.uid() = user_id);
-
--- ── user_saved_recipes ───────────────────────────────────────
-create policy "Gestion de ses recettes favorites"
-  on public.user_saved_recipes for all
-  using (auth.uid() = user_id);
-
--- ── user_read_articles ───────────────────────────────────────
-create policy "Gestion de ses articles lus"
-  on public.user_read_articles for all
-  using (auth.uid() = user_id);
-
--- ── shopping_lists ───────────────────────────────────────────
-create policy "Gestion de ses listes de courses"
-  on public.shopping_lists for all
-  using (auth.uid() = user_id);
-
-create policy "Gestion des items de ses listes"
-  on public.shopping_list_items for all
-  using (
-    exists (
-      select 1 from public.shopping_lists sl
-      where sl.id = shopping_list_id and sl.user_id = auth.uid()
-    )
-  );
-
--- ── partners ─────────────────────────────────────────────────
-create policy "Lecture publique des partenaires actifs"
-  on public.partners for select using (is_active = true);
-
-create policy "Modification par le propriétaire du commerce"
-  on public.partners for update
-  using (auth.uid() = owner_id);
-
--- ── partner_inventory ────────────────────────────────────────
-create policy "Lecture publique de l'inventaire disponible"
-  on public.partner_inventory for select using (is_available = true);
-
-create policy "Gestion de l'inventaire par le partenaire"
-  on public.partner_inventory for all
-  using (
-    exists (
-      select 1 from public.partners p
-      where p.id = partner_id and p.owner_id = auth.uid()
-    )
-  );
-
--- ── patient_alerts ───────────────────────────────────────────
-create policy "Alertes visibles par le nutritionniste et le patient"
-  on public.patient_alerts for select
-  using (auth.uid() = nutritionist_id or auth.uid() = patient_id);
-
-create policy "Création d'alertes par le nutritionniste"
-  on public.patient_alerts for insert
-  with check (auth.uid() = nutritionist_id);
-
-
-insert into public.partners (name, description, city, address_line, latitude, longitude, is_verified)
-values
-('UNO Hypermarché Annaba', 'Grande surface alimentaire', 'Annaba', 'Centre Ville', 36.9001, 7.7662, true),
-('Ardis Market', 'Supermarché moderne', 'Annaba', 'El Bouni', 36.8525, 7.7203, true),
-('Supérette El Hadjar', 'Commerce de proximité', 'Annaba', 'El Hadjar', 36.8035, 7.7368, true),
-('Bio Santé Store', 'Produits bio & sans gluten', 'Annaba', 'Valmascort', 36.9050, 7.7700, true),
-('Pharma Nutrition+', 'Produits diabétiques spécialisés', 'Annaba', 'Sidi Amar', 36.8200, 7.7300, true);
-
-
-insert into public.products (
-  name, brand, image_url, category_id, nutri_score, glycemic_index,
-  labels, compatible_with,
-  energy_kcal, carbs_g, sugars_g, protein_g, fat_g, fiber_g, sodium_g
-) values
-
--- ── Épicerie salée ─────────────────────────────────────────────
+-- 4 articles pour la page /learn
+INSERT INTO public.articles
+  (title, slug, excerpt, content, category, read_time_min, difficulty, tags, is_published, published_at)
+VALUES
 (
-  'Flocons d''Avoine Entiers Bio', 'Soummam',
-  'https://images.unsplash.com/photo-1490818153-adcd67e2eca0?w=600&q=80',
-  (select id from public.product_categories where slug = 'epicerie-salee'),
-  'A', 40, array['bio'], array['diabetic','healthy'],
-  375, 59, 1, 13, 7, 10, 0.01
+  'Indice Glycémique : Le Guide',
+  'indice-glycemique-guide',
+  'Comprendre l''indice glycémique pour mieux gérer sa glycémie au quotidien.',
+  '## L''Indice Glycémique (IG)
+
+L''IG classe les aliments selon leur effet sur la glycémie.
+
+### Les 3 niveaux
+- **IG bas (< 55)** : lentilles, pois chiches, pommes
+- **IG moyen (55–70)** : riz basmati, pain complet
+- **IG élevé (> 70)** : pain blanc, sodas
+
+### Conseil
+Combinez toujours un aliment à IG élevé avec des fibres ou des protéines.',
+  'glycemic_index', 8, 'beginner',
+  ARRAY['ig','diabete','glycemie'], true, now()
 ),
 (
-  'Quinoa Royal des Andes', 'BioNature',
-  'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&q=80',
-  (select id from public.product_categories where slug = 'epicerie-salee'),
-  'A', 35, array['bio','sans_gluten'], array['diabetic','celiac','vegetarian'],
-  368, 64, 0, 14, 6, 7, 0.01
-),
-(
-  'Lentilles Vertes Sèches', 'Bonne Cuisine',
-  'https://images.unsplash.com/photo-1547592166-523488f65f54?w=600&q=80',
-  (select id from public.product_categories where slug = 'epicerie-salee'),
-  'A', 25, array[]::text[], array['diabetic','vegetarian','healthy'],
-  353, 60, 2, 25, 1, 11, 0.01
-),
-(
-  'Pois Chiches Secs Bio', 'Terroir Algérien',
-  'https://images.unsplash.com/photo-1515543904379-3d757fe11d73?w=600&q=80',
-  (select id from public.product_categories where slug = 'epicerie-salee'),
-  'A', 28, array['bio'], array['diabetic','celiac','vegetarian'],
-  364, 61, 11, 19, 6, 17, 0.02
-),
-(
-  'Pâtes Complètes Spaghetti', 'Barilla',
-  'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600&q=80',
-  (select id from public.product_categories where slug = 'epicerie-salee'),
-  'B', 45, array[]::text[], array['healthy'],
-  352, 70, 3, 13, 2, 6, 0.01
-),
-(
-  'Riz Complet Bio', 'Riviana',
-  'https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=600&q=80',
-  (select id from public.product_categories where slug = 'epicerie-salee'),
-  'B', 55, array['bio'], array['celiac','healthy'],
-  362, 76, 0, 7, 3, 4, 0.01
-),
-(
-  'Sardines à l''Huile d''Olive', 'Seybouse',
-  'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80',
-  (select id from public.product_categories where slug = 'epicerie-salee'),
-  'A', 0, array[]::text[], array['diabetic','celiac','healthy'],
-  208, 0, 0, 25, 12, 0, 0.5
-),
-(
-  'Thon au Naturel', 'Seybouse',
-  'https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=600&q=80',
-  (select id from public.product_categories where slug = 'epicerie-salee'),
-  'A', 0, array[]::text[], array['diabetic','celiac','healthy'],
-  116, 0, 0, 26, 1, 0, 0.4
-),
-(
-  'Huile d''Olive Extra Vierge', 'Amlou',
-  'https://images.unsplash.com/photo-1474979078301-a3b8e69c8073?w=600&q=80',
-  (select id from public.product_categories where slug = 'epicerie-salee'),
-  'A', 0, array['bio'], array['diabetic','celiac','vegetarian'],
-  884, 0, 0, 0, 100, 0, 0
-),
-(
-  'Couscous Moyen Complet', 'Moulin de la Seybouse',
-  'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80',
-  (select id from public.product_categories where slug = 'epicerie-salee'),
-  'B', 52, array[]::text[], array['healthy'],
-  376, 72, 0, 13, 2, 5, 0.01
-),
-(
-  'Chocolat Noir 85% Cacao', 'Lindt',
-  'https://images.unsplash.com/photo-1511381939415-e44d8fb6dfd1?w=600&q=80',
-  (select id from public.product_categories where slug = 'epicerie-sucree'),
-  'C', 25, array[]::text[], array['diabetic','celiac'],
-  598, 15, 8, 12, 52, 9, 0.01
-),
-(
-  'Miel Naturel Pur de Jijel', 'Miels du Nord',
-  'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=600&q=80',
-  (select id from public.product_categories where slug = 'epicerie-sucree'),
-  'C', 65, array['bio'], array['healthy'],
-  304, 82, 82, 0, 0, 0, 0.01
-),
-(
-  'Dattes Deglet Nour Premium', 'Oasis du Sahara',
-  'https://images.unsplash.com/photo-1593571085688-f45820d6c4c8?w=600&q=80',
-  (select id from public.product_categories where slug = 'epicerie-sucree'),
-  'B', 50, array[]::text[], array['healthy','vegetarian'],
-  282, 75, 63, 2, 0, 7, 0.01
-),
-(
-  'Amandes Naturelles Grillées', 'Terroir Algérien',
-  'https://images.unsplash.com/photo-1508835277982-1c21bccdfded?w=600&q=80',
-  (select id from public.product_categories where slug = 'epicerie-sucree'),
-  'A', 15, array[]::text[], array['diabetic','celiac','vegetarian'],
-  579, 22, 5, 21, 50, 13, 0.01
-),
-(
-  'Beurre de Cacahuète Naturel', 'Natural Bio',
-  'https://images.unsplash.com/photo-1542990253-0b46a1de8b1e?w=600&q=80',
-  (select id from public.product_categories where slug = 'epicerie-sucree'),
-  'B', 30, array[]::text[], array['diabetic','vegetarian'],
-  588, 20, 9, 25, 50, 6, 0.01
-),
+  'Lire les étiquettes sans stress',
+  'lire-etiquettes',
+  'Guide pratique pour bien choisir ses produits en supermarché.',
+  '## Lire une étiquette alimentaire
 
--- ── Produits laitiers ──────────────────────────────────────────
-(
-  'Yaourt Grec Nature 0%', 'Soummam',
-  'https://images.unsplash.com/photo-1488477181212-4328f3cffe36?w=600&q=80',
-  (select id from public.product_categories where slug = 'produits-laitiers'),
-  'A', 15, array[]::text[], array['diabetic','healthy'],
-  59, 4, 4, 10, 0, 0, 0.05
-),
-(
-  'Fromage Blanc 0% Allégé', 'Soummam',
-  'https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=600&q=80',
-  (select id from public.product_categories where slug = 'produits-laitiers'),
-  'A', 15, array[]::text[], array['diabetic','healthy'],
-  45, 4, 4, 7, 0, 0, 0.06
-),
-(
-  'Lait Entier Frais', 'Candia',
-  'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600&q=80',
-  (select id from public.product_categories where slug = 'produits-laitiers'),
-  'B', 31, array[]::text[], array['healthy'],
-  61, 5, 5, 3, 3, 0, 0.05
-),
-(
-  'Œufs Frais de Poules Élevées en Plein Air', 'Ferme du Soleil',
-  'https://images.unsplash.com/photo-1587486913049-53fc88980cfc?w=600&q=80',
-  (select id from public.product_categories where slug = 'produits-laitiers'),
-  'A', 0, array[]::text[], array['diabetic','celiac','healthy'],
-  155, 1, 1, 13, 11, 0, 0.12
-),
+### Ingrédients
+Listés par ordre décroissant de poids. Méfiez-vous des sucres cachés : dextrose, sirop de glucose, maltose.
 
--- ── Boissons ───────────────────────────────────────────────────
-(
-  'Lait d''Amande Non Sucré', 'Rouiba',
-  'https://images.unsplash.com/photo-1529042355636-9b8c85e7bb8a?w=600&q=80',
-  (select id from public.product_categories where slug = 'boissons'),
-  'A', 30, array['sans_gluten'], array['diabetic','celiac','vegetarian'],
-  17, 1, 0, 1, 1, 0, 0.07
-),
-(
-  'Jus de Tomate Pur 100%', 'Rouiba',
-  'https://images.unsplash.com/photo-1592841200221-a6898f969ada?w=600&q=80',
-  (select id from public.product_categories where slug = 'boissons'),
-  'A', 30, array[]::text[], array['diabetic','healthy','vegetarian'],
-  17, 4, 3, 1, 0, 0, 0.02
-),
-(
-  'Eau Minérale Naturelle Rif', 'Rif',
-  'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=600&q=80',
-  (select id from public.product_categories where slug = 'boissons'),
-  'A', 0, array[]::text[], array['diabetic','celiac','healthy'],
-  0, 0, 0, 0, 0, 0, 0
-),
+### Tableau nutritionnel
+Comparez toujours les valeurs pour 100g.
 
--- ── Boulangerie ────────────────────────────────────────────────
-(
-  'Pain de Seigle Complet Bio', 'Boulangerie Artisanale',
-  'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80',
-  (select id from public.product_categories where slug = 'boulangerie'),
-  'B', 50, array['bio'], array['healthy','vegetarian'],
-  259, 48, 2, 9, 3, 6, 0.5
+### Labels
+- **Bio** : sans pesticides de synthèse
+- **Sans gluten** : pour les cœliaques',
+  'labels', 12, 'intermediate',
+  ARRAY['etiquettes','sante','courses'], true, now()
 ),
 (
-  'Pain de Mie Complet Sans Sucre', 'Harry''s',
-  'https://images.unsplash.com/photo-1486887396153-fa416526c108?w=600&q=80',
-  (select id from public.product_categories where slug = 'boulangerie'),
-  'B', 52, array[]::text[], array['healthy'],
-  247, 44, 5, 9, 4, 6, 0.6
-),
+  'Les Bonnes vs Mauvaises Graisses',
+  'bonnes-mauvaises-graisses',
+  'Toutes les graisses ne se valent pas. Apprenez à faire la différence.',
+  '## Graisses : lesquelles choisir ?
 
--- ── Fruits & Légumes ───────────────────────────────────────────
-(
-  'Carottes Bio 1kg', 'Terroir Algérien',
-  'https://images.unsplash.com/photo-1447175008436-054170c2e979?w=600&q=80',
-  (select id from public.product_categories where slug = 'fruits-legumes'),
-  'A', 35, array['bio'], array['diabetic','celiac','vegetarian','healthy'],
-  41, 10, 5, 1, 0, 3, 0.07
+### À privilégier (insaturées)
+- Oméga-3 : poisson gras, noix, lin
+- Oméga-9 : huile d''olive, avocat
+
+### À limiter (saturées)
+Viandes grasses, beurre, charcuterie.
+
+### À éviter (trans)
+Produits ultra-transformés, margarines hydrogénées.',
+  'fats', 10, 'beginner',
+  ARRAY['graisses','coeur','nutrition'], true, now()
 ),
 (
-  'Épinards Frais Sachet 500g', 'Primeur du Sahel',
-  'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=600&q=80',
-  (select id from public.product_categories where slug = 'fruits-legumes'),
-  'A', 15, array[]::text[], array['diabetic','celiac','vegetarian','healthy'],
-  23, 4, 0, 3, 0, 2, 0.08
-),
-(
-  'Avocat Hass Mûr', 'Primeur du Sahel',
-  'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=600&q=80',
-  (select id from public.product_categories where slug = 'fruits-legumes'),
-  'A', 10, array[]::text[], array['diabetic','celiac','vegetarian','healthy'],
-  160, 9, 1, 2, 15, 7, 0.01
-),
-(
-  'Tomates Cerises Bio 250g', 'Terroir Algérien',
-  'https://images.unsplash.com/photo-1592841200221-a6898f969ada?w=600&q=80',
-  (select id from public.product_categories where slug = 'fruits-legumes'),
-  'A', 15, array['bio'], array['diabetic','celiac','vegetarian','healthy'],
-  18, 4, 2, 1, 0, 1, 0.01
-),
-(
-  'Pommes Royale Gala 1kg', 'Vergers du Tell',
-  'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600&q=80',
-  (select id from public.product_categories where slug = 'fruits-legumes'),
-  'A', 36, array[]::text[], array['diabetic','celiac','vegetarian','healthy'],
-  52, 14, 10, 0, 0, 2, 0.01
-),
-(
-  'Bananes Bio 1kg', 'Primeur du Sahel',
-  'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=600&q=80',
-  (select id from public.product_categories where slug = 'fruits-legumes'),
-  'A', 51, array['bio'], array['healthy','vegetarian'],
-  89, 23, 12, 1, 0, 3, 0.01
+  'Le secret des céréales complètes',
+  'cereales-completes',
+  'Pourquoi choisir les céréales complètes plutôt que raffinées ?',
+  '## Céréales complètes vs raffinées
+
+Le grain complet conserve son son et son germe.
+
+### Avantages
+- IG plus bas, glycémie stable
+- Plus de fibres, satiété prolongée
+- Plus de magnésium, zinc, vitamines B
+
+### Exemples
+Riz complet, avoine, quinoa, épeautre.',
+  'fiber', 6, 'beginner',
+  ARRAY['cereales','fibres','ig'], true, now()
 );
 
+-- 5 partenaires d'Annaba pour la page /map
+INSERT INTO public.partners
+  (name, address_line, city, country, latitude, longitude, phone, is_active, is_verified, partner_code)
+VALUES
+  ('UNO Hypermarché Annaba', 'Route de Berahal',      'Annaba', 'DZ', 36.9001, 7.7662, '+213 38 000 001', true, true,  '0001-SH'),
+  ('Ardis Market',           'Rue Larbi Ben Mhidi',   'Annaba', 'DZ', 36.8525, 7.7203, '+213 38 000 002', true, false, '0002-SH'),
+  ('Supérette El Hadjar',    'Cité El Hadjar',         'Annaba', 'DZ', 36.8035, 7.7368, '+213 38 000 003', true, false, '0003-SH'),
+  ('Bio Santé Store',        'Centre-ville Annaba',    'Annaba', 'DZ', 36.9050, 7.7700, '+213 38 000 004', true, true,  '0004-SH'),
+  ('Pharma Nutrition+',      'Rue Didouche Mourad',    'Annaba', 'DZ', 36.8200, 7.7300, '+213 38 000 005', true, true,  '0005-SH');
+
+-- Quiz pour l'article IG
+WITH
+  art AS (SELECT id FROM public.articles WHERE slug = 'indice-glycemique-guide'),
+  quiz AS (
+    INSERT INTO public.quizzes (article_id, title)
+    SELECT id, 'Quiz — Testez vos connaissances sur l''IG' FROM art
+    RETURNING id
+  ),
+  q1 AS (
+    INSERT INTO public.quiz_questions (quiz_id, question, sort_order)
+    SELECT id, 'Quel aliment a l''indice glycémique le plus bas ?', 1 FROM quiz
+    RETURNING id
+  )
+INSERT INTO public.quiz_answers (question_id, answer_text, is_correct, explanation, sort_order)
+  SELECT id, 'Lentilles',      true,  'Correct ! Les lentilles ont un IG très bas (~25).', 1 FROM q1
+UNION ALL
+  SELECT id, 'Pain blanc',     false, 'Non, le pain blanc a un IG élevé (~70–75).', 2 FROM q1
+UNION ALL
+  SELECT id, 'Riz instantané', false, 'Non, le riz instantané a un IG très élevé (~85).', 3 FROM q1;
+
+-- ── VÉRIFICATION FINALE ───────────────────────────────────────
+SELECT table_name FROM information_schema.tables
+WHERE table_schema = 'public' ORDER BY table_name;
 
 
--- Inventaire : chaque commerce propose une sélection de produits avec des prix réalistes
-insert into public.partner_inventory (partner_id, product_id, price, quantity, is_available)
-select
+
+
+
+
+------------------  DONNEES  ---------------------------------------- DONNEES------------------------------------ DONNEES -------------------------------- DONNEES ------------------------------
+
+
+
+
+
+-- Catégories déjà insérées (epicerie-salee, fruits-legumes, etc.)
+-- On récupère les IDs via sous-requêtes
+
+INSERT INTO public.products
+  (category_id, name, brand, description, nutri_score, glycemic_index,
+   labels, compatible_with, energy_kcal, carbs_g, sugars_g, fat_g,
+   saturated_fat_g, fiber_g, protein_g, sodium_g, is_published)
+VALUES
+(
+  (SELECT id FROM public.product_categories WHERE slug = 'epicerie-salee'),
+  'Lentilles vertes bio', 'Boni', 'Lentilles vertes biologiques, riches en protéines et fibres.',
+  'A', 25,
+  ARRAY['bio','vegan','sans_gluten','halal'],
+  ARRAY['diabetic','celiac','vegetarian'],
+  352, 60.1, 1.8, 1.1, 0.2, 10.6, 24.6, 0.01, true
+),
+(
+  (SELECT id FROM public.product_categories WHERE slug = 'epicerie-salee'),
+  'Pois chiches en conserve', 'Zitoun', 'Pois chiches cuits, prêts à l''emploi.',
+  'A', 28,
+  ARRAY['vegan','sans_gluten','halal'],
+  ARRAY['diabetic','celiac','vegetarian'],
+  119, 17.8, 0.5, 2.6, 0.3, 6.1, 7.0, 0.32, true
+),
+(
+  (SELECT id FROM public.product_categories WHERE slug = 'epicerie-salee'),
+  'Riz basmati complet', 'El Boustane', 'Riz basmati complet à IG modéré.',
+  'B', 50,
+  ARRAY['vegan','sans_gluten','halal'],
+  ARRAY['diabetic','vegetarian'],
+  350, 77.0, 0.7, 2.7, 0.6, 3.5, 7.5, 0.01, true
+),
+(
+  (SELECT id FROM public.product_categories WHERE slug = 'boulangerie'),
+  'Pain complet au blé entier', 'Rania', 'Pain de mie complet, source de fibres.',
+  'B', 55,
+  ARRAY['vegan','halal'],
+  ARRAY['diabetic','vegetarian'],
+  247, 41.3, 3.4, 4.2, 0.8, 7.4, 9.0, 0.48, true
+),
+(
+  (SELECT id FROM public.product_categories WHERE slug = 'boulangerie'),
+  'Flocons d''avoine', 'Safia', 'Flocons d''avoine complets, idéal pour le petit-déjeuner.',
+  'A', 40,
+  ARRAY['vegan','halal'],
+  ARRAY['diabetic','vegetarian'],
+  389, 66.3, 1.0, 6.9, 1.4, 10.6, 16.9, 0.01, true
+),
+(
+  (SELECT id FROM public.product_categories WHERE slug = 'produits-laitiers'),
+  'Yaourt nature 0%', 'Hodna', 'Yaourt nature sans matières grasses, sans sucres ajoutés.',
+  'A', 35,
+  ARRAY['sans_gluten','halal'],
+  ARRAY['diabetic','celiac'],
+  36, 4.7, 4.7, 0.1, 0.1, 0.0, 3.5, 0.05, true
+),
+(
+  (SELECT id FROM public.product_categories WHERE slug = 'produits-laitiers'),
+  'Fromage blanc maigre', 'Soummam', 'Fromage blanc 0% MG, riche en protéines.',
+  'A', 30,
+  ARRAY['sans_gluten','halal'],
+  ARRAY['diabetic','celiac'],
+  45, 3.5, 3.5, 0.2, 0.1, 0.0, 7.5, 0.04, true
+),
+(
+  (SELECT id FROM public.product_categories WHERE slug = 'fruits-legumes'),
+  'Carottes bio', 'Terroir DZ', 'Carottes fraîches biologiques d''Annaba.',
+  'A', 35,
+  ARRAY['bio','vegan','sans_gluten','halal'],
+  ARRAY['diabetic','celiac','vegetarian'],
+  41, 9.6, 4.7, 0.2, 0.0, 2.8, 0.9, 0.07, true
+),
+(
+  (SELECT id FROM public.product_categories WHERE slug = 'fruits-legumes'),
+  'Avocat Hass', 'Terroir DZ', 'Avocats mûrs, riches en bonnes graisses.',
+  'A', 10,
+  ARRAY['bio','vegan','sans_gluten','halal'],
+  ARRAY['diabetic','celiac','vegetarian'],
+  160, 8.5, 0.3, 14.7, 2.1, 6.7, 2.0, 0.01, true
+),
+(
+  (SELECT id FROM public.product_categories WHERE slug = 'fruits-legumes'),
+  'Pommes Gala', 'Terroir DZ', 'Pommes Gala fraîches, source de fibres solubles.',
+  'A', 38,
+  ARRAY['vegan','sans_gluten','bio','halal'],
+  ARRAY['diabetic','celiac','vegetarian'],
+  52, 13.8, 10.4, 0.2, 0.0, 2.4, 0.3, 0.01, true
+),
+(
+  (SELECT id FROM public.product_categories WHERE slug = 'boissons'),
+  'Eau minérale plate', 'Ifri', 'Eau minérale naturelle d''Ighzer Amokrane.',
+  'A', 0,
+  ARRAY['vegan','sans_gluten','halal'],
+  ARRAY['diabetic','celiac','vegetarian'],
+  0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, true
+),
+(
+  (SELECT id FROM public.product_categories WHERE slug = 'epicerie-sucree'),
+  'Miel pur naturel', 'Bejaia Miel', 'Miel toutes fleurs, non pasteurisé.',
+  'C', 65,
+  ARRAY['sans_gluten','halal'],
+  ARRAY['vegetarian'],
+  304, 82.4, 82.4, 0.0, 0.0, 0.2, 0.3, 0.01, true
+)
+ON CONFLICT (barcode) DO NOTHING;
+
+-- Vérification
+SELECT name, nutri_score, glycemic_index FROM public.products ORDER BY name;
+
+-- ── Recette 1 : Salade de lentilles ──────────────────────────
+WITH r AS (
+  INSERT INTO public.recipes
+    (title, description, image_url, prep_time_min, cook_time_min, servings,
+     difficulty, calories_kcal, price_estimate, diet_tags, compatible_with,
+     is_published, is_featured)
+  VALUES (
+    'Salade de Lentilles Méditerranéenne',
+    'Une salade fraîche et nourrissante, idéale pour les diabétiques. Riche en protéines et à IG bas.',
+    NULL,
+    15, 20, 2, 'easy', 320, 350,
+    ARRAY['faible_ig','vegan','sans_gluten','eco'],
+    ARRAY['diabetic','celiac','vegetarian'],
+    true, true
+  ) RETURNING id
+),
+i1 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Lentilles vertes bio', '150g', 1 FROM r
+),
+i2 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Tomates cerises', '100g', 2 FROM r
+),
+i3 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Concombre', '1/2 pièce', 3 FROM r
+),
+i4 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Huile d''olive extra vierge', '2 c.s.', 4 FROM r
+),
+i5 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Jus de citron', '1 c.s.', 5 FROM r
+),
+i6 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Persil frais', '1 bouquet', 6 FROM r
+),
+s1 AS (
+  INSERT INTO public.recipe_steps (recipe_id, step_number, instruction)
+  SELECT id, 1, 'Faire cuire les lentilles 20 minutes dans de l''eau bouillante salée. Égoutter et laisser refroidir.' FROM r
+),
+s2 AS (
+  INSERT INTO public.recipe_steps (recipe_id, step_number, instruction)
+  SELECT id, 2, 'Couper les tomates cerises en deux et le concombre en petits dés.' FROM r
+),
+s3 AS (
+  INSERT INTO public.recipe_steps (recipe_id, step_number, instruction)
+  SELECT id, 3, 'Mélanger les lentilles refroidies avec les légumes.' FROM r
+),
+s4 AS (
+  INSERT INTO public.recipe_steps (recipe_id, step_number, instruction)
+  SELECT id, 4, 'Assaisonner avec l''huile d''olive, le jus de citron, sel et poivre. Parsemer de persil.' FROM r
+)
+SELECT 'Recette 1 insérée' AS status;
+
+
+-- ── Recette 2 : Porridge avoine ───────────────────────────────
+WITH r AS (
+  INSERT INTO public.recipes
+    (title, description, image_url, prep_time_min, cook_time_min, servings,
+     difficulty, calories_kcal, price_estimate, diet_tags, compatible_with,
+     is_published, is_featured)
+  VALUES (
+    'Porridge à l''Avoine & Pomme',
+    'Petit-déjeuner sain à IG modéré. Rassasiant et facile à préparer.',
+    NULL,
+    5, 10, 1, 'easy', 280, 150,
+    ARRAY['faible_ig','vegan','eco'],
+    ARRAY['diabetic','vegetarian'],
+    true, true
+  ) RETURNING id
+),
+i1 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Flocons d''avoine', '60g', 1 FROM r
+),
+i2 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Lait végétal (amande)', '200ml', 2 FROM r
+),
+i3 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Pomme Gala', '1/2 pièce', 3 FROM r
+),
+i4 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Cannelle', '1 pincée', 4 FROM r
+),
+s1 AS (
+  INSERT INTO public.recipe_steps (recipe_id, step_number, instruction)
+  SELECT id, 1, 'Verser les flocons d''avoine et le lait végétal dans une casserole.' FROM r
+),
+s2 AS (
+  INSERT INTO public.recipe_steps (recipe_id, step_number, instruction)
+  SELECT id, 2, 'Faire chauffer à feu moyen en remuant pendant 5 minutes jusqu''à épaississement.' FROM r
+),
+s3 AS (
+  INSERT INTO public.recipe_steps (recipe_id, step_number, instruction)
+  SELECT id, 3, 'Verser dans un bol. Ajouter la demi-pomme coupée en dés et saupoudrer de cannelle.' FROM r
+)
+SELECT 'Recette 2 insérée' AS status;
+
+
+-- ── Recette 3 : Bol de riz basmati au poulet ──────────────────
+WITH r AS (
+  INSERT INTO public.recipes
+    (title, description, image_url, prep_time_min, cook_time_min, servings,
+     difficulty, calories_kcal, price_estimate, diet_tags, compatible_with,
+     is_published, is_featured)
+  VALUES (
+    'Bol Riz Basmati & Poulet Grillé',
+    'Plat complet équilibré. Protéines maigres, glucides à IG modéré et légumes.',
+    NULL,
+    10, 25, 2, 'medium', 420, 600,
+    ARRAY['faible_ig','sans_gluten'],
+    ARRAY['diabetic','celiac'],
+    true, false
+  ) RETURNING id
+),
+i1 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Riz basmati complet', '150g (sec)', 1 FROM r
+),
+i2 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Blanc de poulet', '200g', 2 FROM r
+),
+i3 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Carottes bio', '2 pièces', 3 FROM r
+),
+i4 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Huile d''olive', '1 c.s.', 4 FROM r
+),
+i5 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Épices (curcuma, cumin)', '1 c.c.', 5 FROM r
+),
+s1 AS (
+  INSERT INTO public.recipe_steps (recipe_id, step_number, instruction)
+  SELECT id, 1, 'Faire cuire le riz basmati selon les instructions (environ 20 minutes).' FROM r
+),
+s2 AS (
+  INSERT INTO public.recipe_steps (recipe_id, step_number, instruction)
+  SELECT id, 2, 'Griller le blanc de poulet avec les épices dans une poêle antiadhésive huilée.' FROM r
+),
+s3 AS (
+  INSERT INTO public.recipe_steps (recipe_id, step_number, instruction)
+  SELECT id, 3, 'Faire revenir les carottes en rondelles jusqu''à tendreté.' FROM r
+),
+s4 AS (
+  INSERT INTO public.recipe_steps (recipe_id, step_number, instruction)
+  SELECT id, 4, 'Dresser le riz dans un bol, ajouter le poulet tranché et les carottes.' FROM r
+)
+SELECT 'Recette 3 insérée' AS status;
+
+
+-- ── Recette 4 : Smoothie avocat ───────────────────────────────
+WITH r AS (
+  INSERT INTO public.recipes
+    (title, description, image_url, prep_time_min, cook_time_min, servings,
+     difficulty, calories_kcal, price_estimate, diet_tags, compatible_with,
+     is_published, is_featured)
+  VALUES (
+    'Smoothie Avocat & Yaourt Nature',
+    'Boisson onctueuse riche en bonnes graisses et protéines. Sans sucres ajoutés.',
+    NULL,
+    5, 0, 1, 'easy', 210, 200,
+    ARRAY['faible_ig','sans_gluten','keto'],
+    ARRAY['diabetic','celiac','vegetarian'],
+    true, true
+  ) RETURNING id
+),
+i1 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Avocat Hass', '1/2 pièce', 1 FROM r
+),
+i2 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Yaourt nature 0%', '150g', 2 FROM r
+),
+i3 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Eau minérale', '100ml', 3 FROM r
+),
+i4 AS (
+  INSERT INTO public.recipe_ingredients (recipe_id, name, quantity, sort_order)
+  SELECT id, 'Jus de citron', '1/2 c.c.', 4 FROM r
+),
+s1 AS (
+  INSERT INTO public.recipe_steps (recipe_id, step_number, instruction)
+  SELECT id, 1, 'Couper l''avocat en morceaux et le mettre dans le blender.' FROM r
+),
+s2 AS (
+  INSERT INTO public.recipe_steps (recipe_id, step_number, instruction)
+  SELECT id, 2, 'Ajouter le yaourt, l''eau et le jus de citron.' FROM r
+),
+s3 AS (
+  INSERT INTO public.recipe_steps (recipe_id, step_number, instruction)
+  SELECT id, 3, 'Mixer jusqu''à obtenir une consistance lisse. Servir immédiatement.' FROM r
+)
+SELECT 'Recette 4 insérée' AS status;
+
+-- Vérification
+SELECT title, difficulty, calories_kcal, is_featured FROM public.recipes ORDER BY created_at;
+
+------------------===========================================================================================================================================
+
+-- Lier les produits existants aux 5 partenaires d'Annaba
+INSERT INTO public.partner_inventory
+  (partner_id, product_id, price, currency, quantity, is_available, low_stock_threshold)
+SELECT
+  p.id AS partner_id,
+  pr.id AS product_id,
+  CASE pr.name
+    WHEN 'Lentilles vertes bio'       THEN 180.00
+    WHEN 'Pois chiches en conserve'   THEN 95.00
+    WHEN 'Riz basmati complet'        THEN 220.00
+    WHEN 'Pain complet au blé entier' THEN 65.00
+    WHEN 'Flocons d''avoine'          THEN 145.00
+    WHEN 'Yaourt nature 0%'           THEN 45.00
+    WHEN 'Fromage blanc maigre'       THEN 85.00
+    WHEN 'Carottes bio'               THEN 60.00
+    WHEN 'Avocat Hass'                THEN 120.00
+    WHEN 'Pommes Gala'                THEN 90.00
+    WHEN 'Eau minérale plate'         THEN 25.00
+    WHEN 'Miel pur naturel'           THEN 850.00
+    ELSE 100.00
+  END AS price,
+  'DZD',
+  CASE pr.name
+    WHEN 'Lentilles vertes bio'       THEN 50
+    WHEN 'Pois chiches en conserve'   THEN 80
+    WHEN 'Riz basmati complet'        THEN 60
+    WHEN 'Pain complet au blé entier' THEN 30
+    WHEN 'Flocons d''avoine'          THEN 40
+    WHEN 'Yaourt nature 0%'           THEN 100
+    WHEN 'Fromage blanc maigre'       THEN 60
+    WHEN 'Carottes bio'               THEN 25
+    WHEN 'Avocat Hass'                THEN 15
+    WHEN 'Pommes Gala'                THEN 45
+    WHEN 'Eau minérale plate'         THEN 200
+    WHEN 'Miel pur naturel'           THEN 8
+    ELSE 20
+  END AS quantity,
+  true AS is_available,
+  5 AS low_stock_threshold
+FROM public.partners p
+CROSS JOIN public.products pr
+WHERE p.partner_code IN ('0001-SH', '0002-SH', '0004-SH')
+ON CONFLICT (partner_id, product_id) DO NOTHING;
+
+-- Partenaire 0003-SH et 0005-SH : stock limité (seulement certains produits)
+INSERT INTO public.partner_inventory
+  (partner_id, product_id, price, currency, quantity, is_available, low_stock_threshold)
+SELECT
   p.id,
   pr.id,
-  -- Prix en DZD adapté au type de produit (énergie kcal comme approximation)
-  round((pr.energy_kcal * 0.8 + random() * 200 + 80)::numeric, 0),
-  (random() * 45 + 5)::int,
-  (random() > 0.08)   -- 92% des produits en stock
-from public.partners p
-cross join public.products pr
--- Chaque commerce ne propose pas forcément tous les produits
-where random() > 0.15;  -- ~85% de couverture produit par commerce
+  CASE pr.name
+    WHEN 'Yaourt nature 0%'     THEN 42.00
+    WHEN 'Fromage blanc maigre' THEN 80.00
+    WHEN 'Eau minérale plate'   THEN 22.00
+    WHEN 'Carottes bio'         THEN 55.00
+    WHEN 'Pommes Gala'          THEN 85.00
+    ELSE 110.00
+  END,
+  'DZD',
+  CASE pr.name
+    WHEN 'Yaourt nature 0%'     THEN 30
+    WHEN 'Fromage blanc maigre' THEN 20
+    WHEN 'Eau minérale plate'   THEN 80
+    WHEN 'Carottes bio'         THEN 10
+    WHEN 'Pommes Gala'          THEN 18
+    ELSE 5
+  END,
+  true, 3
+FROM public.partners p
+CROSS JOIN public.products pr
+WHERE p.partner_code IN ('0003-SH', '0005-SH')
+  AND pr.name IN ('Yaourt nature 0%','Fromage blanc maigre','Eau minérale plate','Carottes bio','Pommes Gala')
+ON CONFLICT (partner_id, product_id) DO NOTHING;
+
+SELECT 'Partner inventory inséré : ' || COUNT(*) || ' lignes' AS status
+FROM public.partner_inventory;
 
 
+------------------------------------------------------------------------------------------------------------------
 
-insert into public.recipes 
-(title, description, prep_time_min, difficulty, calories_kcal, diet_tags, compatible_with)
-values
-('Salade healthy algérienne', 'Recette légère et équilibrée', 15, 'easy', 250,
- array['faible_ig','eco'], array['diabetic','vegetarian']),
+-- Pour tester les alertes, on crée des alertes fictives
+-- IMPORTANT : Ces alertes nécessitent de vrais UUID de profils utilisateurs.
+-- Ce bloc sera utile une fois que des utilisateurs se sont inscrits.
+-- Voici le template à utiliser quand tu auras les IDs :
 
-('Couscous léger diabétique', 'Version adaptée du couscous', 60, 'medium', 450,
- array['faible_ig'], array['diabetic']),
+-- INSERT INTO public.patient_alerts
+--   (nutritionist_id, patient_id, type, title, message)
+-- VALUES
+-- (
+--   'UUID_NUTRITIONNISTE_ICI',
+--   'UUID_PATIENT_ICI',
+--   'warning',
+--   'Glycémie élevée détectée',
+--   'Votre consommation de glucides rapides cette semaine est au-dessus de votre seuil recommandé. Pensez à privilégier les aliments à IG bas comme les lentilles et le riz basmati complet.'
+-- ),
+-- (
+--   'UUID_NUTRITIONNISTE_ICI',
+--   'UUID_PATIENT_ICI',
+--   'success',
+--   'Objectif fibres atteint',
+--   'Bravo ! Vous avez atteint votre objectif hebdomadaire de 25g de fibres par jour. Continuez ainsi !'
+-- ),
+-- (
+--   'UUID_NUTRITIONNISTE_ICI',
+--   'UUID_PATIENT_ICI',
+--   'info',
+--   'Nouveau plan alimentaire disponible',
+--   'Votre nutritionniste a mis à jour votre plan alimentaire pour le mois de mai. Consultez la section Recettes.'
+-- );
 
-('Pâtes sans gluten aux légumes', 'Repas rapide', 25, 'easy', 350,
- array['sans_gluten'], array['celiac']);
-
-
-
-insert into public.recipe_ingredients (recipe_id, name, quantity)
-select r.id, 'Tomates fraîches', '2'
-from public.recipes r
-limit 3;
-
-
-insert into public.articles 
-(title, slug, excerpt, category, read_time_min, content, tags, is_published, published_at)
-values
-(
- 'Comprendre l''indice glycémique',
- 'indice-glycemique',
- 'Apprenez à gérer votre glycémie',
- 'glycemic_index',
- 5,
- '## IG expliqué simplement...',
- array['diabete','nutrition'],
- true,
- now()
-),
-(
- 'Lire les étiquettes alimentaires',
- 'lire-etiquettes',
- 'Bien choisir ses produits',
- 'labels',
- 6,
- '## Guide complet...',
- array['courses','sante'],
- true,
- now()
-);
+SELECT 'Alertes : à insérer après inscription de vrais utilisateurs' AS note;
 
 
-insert into public.quizzes (title)
-values ('Quiz nutrition de base');
+----------------------------------------------------------------------------------------------------------------------
 
-insert into public.quiz_questions (quiz_id, question)
-select q.id, 'Quel aliment a un IG élevé ?'
-from public.quizzes q
-limit 1;
+-- Logs de recherche pour alimenter les analytics du dashboard partenaire
+-- À insérer après avoir de vrais utilisateurs, voici la structure :
 
-insert into public.quiz_answers (question_id, answer_text, is_correct)
-select qq.id, 'Pain blanc', true
-from public.quiz_questions qq;
-
-
-insert into public.shopping_lists (user_id, name)
-select id, 'Ma liste Annaba'
-from public.profiles
-limit 1;
-
-
-insert into public.patient_alerts (nutritionist_id, patient_id, type, title, message)
-select p1.id, p2.id, 'warning',
-'Attention sucre',
-'Votre consommation de sucre est élevée'
-from public.profiles p1, public.profiles p2
-limit 1;
-
-
-
-
-insert into public.partner_product_views (partner_id, product_id)
-select
+INSERT INTO public.product_search_logs
+  (partner_id, product_id, search_term)
+SELECT
   p.id,
-  pr.id
-from public.partners p
-join public.products pr on true
-limit 500;
+  pr.id,
+  t.term
+FROM public.partners p
+CROSS JOIN public.products pr
+CROSS JOIN (VALUES
+  ('lentilles'), ('riz'), ('yaourt'), ('avocat'),
+  ('sans gluten'), ('diabétique'), ('bio')
+) AS t(term)
+WHERE p.partner_code = '0001-SH'
+  AND pr.name IN ('Lentilles vertes bio','Riz basmati complet','Yaourt nature 0%','Avocat Hass')
+LIMIT 20;
+
+SELECT 'Search logs insérés' AS status;
+
+
+------------------------------------------------------------------------------------------------------
+
+-- Générer des vues fictives pour les 30 derniers jours (pour les graphiques du dashboard partenaire)
+INSERT INTO public.partner_product_views (partner_id, product_id, viewed_at)
+SELECT
+  p.id,
+  pr.id,
+  now() - (random() * interval '30 days')
+FROM public.partners p
+CROSS JOIN public.products pr
+CROSS JOIN generate_series(1, 5) AS gs
+WHERE p.partner_code IN ('0001-SH', '0002-SH')
+ORDER BY random()
+LIMIT 100;
+
+SELECT 'Vues insérées : ' || COUNT(*) || ' lignes' AS status
+FROM public.partner_product_views;
+
+------------------------------------------------------------===========================================-------------------------------------------------------------
+
+SELECT 'profiles'           AS table_name, COUNT(*) AS lignes FROM public.profiles
+UNION ALL
+SELECT 'partners',           COUNT(*) FROM public.partners
+UNION ALL
+SELECT 'products',           COUNT(*) FROM public.products
+UNION ALL
+SELECT 'product_categories', COUNT(*) FROM public.product_categories
+UNION ALL
+SELECT 'partner_inventory',  COUNT(*) FROM public.partner_inventory
+UNION ALL
+SELECT 'recipes',            COUNT(*) FROM public.recipes
+UNION ALL
+SELECT 'recipe_ingredients', COUNT(*) FROM public.recipe_ingredients
+UNION ALL
+SELECT 'recipe_steps',       COUNT(*) FROM public.recipe_steps
+UNION ALL
+SELECT 'articles',           COUNT(*) FROM public.articles
+UNION ALL
+SELECT 'quizzes',            COUNT(*) FROM public.quizzes
+UNION ALL
+SELECT 'quiz_questions',     COUNT(*) FROM public.quiz_questions
+UNION ALL
+SELECT 'quiz_answers',       COUNT(*) FROM public.quiz_answers
+UNION ALL
+SELECT 'product_search_logs',COUNT(*) FROM public.product_search_logs
+UNION ALL
+SELECT 'partner_product_views', COUNT(*) FROM public.partner_product_views
+ORDER BY table_name;
+
+
+----------------====================================================================================================================================================
+INSERT INTO public.product_search_logs
+  (partner_id, product_id, search_term)
+SELECT
+  p.id,
+  pr.id,
+  t.term
+FROM public.partners p
+CROSS JOIN public.products pr
+CROSS JOIN (VALUES
+  ('lentilles'), ('riz'), ('yaourt'), ('avocat'),
+  ('sans gluten'), ('diabétique'), ('bio')
+) AS t(term)
+WHERE p.partner_code = '0001-SH'
+  AND pr.name IN ('Lentilles vertes bio','Riz basmati complet','Yaourt nature 0%','Avocat Hass')
+LIMIT 20;
+
+SELECT 'Search logs insérés : ' || COUNT(*) || ' lignes' AS status
+FROM public.product_search_logs;
+
+
+
+
+INSERT INTO public.partner_product_views (partner_id, product_id, viewed_at)
+SELECT
+  p.id,
+  pr.id,
+  now() - (random() * interval '30 days')
+FROM public.partners p
+CROSS JOIN public.products pr
+CROSS JOIN generate_series(1, 5) AS gs
+WHERE p.partner_code IN ('0001-SH', '0002-SH')
+ORDER BY random()
+LIMIT 100;
+
+SELECT 'Vues insérées : ' || COUNT(*) || ' lignes' AS status
+FROM public.partner_product_views;
+
+
+SELECT 'profiles'               AS table_name, COUNT(*) AS lignes FROM public.profiles
+UNION ALL SELECT 'partners',             COUNT(*) FROM public.partners
+UNION ALL SELECT 'products',             COUNT(*) FROM public.products
+UNION ALL SELECT 'product_categories',   COUNT(*) FROM public.product_categories
+UNION ALL SELECT 'partner_inventory',    COUNT(*) FROM public.partner_inventory
+UNION ALL SELECT 'recipes',              COUNT(*) FROM public.recipes
+UNION ALL SELECT 'recipe_ingredients',   COUNT(*) FROM public.recipe_ingredients
+UNION ALL SELECT 'recipe_steps',         COUNT(*) FROM public.recipe_steps
+UNION ALL SELECT 'articles',             COUNT(*) FROM public.articles
+UNION ALL SELECT 'quizzes',              COUNT(*) FROM public.quizzes
+UNION ALL SELECT 'quiz_questions',       COUNT(*) FROM public.quiz_questions
+UNION ALL SELECT 'quiz_answers',         COUNT(*) FROM public.quiz_answers
+UNION ALL SELECT 'product_search_logs',  COUNT(*) FROM public.product_search_logs
+UNION ALL SELECT 'partner_product_views',COUNT(*) FROM public.partner_product_views
+ORDER BY table_name;
