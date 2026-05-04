@@ -1,7 +1,8 @@
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
 import { requireAuth, getHealthProfile } from "@/lib/auth";
-import { getRecommendedProducts } from "@/lib/queries/products";
+import { getDashboardProducts } from "@/lib/queries/products";
+import { ProductImage } from "@/components/ui/ProductImage";
 import { getRecipes } from "@/lib/queries/recipes";
 import { getPartners } from "@/lib/queries/partners";
 import Link from "next/link";
@@ -10,8 +11,8 @@ export default async function DashboardPage() {
   const [profile, healthProfile, products, recipes, partners] = await Promise.all([
     requireAuth(),
     getHealthProfile(),
-    getRecommendedProducts([], 4),
-    getRecipes({ featured: true }),
+    getDashboardProducts(4),
+    getRecipes({ featured: true, limit: 3 }),
     getPartners(),
   ]);
 
@@ -73,13 +74,11 @@ export default async function DashboardPage() {
                     <Link key={product.id} href={`/search/${product.id}`}
                       className="bg-white rounded-xl overflow-hidden custom-shadow group block">
                       <div className="relative h-48 bg-surface-container-low">
-                        {product.image_url ? (
-                          <img alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src={product.image_url} />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <span className="material-symbols-outlined text-5xl text-outline-variant">image</span>
-                          </div>
-                        )}
+                        <ProductImage
+                          src={product.image_url}
+                          alt={product.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
                         <div className="absolute top-3 left-3 flex flex-col gap-2">
                           {product.nutri_score && (
                             <span className={`px-2 py-0.5 font-bold text-lg rounded-md text-white ${{ A: "bg-emerald-600", B: "bg-yellow-500", C: "bg-orange-500", D: "bg-orange-700", E: "bg-red-600" }[product.nutri_score]}`}>
@@ -108,13 +107,13 @@ export default async function DashboardPage() {
               {recipes[0] ? (
                 <div className="bg-white rounded-xl overflow-hidden custom-shadow">
                   <div className="relative h-40">
-                    {recipes[0].image_url ? (
-                      <img alt={recipes[0].title} className="w-full h-full object-cover" src={recipes[0].image_url} />
-                    ) : (
-                      <div className="w-full h-full bg-surface-container-low flex items-center justify-center">
-                        <span className="material-symbols-outlined text-4xl text-outline-variant">restaurant</span>
-                      </div>
-                    )}
+                    <ProductImage
+                      src={recipes[0].image_url}
+                      alt={recipes[0].title}
+                      className="w-full h-full object-cover"
+                      placeholderClassName="w-full h-full bg-surface-container-low flex items-center justify-center"
+                      iconSize="text-4xl"
+                    />
                     <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
                     <div className="absolute bottom-4 left-4">
                       <span className="bg-secondary text-white text-[10px] font-bold px-2 py-1 rounded mb-1 inline-block">

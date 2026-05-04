@@ -8,6 +8,7 @@ export interface RecipeFilters {
   maxCalories?: number;
   search?: string;
   featured?: boolean;
+  limit?: number;
 }
 
 export async function getRecipes(filters: RecipeFilters = {}) {
@@ -22,6 +23,7 @@ export async function getRecipes(filters: RecipeFilters = {}) {
     .order("created_at", { ascending: false });
 
   if (filters.featured) query = query.eq("is_featured", true);
+  if (filters.limit) query = query.limit(filters.limit);
   if (filters.search) query = query.ilike("title", `%${filters.search}%`);
   if (filters.dietTags?.length) query = query.overlaps("diet_tags", filters.dietTags);
   if (filters.compatibleWith?.length) query = query.overlaps("compatible_with", filters.compatibleWith);

@@ -59,6 +59,18 @@ export async function getProductById(id: string) {
   return data;
 }
 
+export async function getDashboardProducts(limit = 4) {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const { data } = await supabase
+    .from("products")
+    .select("id, name, brand, image_url, nutri_score, glycemic_index")
+    .eq("is_published", true)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  return data ?? [];
+}
+
 export async function getRecommendedProducts(compatibleWith: string[] = [], limit = 4) {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);

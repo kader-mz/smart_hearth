@@ -1115,3 +1115,99 @@ UNION ALL SELECT 'quiz_answers',         COUNT(*) FROM public.quiz_answers
 UNION ALL SELECT 'product_search_logs',  COUNT(*) FROM public.product_search_logs
 UNION ALL SELECT 'partner_product_views',COUNT(*) FROM public.partner_product_views
 ORDER BY table_name;
+
+
+-- ── PRODUITS ──────────────────────────────────────────────────
+UPDATE public.products SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/4c425e1dd3c650e73d427c53839911031a3fe31c.jpg'
+WHERE name = 'Lentilles vertes bio';
+
+UPDATE public.products SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/762c97fde5ec0f6c9a35df50c13b28c0dbb18372.jpg'
+WHERE name = 'Pois chiches en conserve';
+
+UPDATE public.products SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/8667b3aff8218893bff9f215a86e81acfbd8d2d9.jpg'
+WHERE name = 'Riz basmati complet';
+
+UPDATE public.products SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/84aaed72504724405afd8fe294df501ec4247863.jpg'
+WHERE name = 'Pain complet au blé entier';
+
+UPDATE public.products SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/0c1df724e2da49e7024363a4e47c718e60c27071.jpg'
+WHERE name = 'Flocons d''avoine';
+
+UPDATE public.products SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/e0fee32ee0e2d871da9f82da60c6135627aa13f6.jpg'
+WHERE name = 'Yaourt nature 0%';
+
+UPDATE public.products SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/e59dc78e7752eb23f5bcecad186b41f36ff9026b.jpg'
+WHERE name = 'Fromage blanc maigre';
+
+UPDATE public.products SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/7055e0b7475c8fbf659c6c94afc6d16a551c53e3.jpg'
+WHERE name = 'Carottes bio';
+
+UPDATE public.products SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/ec96b7851ad85cfcc480e6b5ab5125efd7c8dc45.jpg'
+WHERE name = 'Avocat Hass';
+
+UPDATE public.products SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/8e7ce8c110e00fb53d2aa1070b841755be5d7f7a.jpg'
+WHERE name = 'Pommes Gala';
+
+UPDATE public.products SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/d97effe60a6c45fb01296ceb35c79ad439f1029e.jpg'
+WHERE name = 'Eau minérale plate';
+
+UPDATE public.products SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/e0ea5bab7578d934c277e8a2a5cb61fd148ae333.jpg'
+WHERE name = 'Miel pur naturel';
+
+-- Vérification
+SELECT name, image_url IS NOT NULL AS a_une_image FROM public.products ORDER BY name;
+
+
+
+
+-- ── RECETTES ──────────────────────────────────────────────────
+UPDATE public.recipes SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/293a828890362cd8c32a6a91cc650459bcb8ff98.jpg'
+WHERE title = 'Salade de Lentilles Méditerranéenne';
+
+UPDATE public.recipes SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/1c72cecb713aecc3b53ad65dfac6d28705ed2f89.jpg'
+WHERE title = 'Porridge à l''Avoine & Pomme';
+
+UPDATE public.recipes SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/9f33d14913a2c582fb486c51daeb6055eea448d6.jpg'
+WHERE title = 'Bol Riz Basmati & Poulet Grillé';
+
+UPDATE public.recipes SET
+  image_url = 'https://pplx-res.cloudinary.com/image/upload/pplx_search_images/a5b7d616c722606f77bdcf8e33ee92d9127aaa2e.jpg'
+WHERE title = 'Smoothie Avocat & Yaourt Nature';
+
+-- ── IMAGES PERMANENTES UNSPLASH ────────────────────────────────
+
+UPDATE public.products SET image_url = 'https://images.unsplash.com/photo-1612257999756-c9e4da1b1e99?w=400' WHERE name ILIKE '%lentill%';
+UPDATE public.products SET image_url = 'https://images.unsplash.com/photo-1515543237350-b3eea1ec8082?w=400' WHERE name ILIKE '%pois chich%';
+UPDATE public.products SET image_url = 'https://images.unsplash.com/photo-1536304993881-ff86e0c9c7ce?w=400' WHERE name ILIKE '%riz%';
+UPDATE public.products SET image_url = 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400' WHERE name ILIKE '%pain%';
+UPDATE public.products SET image_url = 'https://images.unsplash.com/photo-1614961233913-a5113a4a34ed?w=400' WHERE name ILIKE '%flocon%' OR name ILIKE '%avoine%';
+UPDATE public.products SET image_url = 'https://images.unsplash.com/photo-1571212515416-fca988083d3c?w=400' WHERE name ILIKE '%yaourt%';
+UPDATE public.products SET image_url = 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a318?w=400' WHERE name ILIKE '%fromage blanc%';
+UPDATE public.products SET image_url = 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=400' WHERE name ILIKE '%carott%';
+UPDATE public.products SET image_url = 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=400' WHERE name ILIKE '%avocat%';
+UPDATE public.products SET image_url = 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=400' WHERE name ILIKE '%pomm%';
+UPDATE public.products SET image_url = 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400' WHERE name ILIKE '%eau min%';
+UPDATE public.products SET image_url = 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400' WHERE name ILIKE '%miel%';
+
+UPDATE public.recipes SET image_url = 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400' WHERE title ILIKE '%lentill%';
+UPDATE public.recipes SET image_url = 'https://images.unsplash.com/photo-1517673132405-a56a62b18caf?w=400' WHERE title ILIKE '%porridge%';
+UPDATE public.recipes SET image_url = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400' WHERE title ILIKE '%riz%' OR title ILIKE '%poulet%';
+UPDATE public.recipes SET image_url = 'https://images.unsplash.com/photo-1638176067095-17c88e0238f9?w=400' WHERE title ILIKE '%smoothie%' OR title ILIKE '%avocat%';
+
+-- Vérification
+SELECT title, image_url IS NOT NULL AS a_une_image FROM public.recipes ORDER BY title;

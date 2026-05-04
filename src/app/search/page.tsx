@@ -4,6 +4,7 @@ import { requireAuth } from "@/lib/auth";
 import { getProducts } from "@/lib/queries/products";
 import { getSavedProductIds } from "@/lib/queries/favorites";
 import Link from "next/link";
+import { ProductImage } from "@/components/ui/ProductImage";
 
 const scoreColors: Record<string, string> = {
   A: "bg-emerald-600", B: "bg-yellow-500",
@@ -89,14 +90,11 @@ export default async function SearchPage({
                   return (
                     <article key={product.id} className="bg-white rounded-xl overflow-hidden custom-shadow group flex flex-col">
                       <div className="relative h-48 bg-surface-container-low">
-                        {product.image_url ? (
-                          <img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            src={product.image_url} alt={product.name} />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <span className="material-symbols-outlined text-5xl text-outline-variant">image</span>
-                          </div>
-                        )}
+                        <ProductImage
+                          src={product.image_url}
+                          alt={product.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
                         <div className="absolute top-3 left-3 flex flex-col gap-2">
                           {product.nutri_score && (
                             <span className={`px-2 py-0.5 ${scoreColors[product.nutri_score]} text-white font-bold text-lg rounded-md`}>

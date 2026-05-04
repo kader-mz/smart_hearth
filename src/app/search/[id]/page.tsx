@@ -5,6 +5,7 @@ import { getProductById } from "@/lib/queries/products";
 import { getSavedProductIds } from "@/lib/queries/favorites";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ProductImage } from "@/components/ui/ProductImage";
 
 const scoreColors: Record<string, string> = {
   A: "#038141", B: "#85bb2f", C: "#fecb02", D: "#ee8100", E: "#e63e11",
@@ -40,9 +41,13 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <div className="lg:w-[55%] flex flex-col gap-6">
               <div className="bg-white p-6 rounded-xl custom-shadow flex flex-col items-center">
                 <div className="w-full h-90 rounded-lg overflow-hidden mb-6 bg-surface-container-low flex items-center justify-center">
-                  {product.image_url
-                    ? <img alt={product.name} className="w-full h-full object-contain p-8" src={product.image_url} />
-                    : <span className="material-symbols-outlined text-7xl text-outline-variant">image</span>}
+                  <ProductImage
+                    src={product.image_url}
+                    alt={product.name}
+                    className="w-full h-full object-contain p-8"
+                    placeholderClassName="w-full h-full flex items-center justify-center bg-surface-container-low"
+                    iconSize="text-7xl"
+                  />
                 </div>
                 <div className="grid grid-cols-2 w-full gap-4">
                   <div className="bg-surface-container-low p-4 rounded-lg">
