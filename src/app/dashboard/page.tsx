@@ -1,22 +1,33 @@
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
 import { requireAuth, getHealthProfile } from "@/lib/auth";
-import { getDashboardProducts } from "@/lib/queries/products";
 import { ProductImage } from "@/components/ui/ProductImage";
-import { getRecipes } from "@/lib/queries/recipes";
 import { getPartners } from "@/lib/queries/partners";
+import {
+  getRecommendedProducts,
+  getRecommendedRecipes,
+} from "@/lib/recommendations/queries";
 import Link from "next/link";
 
+const NUTRI_BG: Record<"A" | "B" | "C" | "D" | "E", string> = {
+  A: "bg-emerald-600",
+  B: "bg-yellow-500",
+  C: "bg-orange-500",
+  D: "bg-orange-700",
+  E: "bg-red-600",
+};
+
 export default async function DashboardPage() {
-  const [profile, healthProfile, products, recipes, partners] = await Promise.all([
-    requireAuth(),
+  const profile = await requireAuth();
+  const [healthProfile, productsRec, recipesRec, partners] = await Promise.all([
     getHealthProfile(),
-    getDashboardProducts(4),
-    getRecipes({ featured: true, limit: 3 }),
+    getRecommendedProducts(profile.id, 6),
+    getRecommendedRecipes(profile.id, 4),
     getPartners(),
   ]);
 
   const firstName = profile.full_name?.split(" ")[0] ?? "vous";
+  const profileComplete = productsRec.profileComplete;
 
   return (
     <div className="bg-[#f7fafa] min-h-screen">
@@ -50,27 +61,56 @@ export default async function DashboardPage() {
             ))}
           </div>
 
-          {/* Split layout */}
+          {/* Bandeau profil incomplet */}
+          {!profileComplete && (
+            <div className="bg-white border border-[#004f54]/20 rounded-xl custom-shadow p-5 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-lg bg-teal-50 flex items-center justify-center text-[#004f54] shrink-0">
+                <span className="material-symbols-outlined">tune</span>
+              </div>
+              <div className="flex-1">
+                <p className="font-bold text-[#181c1d]">Affinez vos recommandations</p>
+                <p className="text-sm text-[#3f4949]">
+                  Complétez votre profil pour recevoir des recommandations plus précises et adaptées à vos besoins.
+                </p>
+              </div>
+              <Link
+                href="/profile"
+                className="shrink-0 px-4 py-2 bg-[#004f54] text-white rounded-lg font-bold text-sm hover:bg-[#003a3e] transition-colors"
+              >
+                Compléter
+              </Link>
+            </div>
+          )}
+
+          {/* Pour vous + Recette du jour */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-            {/* Produits recommandés */}
+            {/* Section "Pour vous" */}
             <div className="lg:col-span-8">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-2">
                 <h2 className="text-3xl font-bold">Bonjour, {firstName} 👋</h2>
                 <Link href="/search" className="text-sm font-semibold text-[#004f54] hover:underline">
                   Voir tout →
                 </Link>
               </div>
+              <div className="mb-6">
+                <p className="text-lg font-semibold text-[#181c1d]">Pour vous</p>
+                <p className="text-sm text-[#3f4949]">
+                  {profileComplete
+                    ? "Sélection basée sur votre profil santé"
+                    : "Sélection saine — complétez votre profil pour personnaliser"}
+                </p>
+              </div>
 
-              {products.length === 0 ? (
+              {productsRec.items.length === 0 ? (
                 <div className="bg-white rounded-xl custom-shadow p-12 text-center text-outline">
                   <span className="material-symbols-outlined text-5xl mb-3 block text-outline-variant">inventory_2</span>
-                  <p className="font-semibold">Aucun produit encore disponible.</p>
-                  <p className="text-sm mt-1">Ajoutez des produits dans Supabase pour les voir ici.</p>
+                  <p className="font-semibold">Aucune recommandation disponible.</p>
+                  <p className="text-sm mt-1">Revenez bientôt — notre catalogue s&apos;enrichit régulièrement.</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {products.map((product) => (
+                  {productsRec.items.map(({ product, recommendation_reason }) => (
                     <Link key={product.id} href={`/search/${product.id}`}
                       className="bg-white rounded-xl overflow-hidden custom-shadow group block">
                       <div className="relative h-48 bg-surface-container-low">
@@ -81,7 +121,7 @@ export default async function DashboardPage() {
                         />
                         <div className="absolute top-3 left-3 flex flex-col gap-2">
                           {product.nutri_score && (
-                            <span className={`px-2 py-0.5 font-bold text-lg rounded-md text-white ${{ A: "bg-emerald-600", B: "bg-yellow-500", C: "bg-orange-500", D: "bg-orange-700", E: "bg-red-600" }[product.nutri_score]}`}>
+                            <span className={`px-2 py-0.5 font-bold text-lg rounded-md text-white ${NUTRI_BG[product.nutri_score]}`}>
                               {product.nutri_score}
                             </span>
                           )}
@@ -94,7 +134,25 @@ export default async function DashboardPage() {
                       </div>
                       <div className="p-4">
                         <p className="text-xs font-semibold text-[#3f4949] mb-1">{product.brand ?? "—"}</p>
-                        <h4 className="font-bold">{product.name}</h4>
+                        <h4 className="font-bold mb-2 line-clamp-2">{product.name}</h4>
+                        <div className="flex items-start gap-2 text-xs">
+                          <span className="material-symbols-outlined text-[#004f54] text-base shrink-0">auto_awesome</span>
+                          <span className="font-semibold text-[#004f54] line-clamp-2">
+                            {recommendation_reason.primary}
+                          </span>
+                        </div>
+                        {recommendation_reason.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {recommendation_reason.tags.map((tag) => (
+                              <span
+                                key={tag}
+                                className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-50 text-[#004f54]"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </Link>
                   ))}
@@ -102,14 +160,14 @@ export default async function DashboardPage() {
               )}
             </div>
 
-            {/* Recette + Conseil */}
+            {/* Recette à la une + Conseil */}
             <div className="lg:col-span-4 flex flex-col gap-6">
-              {recipes[0] ? (
+              {recipesRec.items[0] ? (
                 <div className="bg-white rounded-xl overflow-hidden custom-shadow">
                   <div className="relative h-40">
                     <ProductImage
-                      src={recipes[0].image_url}
-                      alt={recipes[0].title}
+                      src={recipesRec.items[0].recipe.image_url}
+                      alt={recipesRec.items[0].recipe.title}
                       className="w-full h-full object-cover"
                       placeholderClassName="w-full h-full bg-surface-container-low flex items-center justify-center"
                       iconSize="text-4xl"
@@ -119,21 +177,25 @@ export default async function DashboardPage() {
                       <span className="bg-secondary text-white text-[10px] font-bold px-2 py-1 rounded mb-1 inline-block">
                         RECETTE DU JOUR
                       </span>
-                      <h3 className="text-white font-bold">{recipes[0].title}</h3>
+                      <h3 className="text-white font-bold">{recipesRec.items[0].recipe.title}</h3>
                     </div>
                   </div>
                   <div className="p-5">
+                    <p className="text-xs font-semibold text-[#004f54] mb-3 flex items-center gap-1">
+                      <span className="material-symbols-outlined text-base">auto_awesome</span>
+                      {recipesRec.items[0].recommendation_reason.primary}
+                    </p>
                     <div className="flex items-center justify-between mb-4 text-neutral-500 text-sm">
-                      {recipes[0].prep_time_min && (
+                      {recipesRec.items[0].recipe.prep_time_min && (
                         <span className="flex items-center gap-1">
                           <span className="material-symbols-outlined text-base">schedule</span>
-                          {recipes[0].prep_time_min} min
+                          {recipesRec.items[0].recipe.prep_time_min} min
                         </span>
                       )}
-                      {recipes[0].calories_kcal && (
+                      {recipesRec.items[0].recipe.calories_kcal && (
                         <span className="flex items-center gap-1">
                           <span className="material-symbols-outlined text-base">local_fire_department</span>
-                          {recipes[0].calories_kcal} kcal
+                          {recipesRec.items[0].recipe.calories_kcal} kcal
                         </span>
                       )}
                     </div>
@@ -165,6 +227,72 @@ export default async function DashboardPage() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Recettes adaptées */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-2xl font-bold">Recettes adaptées</h2>
+              <Link href="/recipes" className="text-sm font-semibold text-[#004f54] hover:underline">
+                Voir toutes →
+              </Link>
+            </div>
+            <p className="text-sm text-[#3f4949] mb-6">
+              Des idées de repas cohérentes avec vos besoins
+            </p>
+
+            {recipesRec.items.length <= 1 ? (
+              <div className="bg-white rounded-xl custom-shadow p-8 text-center text-outline">
+                <span className="material-symbols-outlined text-4xl mb-2 block text-outline-variant">restaurant_menu</span>
+                <p className="text-sm">Pas encore assez de recettes pour personnaliser cette sélection.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {recipesRec.items.slice(1).map(({ recipe, recommendation_reason }) => (
+                  <Link
+                    key={recipe.id}
+                    href="/recipes"
+                    className="bg-white rounded-xl overflow-hidden custom-shadow group block"
+                  >
+                    <div className="relative h-36">
+                      <ProductImage
+                        src={recipe.image_url}
+                        alt={recipe.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        placeholderClassName="w-full h-full bg-surface-container-low flex items-center justify-center"
+                        iconSize="text-3xl"
+                      />
+                      {recipe.difficulty && (
+                        <span className="absolute top-3 left-3 bg-white/90 backdrop-blur text-[10px] font-bold px-2 py-1 rounded-full uppercase">
+                          {recipe.difficulty === "easy" ? "Facile" : recipe.difficulty === "medium" ? "Moyen" : "Difficile"}
+                        </span>
+                      )}
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-bold text-sm mb-2 line-clamp-2">{recipe.title}</h4>
+                      <div className="flex items-center gap-3 text-xs text-neutral-500 mb-2">
+                        {recipe.prep_time_min !== null && (
+                          <span className="flex items-center gap-1">
+                            <span className="material-symbols-outlined text-sm">schedule</span>
+                            {recipe.prep_time_min} min
+                          </span>
+                        )}
+                        {recipe.calories_kcal !== null && (
+                          <span className="flex items-center gap-1">
+                            <span className="material-symbols-outlined text-sm">local_fire_department</span>
+                            {recipe.calories_kcal} kcal
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs font-semibold text-[#004f54] flex items-start gap-1">
+                        <span className="material-symbols-outlined text-sm shrink-0">auto_awesome</span>
+                        <span>{recommendation_reason.primary}</span>
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Commerces proches */}

@@ -5,7 +5,8 @@
       "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-turbopack --yes --skip-git-check)",
       "Bash(npx create-next-app@latest app --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-turbopack --yes)",
       "Bash(not exist *)",
-      "Bash(node scripts/seed-images.mjs)"
+      "Bash(node scripts/seed-images.mjs)",
+      "Bash(npx tsc *)"
     ]
   }
 }
