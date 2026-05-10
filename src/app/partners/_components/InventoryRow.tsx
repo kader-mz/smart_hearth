@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { updateInventoryItemAction } from "../_actions/inventory.action";
 
-interface InventoryItem {
+export interface InventoryItem {
   id: string;
   price: number;
   quantity: number;

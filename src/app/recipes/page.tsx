@@ -107,7 +107,7 @@ export default async function RecipesPage({
                           </div>
                         )}
                         <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
-                          {recipe.diet_tags.slice(0, 2).map((tag, i) => (
+                          {recipe.diet_tags.slice(0, 2).map((tag: string, i: number) => (
                             <span key={tag} className={`bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold uppercase ${i === 0 ? "text-primary" : "text-secondary"}`}>
                               {tag.replace(/_/g, " ")}
                             </span>

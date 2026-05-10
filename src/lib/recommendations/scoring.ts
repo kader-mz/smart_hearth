@@ -92,20 +92,24 @@ export function scoreProduct(
     popularity: 0,
   };
 
+  // C-1 : isCeliac couvre conditions ET goals pour protéger les utilisateurs
+  // qui ont uniquement renseigné un objectif sans condition médicale explicite.
+  const isCeliac =
+    context.conditions.includes("celiac") || context.goals.includes("avoid_gluten");
+  const isDiabetic =
+    context.conditions.includes("diabetic") || context.goals.includes("manage_diabetes");
+  const cardio =
+    context.conditions.includes("cardiovascular") || context.goals.includes("heart_health");
+  const wantsLoseWeight = context.goals.includes("lose_weight");
+
   /* ── Exclusions dures ── */
-  if (context.conditions.includes("celiac")) {
+  if (isCeliac) {
     const compatible = arrayHas(product.compatible_with, "celiac");
     const glutenFree = arrayHas(product.labels, "sans_gluten");
     if (!compatible && !glutenFree) {
       return emptyExcluded("Non compatible sans gluten");
     }
   }
-
-  const isDiabetic =
-    context.conditions.includes("diabetic") || context.goals.includes("manage_diabetes");
-  const cardio =
-    context.conditions.includes("cardiovascular") || context.goals.includes("heart_health");
-  const wantsLoseWeight = context.goals.includes("lose_weight");
 
   /* ── 1. Compatibilité santé (35) ────────────────────────────── */
   const compat = product.compatible_with ?? [];
@@ -115,7 +119,7 @@ export function scoreProduct(
   const compatHasData = compat.length > 0;
 
   if (context.conditions.length === 0) {
-    components.health = 18; // neutre quand pas de profil
+    components.health = 18;
   } else if (allMatched) {
     components.health = 35;
     signals.push("compatible_full");
@@ -123,11 +127,8 @@ export function scoreProduct(
     components.health = 22;
     signals.push("compatible_partial");
   } else if (!compatHasData) {
-    // Aucune info de compatibilité : on ne pénalise pas durement,
-    // les autres facteurs (Nutri, GI…) feront le tri.
     components.health = 14;
   } else {
-    // Le produit liste des compatibilités mais pas celles du profil.
     components.health = 8;
   }
 
@@ -165,7 +166,9 @@ export function scoreProduct(
       else components.gi = 4;
     }
   } else {
-    components.gi = isDiabetic ? 6 : 10;
+    // AM-1 : valeur neutre (10) pour les produits sans IG renseigné,
+    // évite de pénaliser les produits naturels sans métadonnée.
+    components.gi = 10;
   }
 
   /* ── 4. Fibres (10) ─────────────────────────────────────────── */
@@ -198,7 +201,7 @@ export function scoreProduct(
   /* ── 6. Labels utiles (5) ───────────────────────────────────── */
   let labelScore = 0;
   if (arrayHas(product.labels, "sans_gluten")) {
-    labelScore += context.conditions.includes("celiac") ? 3 : 1;
+    labelScore += isCeliac ? 3 : 1;
     signals.push("label_sans_gluten");
   }
   if (arrayHas(product.labels, "bio")) {
@@ -215,7 +218,7 @@ export function scoreProduct(
   if (arrayHas(product.labels, "halal")) labelScore += 0.5;
   components.labels = clamp(labelScore, 0, 5);
 
-  /* ── 7. Popularité (5) — signal faible ──────────────────────── */
+  /* ── 7. Popularité (5) — signal faible, facteur de départage ── */
   let popScore = 0;
   if (context.popularProductIds.has(product.id)) {
     popScore += 3;
@@ -226,7 +229,7 @@ export function scoreProduct(
   }
   components.popularity = clamp(popScore, 0, 5);
 
-  /* ── Garde-fous (priorité santé > popularité > nutri) ───────── */
+  /* ── Garde-fous (priorité santé) ────────────────────────────── */
 
   // Diabétique + IG élevé : on ne laisse jamais le produit passer comme "idéal".
   if (isDiabetic && gi !== null && gi !== undefined && gi >= 70) {
@@ -235,7 +238,7 @@ export function scoreProduct(
     if (idx !== -1) signals.splice(idx, 1);
   }
 
-  // Diabétique + sucres élevés : pénalité sur l'axe nutritionnel.
+  // Diabétique + sucres élevés : pénalité sur les axes nutritionnels.
   const sugars = product.sugars_g;
   if (isDiabetic && sugars !== null && sugars !== undefined && sugars > 15) {
     components.gi = Math.max(0, components.gi - 5);
@@ -245,7 +248,7 @@ export function scoreProduct(
     if (idx !== -1) signals.splice(idx, 1);
   }
 
-  // Objectif perte de poids : densité énergétique élevée pénalise nutri.
+  // Objectif perte de poids : densité énergétique élevée — pénalité silencieuse.
   if (wantsLoseWeight) {
     const kcal = product.energy_kcal;
     if (kcal !== null && kcal !== undefined && kcal >= 400) {
@@ -278,18 +281,21 @@ export function scoreRecipe(
     variety: 0,
   };
 
+  // C-1 : même protection que pour les produits.
+  const isCeliac =
+    context.conditions.includes("celiac") || context.goals.includes("avoid_gluten");
+  const isDiabetic =
+    context.conditions.includes("diabetic") || context.goals.includes("manage_diabetes");
+  const wantsLoseWeight = context.goals.includes("lose_weight");
+
   /* ── Exclusions dures ── */
-  if (context.conditions.includes("celiac")) {
+  if (isCeliac) {
     const compatible = arrayHas(recipe.compatible_with, "celiac");
     const glutenFreeTag = arrayHas(recipe.diet_tags, "sans_gluten");
     if (!compatible && !glutenFreeTag) {
       return emptyExcluded("Recette non sans gluten");
     }
   }
-
-  const isDiabetic =
-    context.conditions.includes("diabetic") || context.goals.includes("manage_diabetes");
-  const wantsLoseWeight = context.goals.includes("lose_weight");
 
   /* ── 1. Compatibilité santé (40) ─────────────────────────────── */
   const compat = recipe.compatible_with ?? [];
@@ -319,7 +325,7 @@ export function scoreRecipe(
     signals.push("low_gi");
   }
   if (arrayHas(recipe.diet_tags, "sans_gluten")) {
-    tagScore += context.conditions.includes("celiac") ? 8 : 3;
+    tagScore += isCeliac ? 8 : 3;
   }
   if (arrayHasAny(recipe.diet_tags, ["high_fiber", "fiber"])) {
     tagScore += 4;
@@ -335,7 +341,6 @@ export function scoreRecipe(
   if (cal !== null && cal !== undefined) {
     if (tdeeKcal && tdeeKcal > 0) {
       const portionShare = cal / tdeeKcal;
-      // Une portion idéale ≈ 20–40 % du TDEE
       if (portionShare >= 0.2 && portionShare <= 0.4) {
         components.calories = 15;
         signals.push("calories_balanced");
@@ -349,7 +354,6 @@ export function scoreRecipe(
         if (wantsLoseWeight) signals.push("calories_high");
       }
     } else {
-      // Sans TDEE : 250-500 kcal portion équilibrée typique
       if (cal <= 250) {
         components.calories = 11;
         signals.push("calories_light");
@@ -379,7 +383,7 @@ export function scoreRecipe(
     components.difficulty = 6;
   }
 
-  /* ── 5. Featured (10) — bonus surtout pour fallback ─────────── */
+  /* ── 5. Featured (10) ───────────────────────────────────────── */
   if (recipe.is_featured) {
     components.featured = 10;
     signals.push("featured");
@@ -388,13 +392,13 @@ export function scoreRecipe(
   }
 
   /* ── 6. Variété (5) — bonus si rapide à préparer ────────────── */
-  const total = (recipe.prep_time_min ?? 0) + (recipe.cook_time_min ?? 0);
-  if (total > 0 && total <= 20) components.variety = 5;
-  else if (total <= 40) components.variety = 3;
+  // M-2 : renommé recipeTotalTime pour éviter le shadow du champ retourné.
+  const recipeTotalTime = (recipe.prep_time_min ?? 0) + (recipe.cook_time_min ?? 0);
+  if (recipeTotalTime > 0 && recipeTotalTime <= 20) components.variety = 5;
+  else if (recipeTotalTime <= 40) components.variety = 3;
   else components.variety = 1;
 
   /* ── Garde-fous ── */
-  // Diabétique + recette sucrée/calorique hors low-gi : modérer la santé.
   if (
     isDiabetic &&
     !arrayHasAny(recipe.diet_tags, ["faible_ig", "low_gi", "diabetic_friendly"]) &&

@@ -168,7 +168,7 @@ export default async function ProfilePage() {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {healthProfile.health_conditions.length > 0 ? (
-                      healthProfile.health_conditions.map((c) => (
+                      healthProfile.health_conditions.map((c: string) => (
                         <span
                           key={c}
                           className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-semibold"
@@ -188,7 +188,7 @@ export default async function ProfilePage() {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {healthProfile.goals.length > 0 ? (
-                      healthProfile.goals.map((g) => (
+                      healthProfile.goals.map((g: string) => (
                         <span
                           key={g}
                           className="px-4 py-2 bg-surface-container text-on-surface rounded-full text-sm font-semibold"

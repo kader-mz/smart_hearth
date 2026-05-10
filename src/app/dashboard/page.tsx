@@ -3,10 +3,7 @@ import TopBar from "@/components/layout/TopBar";
 import { requireAuth, getHealthProfile } from "@/lib/auth";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { getPartners } from "@/lib/queries/partners";
-import {
-  getRecommendedProducts,
-  getRecommendedRecipes,
-} from "@/lib/recommendations/queries";
+import { getRecommendations } from "@/lib/recommendations/queries";
 import Link from "next/link";
 
 const NUTRI_BG: Record<"A" | "B" | "C" | "D" | "E", string> = {
@@ -18,14 +15,15 @@ const NUTRI_BG: Record<"A" | "B" | "C" | "D" | "E", string> = {
 };
 
 export default async function DashboardPage() {
+  // M-1 : un seul appel getRecommendations — un seul loadContext pour produits + recettes.
   const profile = await requireAuth();
-  const [healthProfile, productsRec, recipesRec, partners] = await Promise.all([
+  const [healthProfile, reco, partners] = await Promise.all([
     getHealthProfile(),
-    getRecommendedProducts(profile.id, 6),
-    getRecommendedRecipes(profile.id, 4),
+    getRecommendations(profile.id, 6, 4),
     getPartners(),
   ]);
 
+  const { products: productsRec, recipes: recipesRec } = reco;
   const firstName = profile.full_name?.split(" ")[0] ?? "vous";
   const profileComplete = productsRec.profileComplete;
 
@@ -82,6 +80,16 @@ export default async function DashboardPage() {
             </div>
           )}
 
+          {/* UX-4 : bandeau fallback si profil complet mais peu de correspondances */}
+          {profileComplete && productsRec.fallback && (
+            <div className="bg-white border border-neutral-200 rounded-xl custom-shadow p-4 flex items-center gap-3">
+              <span className="material-symbols-outlined text-[#004f54] shrink-0">info</span>
+              <p className="text-sm text-[#3f4949]">
+                Nous n&apos;avons pas trouvé de correspondance parfaite — voici une sélection saine adaptée.
+              </p>
+            </div>
+          )}
+
           {/* Pour vous + Recette du jour */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
@@ -105,8 +113,8 @@ export default async function DashboardPage() {
               {productsRec.items.length === 0 ? (
                 <div className="bg-white rounded-xl custom-shadow p-12 text-center text-outline">
                   <span className="material-symbols-outlined text-5xl mb-3 block text-outline-variant">inventory_2</span>
-                  <p className="font-semibold">Aucune recommandation disponible.</p>
-                  <p className="text-sm mt-1">Revenez bientôt — notre catalogue s&apos;enrichit régulièrement.</p>
+                  <p className="font-semibold">Aucune recommandation disponible pour le moment.</p>
+                  <p className="text-sm mt-1">Notre catalogue s&apos;enrichit régulièrement.</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -177,13 +185,13 @@ export default async function DashboardPage() {
                       <span className="bg-secondary text-white text-[10px] font-bold px-2 py-1 rounded mb-1 inline-block">
                         RECETTE DU JOUR
                       </span>
-                      <h3 className="text-white font-bold">{recipesRec.items[0].recipe.title}</h3>
+                      <h3 className="text-white font-bold line-clamp-2">{recipesRec.items[0].recipe.title}</h3>
                     </div>
                   </div>
                   <div className="p-5">
                     <p className="text-xs font-semibold text-[#004f54] mb-3 flex items-center gap-1">
-                      <span className="material-symbols-outlined text-base">auto_awesome</span>
-                      {recipesRec.items[0].recommendation_reason.primary}
+                      <span className="material-symbols-outlined text-base shrink-0">auto_awesome</span>
+                      <span className="line-clamp-2">{recipesRec.items[0].recommendation_reason.primary}</span>
                     </p>
                     <div className="flex items-center justify-between mb-4 text-neutral-500 text-sm">
                       {recipesRec.items[0].recipe.prep_time_min && (
@@ -238,8 +246,18 @@ export default async function DashboardPage() {
               </Link>
             </div>
             <p className="text-sm text-[#3f4949] mb-6">
-              Des idées de repas cohérentes avec vos besoins
+              {profileComplete
+                ? "Des idées de repas cohérentes avec vos besoins"
+                : "Des idées de repas équilibrées — complétez votre profil pour plus de pertinence"}
             </p>
+
+            {/* UX-4 : message si fallback sur les recettes avec profil complet */}
+            {profileComplete && recipesRec.fallback && recipesRec.items.length > 0 && (
+              <div className="mb-4 flex items-center gap-2 text-sm text-[#3f4949]">
+                <span className="material-symbols-outlined text-base text-[#004f54]">info</span>
+                Nous n&apos;avons pas trouvé de correspondance parfaite — voici une sélection saine adaptée.
+              </div>
+            )}
 
             {recipesRec.items.length <= 1 ? (
               <div className="bg-white rounded-xl custom-shadow p-8 text-center text-outline">
@@ -247,7 +265,7 @@ export default async function DashboardPage() {
                 <p className="text-sm">Pas encore assez de recettes pour personnaliser cette sélection.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {recipesRec.items.slice(1).map(({ recipe, recommendation_reason }) => (
                   <Link
                     key={recipe.id}
@@ -286,7 +304,7 @@ export default async function DashboardPage() {
                       </div>
                       <p className="text-xs font-semibold text-[#004f54] flex items-start gap-1">
                         <span className="material-symbols-outlined text-sm shrink-0">auto_awesome</span>
-                        <span>{recommendation_reason.primary}</span>
+                        <span className="line-clamp-2">{recommendation_reason.primary}</span>
                       </p>
                     </div>
                   </Link>

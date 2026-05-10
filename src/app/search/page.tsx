@@ -65,9 +65,9 @@ export default async function SearchPage({
               <button type="submit" className="w-full py-2 bg-primary text-on-primary text-sm font-semibold rounded-lg hover:opacity-90">
                 Rechercher
               </button>
-              <a href="/search" className="block w-full text-center text-sm text-outline hover:text-on-surface">
+              <Link href="/search" className="block w-full text-center text-sm text-outline hover:text-on-surface">
                 Réinitialiser
-              </a>
+              </Link>
             </form>
           </aside>
 

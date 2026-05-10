@@ -39,8 +39,8 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Connecté sur /login → /dashboard
-  if (user && pathname === "/login") {
+  // Connecté sur /login ou /register → /dashboard
+  if (user && (pathname === "/login" || pathname === "/register")) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);

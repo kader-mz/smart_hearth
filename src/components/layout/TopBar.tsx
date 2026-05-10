@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface TopBarProps {
   dark?: boolean;
   userName?: string;
@@ -36,10 +38,12 @@ export default function TopBar({
               <p className="text-sm font-bold text-neutral-200">{userName}</p>
               <p className="text-[10px] text-neutral-500 font-semibold">{userRole}</p>
             </div>
-            <img
-              alt="User Profile"
-              className="w-8 h-8 rounded-full bg-teal-900 border border-teal-800 object-cover"
+            <Image
               src={userAvatar}
+              alt="User Profile"
+              width={40}
+              height={40}
+              className="w-8 h-8 rounded-full bg-teal-900 border border-teal-800 object-cover"
             />
           </div>
         </div>
@@ -67,7 +71,13 @@ export default function TopBar({
           <span className="absolute top-2 right-2 w-2 h-2 bg-[#ae2f34] rounded-full" />
         </button>
         <div className="h-8 w-8 rounded-full overflow-hidden border border-neutral-200 ml-2">
-          <img alt="User Profile" src={userAvatar} className="w-full h-full object-cover" />
+          <Image
+            src={userAvatar}
+            alt="User Profile"
+            width={40}
+            height={40}
+            className="w-full h-full object-cover"
+          />
         </div>
       </div>
     </header>

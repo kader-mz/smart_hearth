@@ -13,7 +13,7 @@ const step2Schema = z.object({
 export async function saveStep2Action(input: unknown) {
   const parsed = step2Schema.safeParse(input);
   if (!parsed.success) {
-    return { error: parsed.error.errors[0].message };
+    return { error: parsed.error.issues[0].message };
   }
 
   const cookieStore = await cookies();

@@ -14,7 +14,7 @@ const updateItemSchema = z.object({
 
 export async function updateInventoryItemAction(input: unknown) {
   const parsed = updateItemSchema.safeParse(input);
-  if (!parsed.success) return { error: parsed.error.errors[0].message };
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
 
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);

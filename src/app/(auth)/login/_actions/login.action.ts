@@ -13,7 +13,7 @@ const loginSchema = z.object({
 export async function loginAction(input: unknown) {
   const parsed = loginSchema.safeParse(input);
   if (!parsed.success) {
-    return { error: parsed.error.errors[0].message };
+    return { error: parsed.error.issues[0].message };
   }
 
   const cookieStore = await cookies();

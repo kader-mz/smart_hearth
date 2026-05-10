@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireAuth } from "@/lib/auth";
 import { getMyPartner, getPartnerWithInventory, getPartnerDashboardStats } from "@/lib/queries/partners";
-import { InventoryRow } from "./_components/InventoryRow";
+import { InventoryRow, type InventoryItem } from "./_components/InventoryRow";
 
 export default async function PartnersPage() {
   const [profile, partner] = await Promise.all([
@@ -273,7 +273,7 @@ export default async function PartnersPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-neutral-100">
-                    {inventory.map((item, i) => (
+                    {(inventory as InventoryItem[]).map((item, i) => (
                       <InventoryRow
                         key={item.id}
                         item={{

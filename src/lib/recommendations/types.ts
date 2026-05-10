@@ -1,15 +1,16 @@
 import type { Product, Recipe, UserHealthProfile } from "@/lib/database.types";
 
+// M-3 : bmr_kcal retiré — jamais utilisé dans le scoring.
 export type HealthProfileForRecommendations = Pick<
   UserHealthProfile,
   | "health_conditions"
   | "goals"
   | "tdee_kcal"
-  | "bmr_kcal"
   | "activity_level"
   | "is_complete"
 > | null;
 
+// DT-2 : is_published retiré — toujours true après le filtre Supabase.
 export type ProductForRecommendations = Pick<
   Product,
   | "id"
@@ -27,7 +28,6 @@ export type ProductForRecommendations = Pick<
   | "fiber_g"
   | "protein_g"
   | "sodium_g"
-  | "is_published"
 >;
 
 export type RecipeForRecommendations = Pick<
@@ -57,9 +57,9 @@ export interface RecommendationContext {
   savedProductIds: Set<string>;
   /** Identifiants des recettes déjà sauvegardées par l'utilisateur. */
   savedRecipeIds: Set<string>;
-  /** Produits ayant attiré l'utilisateur via vues partenaires (boost léger). */
+  /** Produits vus via partenaires ou recherches — facteur de départage silencieux. */
   popularProductIds: Set<string>;
-  /** Catégories implicitement intéressantes (issues des recherches/vues). */
+  /** Catégories implicitement intéressantes issues des comportements. */
   affinityCategoryIds: Set<string>;
 }
 
@@ -69,11 +69,9 @@ export interface RecommendationReason {
 }
 
 /**
- * Décomposition du score. Les clés de `components` sont libres mais doivent
- * rester stables (utilisées par les tests/UI). Pour les produits :
- *   health, nutri, gi, fiber, sodium, labels, popularity
- * Pour les recettes :
- *   health, diet_tags, calories, difficulty, featured, variety
+ * Décomposition du score. Les clés de `components` sont stables.
+ * Produits  : health, nutri, gi, fiber, sodium, labels, popularity
+ * Recettes  : health, diet_tags, calories, difficulty, featured, variety
  */
 export interface ScoreBreakdown {
   total: number;
@@ -83,24 +81,29 @@ export interface ScoreBreakdown {
   signals: string[];
 }
 
+// M-5 : recommendation_tags supprimé — les tags visibles sont dans recommendation_reason.tags.
 export interface RecommendedProduct {
   product: ProductForRecommendations;
   recommendation_score: number;
   recommendation_reason: RecommendationReason;
-  recommendation_tags: string[];
 }
 
 export interface RecommendedRecipe {
   recipe: RecipeForRecommendations;
   recommendation_score: number;
   recommendation_reason: RecommendationReason;
-  recommendation_tags: string[];
 }
 
 export interface RecommendationResult<T> {
   items: T[];
-  /** Indique si on est en fallback (profil absent/incomplet ou pas de match). */
+  /** True si les recommandations sont en mode fallback (profil absent/incomplet ou pas de match qualifié). */
   fallback: boolean;
-  /** Vrai si l'utilisateur a un profil santé complet. */
+  /** True si le profil santé de l'utilisateur est complet. */
   profileComplete: boolean;
+}
+
+/** Résultat combiné retourné par la facade getRecommendations. */
+export interface RecommendationsBundle {
+  products: RecommendationResult<RecommendedProduct>;
+  recipes: RecommendationResult<RecommendedRecipe>;
 }

@@ -1,5 +1,4 @@
 import type {
-  ProductForRecommendations,
   RecipeForRecommendations,
   RecommendationContext,
   RecommendationReason,
@@ -11,7 +10,7 @@ import type {
 const PRODUCT_TAG_LABELS: Record<string, string> = {
   gi_excellent: "IG très bas",
   gi_good: "IG bas",
-  gi_medium: "IG modéré",
+  // UX-3 : gi_medium supprimé — "IG modéré" peut induire en erreur pour diabétiques.
   fiber_high: "Riche en fibres",
   fiber_good: "Source de fibres",
   nutri_a: "Nutri-Score A",
@@ -19,7 +18,8 @@ const PRODUCT_TAG_LABELS: Record<string, string> = {
   label_sans_gluten: "Sans gluten",
   label_bio: "Bio",
   label_vegan: "Vegan",
-  popular: "Tendance",
+  // UX-2 : "popular" géré dynamiquement selon le profil (voir buildProductRecommendationReason).
+  popular: "Populaire",
 };
 
 const RECIPE_TAG_LABELS: Record<string, string> = {
@@ -31,6 +31,13 @@ const RECIPE_TAG_LABELS: Record<string, string> = {
   calories_light: "Léger",
 };
 
+/* ── Conditions médicales qui rendent le tag "Populaire" trompeur ── */
+const MEDICAL_CONDITIONS = new Set(["diabetic", "celiac", "cardiovascular"]);
+
+function hasMedicalCondition(context: RecommendationContext): boolean {
+  return context.conditions.some((c) => MEDICAL_CONDITIONS.has(c));
+}
+
 /* ── Sélection de la raison primaire — une seule, jamais vide ── */
 
 function pickPrimaryProductReason(
@@ -40,7 +47,6 @@ function pickPrimaryProductReason(
   const sig = breakdown.signals;
   const has = (s: string) => sig.includes(s);
 
-  // Profil incomplet → message générique sain (pas de promesse personnelle).
   if (!context.hasProfile) {
     if (has("nutri_a")) return "Nutri-Score A";
     if (has("nutri_b")) return "Bon profil nutritionnel";
@@ -48,17 +54,17 @@ function pickPrimaryProductReason(
     return "Sélection saine";
   }
 
-  // Diabète : prioriser l'IG.
   const isDiabetic =
     context.conditions.includes("diabetic") || context.goals.includes("manage_diabetes");
   if (isDiabetic) {
     if (has("gi_excellent")) return "Faible indice glycémique";
     if (has("gi_good")) return "Indice glycémique adapté";
-    if (has("fiber_high")) return "Riche en fibres, idéal pour la glycémie";
+    if (has("fiber_high")) return "Riche en fibres, favorable à la glycémie";
   }
 
-  // Cœliaque : sans gluten est l'argument le plus rassurant.
-  if (context.conditions.includes("celiac") && has("label_sans_gluten")) {
+  const isCeliac =
+    context.conditions.includes("celiac") || context.goals.includes("avoid_gluten");
+  if (isCeliac && has("label_sans_gluten")) {
     return "Compatible avec une alimentation sans gluten";
   }
 
@@ -92,11 +98,9 @@ function pickPrimaryRecipeReason(
     return "Adaptée à un meilleur contrôle de la glycémie";
   }
 
-  if (
-    context.conditions.includes("celiac") &&
-    recipe.diet_tags &&
-    recipe.diet_tags.includes("sans_gluten")
-  ) {
+  const isCeliac =
+    context.conditions.includes("celiac") || context.goals.includes("avoid_gluten");
+  if (isCeliac && recipe.diet_tags && recipe.diet_tags.includes("sans_gluten")) {
     return "Compatible avec une alimentation sans gluten";
   }
 
@@ -109,16 +113,16 @@ function pickPrimaryRecipeReason(
   return "Recette suggérée pour vous";
 }
 
-/* ── Construction des tags secondaires (sans dupliquer la raison) ── */
+/* ── Tags secondaires (sans dupliquer la raison primaire) ───────── */
 
+// DT-1 : "IG très bas" supprimé — aucune raison primaire ne retourne cette chaîne.
 const PRODUCT_REASON_DEDUP: Record<string, readonly string[]> = {
   "Nutri-Score A": ["nutri_a", "nutri_b"],
   "Bon profil nutritionnel": ["nutri_b"],
-  "IG très bas": ["gi_excellent", "gi_good", "gi_medium"],
   "Faible indice glycémique": ["gi_excellent", "gi_good"],
-  "Indice glycémique adapté": ["gi_good", "gi_medium"],
+  "Indice glycémique adapté": ["gi_good"],
   "Riche en fibres": ["fiber_high", "fiber_good"],
-  "Riche en fibres, idéal pour la glycémie": ["fiber_high", "fiber_good"],
+  "Riche en fibres, favorable à la glycémie": ["fiber_high", "fiber_good"],
   "Compatible avec une alimentation sans gluten": ["label_sans_gluten"],
 };
 
@@ -154,13 +158,20 @@ function buildTags(
 }
 
 export function buildProductRecommendationReason(
-  _product: ProductForRecommendations,
+  _product: unknown,
   breakdown: ScoreBreakdown,
   context: RecommendationContext,
 ): RecommendationReason {
   const primary = pickPrimaryProductReason(breakdown, context);
   const exclude = PRODUCT_REASON_DEDUP[primary] ?? [];
-  return { primary, tags: buildTags(breakdown.signals, PRODUCT_TAG_LABELS, exclude) };
+
+  // UX-2 : pour les profils médicaux, le signal "popular" ne génère aucun tag visible.
+  // Il reste actif dans le scoring comme facteur de départage silencieux.
+  const signalsForTags = hasMedicalCondition(context)
+    ? breakdown.signals.filter((s) => s !== "popular")
+    : breakdown.signals;
+
+  return { primary, tags: buildTags(signalsForTags, PRODUCT_TAG_LABELS, exclude) };
 }
 
 export function buildRecipeRecommendationReason(
