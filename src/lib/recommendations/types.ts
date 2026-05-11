@@ -106,4 +106,8 @@ export interface RecommendationResult<T> {
 export interface RecommendationsBundle {
   products: RecommendationResult<RecommendedProduct>;
   recipes: RecommendationResult<RecommendedRecipe>;
+  /** Nombre de produits déjà sauvegardés par l'utilisateur. */
+  savedProductCount: number;
+  /** Nombre de recettes déjà sauvegardées par l'utilisateur. */
+  savedRecipeCount: number;
 }

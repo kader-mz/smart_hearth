@@ -38,7 +38,7 @@ export async function getMyPartner() {
     .from("partners")
     .select("*")
     .eq("owner_id", user.id)
-    .single();
+    .maybeSingle();
   return data;
 }
 

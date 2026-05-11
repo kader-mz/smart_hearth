@@ -13,11 +13,24 @@ export interface ProductFilters {
   perPage?: number;
 }
 
+export const PRODUCTS_PER_PAGE = 12;
+
 export async function getProducts(filters: ProductFilters = {}) {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
-  const { page = 1, perPage = 12 } = filters;
+  const { page = 1, perPage = PRODUCTS_PER_PAGE } = filters;
   const from = (page - 1) * perPage;
+
+  // Résoudre categorySlug en category_id avant la requête principale.
+  let categoryId: string | undefined;
+  if (filters.categorySlug) {
+    const { data: cat } = await supabase
+      .from("product_categories")
+      .select("id")
+      .eq("slug", filters.categorySlug)
+      .maybeSingle();
+    if (cat) categoryId = cat.id;
+  }
 
   let query = supabase
     .from("products")
@@ -25,6 +38,7 @@ export async function getProducts(filters: ProductFilters = {}) {
     .eq("is_published", true)
     .range(from, from + perPage - 1);
 
+  if (categoryId) query = query.eq("category_id", categoryId);
   if (filters.search) query = query.ilike("name", `%${filters.search}%`);
   if (filters.nutriScore?.length) query = query.in("nutri_score", filters.nutriScore);
   if (filters.maxGlycemicIndex !== undefined) query = query.lte("glycemic_index", filters.maxGlycemicIndex);

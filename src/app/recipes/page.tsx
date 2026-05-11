@@ -1,26 +1,82 @@
+import Image from "next/image";
+import Link from "next/link";
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
-import { requireAuth } from "@/lib/auth";
-import { getRecipes } from "@/lib/queries/recipes";
+import { requireAuth, getHealthProfile } from "@/lib/auth";
+import { getRecipes, RECIPES_PER_PAGE } from "@/lib/queries/recipes";
 import { getSavedRecipeIds } from "@/lib/queries/favorites";
 
 const difficultyLabel: Record<string, string> = { easy: "Facile", medium: "Moyen", hard: "Difficile" };
 
+const conditionLabels: Record<string, string> = {
+  diabetic: "Diabète",
+  celiac: "Cœliaque",
+  healthy: "Mode Sain",
+  vegetarian: "Végétarien",
+  vegan: "Végétalien",
+  keto: "Kéto",
+};
+
 export default async function RecipesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tags?: string; q?: string }>;
+  searchParams: Promise<{ tags?: string; q?: string; page?: string; all?: string }>;
 }) {
   const params = await searchParams;
   const tags = params.tags ? params.tags.split(",") : [];
+  const page = Math.max(1, Number(params.page ?? 1));
+  // `all=1` lets the user bypass the implicit profile filter.
+  const showAll = params.all === "1";
 
-  const [, recipes, savedIds] = await Promise.all([
-    requireAuth(),
-    getRecipes({ dietTags: tags.length ? tags : undefined, search: params.q }),
+  const [, healthProfile] = await Promise.all([requireAuth(), getHealthProfile()]);
+
+  const activeConditions =
+    healthProfile?.is_complete ? ((healthProfile.health_conditions ?? []) as string[]) : [];
+
+  const filterByProfile = activeConditions.length > 0 && !showAll;
+
+  const [{ recipes, total }, savedIds] = await Promise.all([
+    getRecipes({
+      dietTags: tags.length ? tags : undefined,
+      search: params.q,
+      page,
+      compatibleWith: filterByProfile ? activeConditions : undefined,
+    }),
     getSavedRecipeIds(),
   ]);
 
+  const totalPages = Math.ceil(total / RECIPES_PER_PAGE);
+  const conditionNames = activeConditions.map((c) => conditionLabels[c] ?? c).join(", ");
+
   const allTags = ["faible_ig", "sans_gluten", "vegetalien", "keto", "premium", "eco"];
+
+  function pageHref(p: number) {
+    const qs = new URLSearchParams();
+    if (params.q) qs.set("q", params.q);
+    if (tags.length) qs.set("tags", tags.join(","));
+    if (showAll) qs.set("all", "1");
+    if (p > 1) qs.set("page", String(p));
+    const s = qs.toString();
+    return `/recipes${s ? `?${s}` : ""}`;
+  }
+
+  // Href that bypasses the profile filter while keeping search/tags.
+  function allRecipesHref() {
+    const qs = new URLSearchParams();
+    if (params.q) qs.set("q", params.q);
+    if (tags.length) qs.set("tags", tags.join(","));
+    qs.set("all", "1");
+    return `/recipes?${qs.toString()}`;
+  }
+
+  // Href that re-activates the profile filter while keeping search/tags.
+  function profileFilterHref() {
+    const qs = new URLSearchParams();
+    if (params.q) qs.set("q", params.q);
+    if (tags.length) qs.set("tags", tags.join(","));
+    const s = qs.toString();
+    return `/recipes${s ? `?${s}` : ""}`;
+  }
 
   return (
     <div className="bg-[#f7fafa] min-h-screen">
@@ -36,7 +92,6 @@ export default async function RecipesPage({
           </div>
 
           <form className="flex flex-col gap-6 flex-1">
-            {/* Recherche */}
             <div>
               <label className="text-sm font-semibold text-on-surface block mb-2">Recherche</label>
               <input name="q" defaultValue={params.q}
@@ -44,7 +99,6 @@ export default async function RecipesPage({
                 className="w-full bg-surface-container-low border border-outline-variant rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20" />
             </div>
 
-            {/* Tags */}
             <div>
               <label className="text-sm font-semibold text-on-surface block mb-3">Régimes &amp; Santé</label>
               <div className="flex flex-wrap gap-2">
@@ -69,7 +123,7 @@ export default async function RecipesPage({
               </button>
               {(tags.length > 0 || params.q) && (
                 <a href="/recipes" className="block text-center text-xs text-outline mt-3 hover:text-on-surface">
-                  Réinitialiser
+                  Effacer les filtres
                 </a>
               )}
             </div>
@@ -79,18 +133,86 @@ export default async function RecipesPage({
         {/* Grille recettes */}
         <section className="flex-1 p-6 overflow-y-auto">
           <div className="max-w-5xl mx-auto">
+
+            {/* Banner — filtre profil actif */}
+            {filterByProfile && (
+              <div className="flex items-center gap-3 bg-primary/5 border border-primary/20 rounded-xl px-5 py-3 mb-6">
+                <span className="material-symbols-outlined text-primary text-lg shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  health_and_safety
+                </span>
+                <p className="text-sm text-on-surface flex-1">
+                  <span className="font-semibold">Recettes adaptées à votre profil :</span>{" "}
+                  {conditionNames}
+                </p>
+                <Link href={allRecipesHref()} className="shrink-0 text-xs font-semibold text-primary hover:underline whitespace-nowrap">
+                  Voir toutes →
+                </Link>
+              </div>
+            )}
+
+            {/* Banner — filtre profil désactivé par l'utilisateur */}
+            {activeConditions.length > 0 && showAll && (
+              <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl px-5 py-3 mb-6">
+                <span className="material-symbols-outlined text-amber-600 text-lg shrink-0">info</span>
+                <p className="text-sm text-amber-800 flex-1">
+                  Filtre profil désactivé — toutes les recettes sont affichées.
+                </p>
+                <Link href={profileFilterHref()} className="shrink-0 text-xs font-semibold text-amber-700 hover:underline whitespace-nowrap">
+                  Réactiver →
+                </Link>
+              </div>
+            )}
+
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-3xl font-bold text-on-surface">
-                {recipes.length} recette{recipes.length > 1 ? "s" : ""}
+                {total} recette{total > 1 ? "s" : ""}
               </h2>
+              {totalPages > 1 && (
+                <p className="text-sm text-outline">Page {page} sur {totalPages}</p>
+              )}
             </div>
 
             {recipes.length === 0 ? (
-              <div className="bg-white rounded-xl custom-shadow p-16 text-center">
-                <span className="material-symbols-outlined text-6xl text-outline-variant mb-4 block">restaurant_menu</span>
-                <p className="font-semibold text-on-surface">Aucune recette trouvée.</p>
-                <p className="text-sm text-outline mt-1">Ajoutez des recettes dans Supabase ou modifiez les filtres.</p>
-              </div>
+              filterByProfile ? (
+                /* Empty state spécifique : le filtre profil est la cause */
+                <div className="bg-white rounded-xl custom-shadow p-12 text-center">
+                  <span
+                    className="material-symbols-outlined text-5xl text-primary/30 mb-4 block"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  >
+                    health_and_safety
+                  </span>
+                  <h3 className="text-xl font-bold text-on-surface mb-3">
+                    Aucune recette compatible avec votre profil
+                  </h3>
+                  <p className="text-sm text-outline max-w-sm mx-auto mb-6">
+                    Votre profil nutritionnel{" "}
+                    <span className="font-semibold text-on-surface">({conditionNames})</span>{" "}
+                    filtre les recettes affichées. Aucune recette adaptée n&apos;a été trouvée pour le moment.
+                  </p>
+                  <div className="flex items-center justify-center gap-3 flex-wrap">
+                    <Link
+                      href={allRecipesHref()}
+                      className="px-5 py-2.5 bg-primary text-on-primary text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity"
+                    >
+                      Voir toutes les recettes
+                    </Link>
+                    <Link
+                      href="/profile"
+                      className="px-5 py-2.5 border border-outline-variant text-on-surface text-sm font-semibold rounded-xl hover:bg-surface-container transition-colors"
+                    >
+                      Modifier mon profil
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                /* Empty state générique : filtres manuels actifs ou catalogue vide */
+                <div className="bg-white rounded-xl custom-shadow p-16 text-center">
+                  <span className="material-symbols-outlined text-6xl text-outline-variant mb-4 block">restaurant_menu</span>
+                  <p className="font-semibold text-on-surface">Aucune recette trouvée.</p>
+                  <p className="text-sm text-outline mt-1">Modifiez vos filtres de recherche.</p>
+                </div>
+              )
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {recipes.map((recipe) => {
@@ -99,8 +221,13 @@ export default async function RecipesPage({
                     <div key={recipe.id} className="bg-white rounded-xl overflow-hidden shadow-[0px_2px_4px_rgba(40,37,29,0.05)] group cursor-pointer border border-neutral-100">
                       <div className="relative h-56 overflow-hidden bg-surface-container-low">
                         {recipe.image_url ? (
-                          <img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            src={recipe.image_url} alt={recipe.title} />
+                          <Image
+                            fill
+                            sizes="(max-width: 1024px) 100vw, 50vw"
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            src={recipe.image_url}
+                            alt={recipe.title}
+                          />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
                             <span className="material-symbols-outlined text-6xl text-outline-variant">restaurant</span>
@@ -135,12 +262,6 @@ export default async function RecipesPage({
                               {recipe.calories_kcal} kcal
                             </div>
                           )}
-                          {recipe.price_estimate && (
-                            <div className="flex items-center gap-1">
-                              <span className="material-symbols-outlined text-sm">euro_symbol</span>
-                              {recipe.price_estimate}€
-                            </div>
-                          )}
                           {recipe.difficulty && (
                             <div className="flex items-center gap-1">
                               <span className="material-symbols-outlined text-sm">fitness_center</span>
@@ -152,6 +273,36 @@ export default async function RecipesPage({
                     </div>
                   );
                 })}
+              </div>
+            )}
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between bg-white px-6 py-4 rounded-xl custom-shadow mt-8">
+                <span className="text-sm text-outline">Page {page} sur {totalPages}</span>
+                <div className="flex items-center gap-1">
+                  {page > 1 && (
+                    <a href={pageHref(page - 1)}
+                      className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container">
+                      <span className="material-symbols-outlined text-lg">chevron_left</span>
+                    </a>
+                  )}
+                  {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                    const p = Math.max(1, Math.min(page - 2, totalPages - 4)) + i;
+                    return (
+                      <a key={p} href={pageHref(p)}
+                        className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-semibold ${p === page ? "bg-primary text-on-primary" : "hover:bg-surface-container text-outline"}`}>
+                        {p}
+                      </a>
+                    );
+                  })}
+                  {page < totalPages && (
+                    <a href={pageHref(page + 1)}
+                      className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container">
+                      <span className="material-symbols-outlined text-lg">chevron_right</span>
+                    </a>
+                  )}
+                </div>
               </div>
             )}
           </div>

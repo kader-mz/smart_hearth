@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
 
@@ -144,9 +145,11 @@ export default function DashboardDarkPage() {
                 },
               ].map((recipe) => (
                 <div key={recipe.name} className="col-span-1 glass-card rounded-xl overflow-hidden group">
-                  <div className="h-40 bg-neutral-800 overflow-hidden">
-                    <img
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  <div className="h-40 bg-neutral-800 overflow-hidden relative">
+                    <Image
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
                       src={recipe.img}
                       alt={recipe.name}
                     />

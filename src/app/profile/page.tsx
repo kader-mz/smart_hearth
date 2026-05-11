@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
 import { requireAuth, getHealthProfile } from "@/lib/auth";
@@ -48,10 +49,12 @@ export default async function ProfilePage() {
           <div className="bg-white rounded-2xl custom-shadow p-8 flex items-center gap-6">
             <div className="w-20 h-20 rounded-full bg-primary-container flex items-center justify-center text-on-primary text-3xl font-bold shrink-0">
               {profile.avatar_url ? (
-                <img
+                <Image
+                  width={80}
+                  height={80}
                   src={profile.avatar_url}
                   alt={profile.full_name ?? ""}
-                  className="w-full h-full rounded-full object-cover"
+                  className="rounded-full object-cover"
                 />
               ) : (
                 <span>{(profile.full_name ?? profile.email)[0].toUpperCase()}</span>

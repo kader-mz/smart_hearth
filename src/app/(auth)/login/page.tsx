@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { AuthTabs } from "./_components/AuthTabs";
 
 export default function LoginPage() {
@@ -37,8 +38,8 @@ export default function LoginPage() {
               { name: "Sophie, 35 ans", tag: "Healthy", tagBg: "bg-[#ff6b6b] text-white", avatarBg: "bg-[#85d3da]", desc: "Optimisation des micronutriments et recettes vitalité.", offset: "translate-x-8", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuAd1_z87vFvICOlN5R6jBkgzcKZ8q9KQ50E2RouSQIDbnUSiWFnXNcCgZvX2yP9AcOO7qBW_v-Ho_OWyYV-WzBWzdtZJ4wuteaFtNqcSxNAdRel3UEFLiTqCVFSp2QCiSO2oMuJmoRA1JuQhSfDVE36BqPR4nGS6s86GcS6nsC2oacQuQd-Ug_9AKX3pmYuQi9GzZl1bz9sfjhHHh-AuVWu_UGafUkaOJeyXc2A4o0AMt6ooD7IxXo1kkK2-dkX6-3Z7R7NxDNS7M-m" },
             ].map((p) => (
               <div key={p.name} className={`bg-white p-6 rounded-xl custom-shadow flex items-center gap-6 ${p.offset}`}>
-                <div className={`w-16 h-16 rounded-full overflow-hidden shrink-0 ${p.avatarBg}`}>
-                  <img className="w-full h-full object-cover" src={p.src} alt={p.name} />
+                <div className={`w-16 h-16 rounded-full overflow-hidden shrink-0 relative ${p.avatarBg}`}>
+                  <Image fill className="object-cover" src={p.src} alt={p.name} sizes="64px" />
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between items-center mb-1">

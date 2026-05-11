@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
+import type { Recipe } from "@/lib/database.types";
 
 export interface RecipeFilters {
   dietTags?: string[];
@@ -8,31 +9,38 @@ export interface RecipeFilters {
   maxCalories?: number;
   search?: string;
   featured?: boolean;
-  limit?: number;
+  page?: number;
+  perPage?: number;
 }
 
-export async function getRecipes(filters: RecipeFilters = {}) {
+export const RECIPES_PER_PAGE = 24;
+
+export async function getRecipes(
+  filters: RecipeFilters = {},
+): Promise<{ recipes: Recipe[]; total: number }> {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
+  const { page = 1, perPage = RECIPES_PER_PAGE } = filters;
+  const from = (page - 1) * perPage;
 
   let query = supabase
     .from("recipes")
-    .select("*")
+    .select("*", { count: "exact" })
     .eq("is_published", true)
     .order("is_featured", { ascending: false })
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(from, from + perPage - 1);
 
   if (filters.featured) query = query.eq("is_featured", true);
-  if (filters.limit) query = query.limit(filters.limit);
   if (filters.search) query = query.ilike("title", `%${filters.search}%`);
   if (filters.dietTags?.length) query = query.overlaps("diet_tags", filters.dietTags);
   if (filters.compatibleWith?.length) query = query.overlaps("compatible_with", filters.compatibleWith);
   if (filters.maxPrice !== undefined) query = query.lte("price_estimate", filters.maxPrice);
   if (filters.maxCalories !== undefined) query = query.lte("calories_kcal", filters.maxCalories);
 
-  const { data, error } = await query;
+  const { data, count, error } = await query;
   if (error) throw error;
-  return data ?? [];
+  return { recipes: (data ?? []) as Recipe[], total: count ?? 0 };
 }
 
 export async function getRecipeById(id: string) {

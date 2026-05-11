@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { requireAuth } from "@/lib/auth";
 import { getMyPartner, getPartnerWithInventory, getPartnerDashboardStats } from "@/lib/queries/partners";
@@ -117,7 +118,7 @@ export default async function PartnersPage() {
           <div className="flex items-center gap-2">
             <span className="text-sm font-bold text-[#01696F]">{profile.full_name ?? profile.email}</span>
             {profile.avatar_url ? (
-              <img alt="Profil" className="w-8 h-8 rounded-full object-cover border border-neutral-200" src={profile.avatar_url} />
+              <Image width={32} height={32} alt="Profil" className="rounded-full object-cover border border-neutral-200" src={profile.avatar_url} />
             ) : (
               <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-[#01696f] font-bold text-sm">
                 {(profile.full_name ?? profile.email)[0].toUpperCase()}

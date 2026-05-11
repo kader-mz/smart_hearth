@@ -248,6 +248,8 @@ export async function getRecommendations(
       tdee,
       recipeLimit,
     ),
+    savedProductCount: context.savedProductIds.size,
+    savedRecipeCount: context.savedRecipeIds.size,
   };
 }
 

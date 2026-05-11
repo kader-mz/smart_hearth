@@ -4,5 +4,8 @@
       "Bash(npm install *)",
       "Bash(npx next *)"
     ]
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true
   }
 }

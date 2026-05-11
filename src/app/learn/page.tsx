@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
@@ -191,10 +192,12 @@ export default async function LearnPage({
                     {/* Hero */}
                     <div className="h-64 relative">
                       {featured.image_url ? (
-                        <img
-                          alt={featured.title}
-                          className="w-full h-full object-cover"
+                        <Image
+                          fill
+                          sizes="(max-width: 1024px) 100vw, 50vw"
+                          className="object-cover"
                           src={featured.image_url}
+                          alt={featured.title}
                         />
                       ) : (
                         <div className="w-full h-full bg-[#004f54]/10 flex items-center justify-center">

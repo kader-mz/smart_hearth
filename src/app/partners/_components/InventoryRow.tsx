@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { updateInventoryItemAction } from "../_actions/inventory.action";
 
@@ -39,9 +40,11 @@ export function InventoryRow({ item, isOdd }: { item: InventoryItem; isOdd: bool
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
           {item.products?.image_url ? (
-            <img
+            <Image
+              width={40}
+              height={40}
               alt={item.products.name}
-              className="w-10 h-10 rounded-lg object-cover"
+              className="rounded-lg object-cover"
               src={item.products.image_url}
             />
           ) : (

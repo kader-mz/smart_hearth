@@ -1,8 +1,9 @@
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
-import { requireAuth } from "@/lib/auth";
-import { getProducts } from "@/lib/queries/products";
+import { requireAuth, getHealthProfile } from "@/lib/auth";
+import { getProducts, PRODUCTS_PER_PAGE } from "@/lib/queries/products";
 import { getSavedProductIds } from "@/lib/queries/favorites";
+import { getProductProfileWarning, WARNING_STYLES } from "@/lib/nutrition/productWarnings";
 import Link from "next/link";
 import { ProductImage } from "@/components/ui/ProductImage";
 
@@ -11,20 +12,53 @@ const scoreColors: Record<string, string> = {
   C: "bg-orange-500",  D: "bg-orange-700", E: "bg-red-600",
 };
 
+const conditionLabels: Record<string, string> = {
+  diabetic: "Diabète",
+  celiac: "Cœliaque",
+  healthy: "Mode Sain",
+  vegetarian: "Végétarien",
+  vegan: "Végétalien",
+  keto: "Kéto",
+};
+
 export default async function SearchPage({
   searchParams,
 }: {
   searchParams: Promise<{ q?: string; score?: string; page?: string }>;
 }) {
   const params = await searchParams;
-  const page = Number(params.page ?? 1);
-  const [, { products, total }, savedIds] = await Promise.all([
+  const page = Math.max(1, Number(params.page ?? 1));
+
+  const [, healthProfile, { products, total }, savedIds] = await Promise.all([
     requireAuth(),
-    getProducts({ search: params.q, nutriScore: params.score ? [params.score] : undefined, page }),
+    getHealthProfile(),
+    getProducts({
+      search: params.q,
+      nutriScore: params.score ? [params.score] : undefined,
+      page,
+    }),
     getSavedProductIds(),
   ]);
 
-  const totalPages = Math.ceil(total / 12);
+  const activeConditions =
+    healthProfile?.is_complete ? ((healthProfile.health_conditions ?? []) as string[]) : [];
+
+  const totalPages = Math.ceil(total / PRODUCTS_PER_PAGE);
+
+  function pageHref(p: number) {
+    const qs = new URLSearchParams();
+    if (params.q) qs.set("q", params.q);
+    if (params.score) qs.set("score", params.score);
+    if (p > 1) qs.set("page", String(p));
+    const s = qs.toString();
+    return `/search${s ? `?${s}` : ""}`;
+  }
+
+  const windowStart = Math.max(1, Math.min(page - 2, totalPages - 4));
+  const pageWindow = Array.from(
+    { length: Math.min(5, totalPages) },
+    (_, i) => windowStart + i,
+  );
 
   return (
     <div className="bg-[#f7fafa] min-h-screen">
@@ -34,7 +68,7 @@ export default async function SearchPage({
       <main className="pl-60 pt-[60px] min-h-screen">
         <div className="p-8 max-w-7xl mx-auto flex gap-8">
 
-          {/* Filter Panel */}
+          {/* Panneau filtres */}
           <aside className="w-64 shrink-0">
             <form className="bg-white rounded-xl p-6 custom-shadow space-y-8">
               <div>
@@ -53,12 +87,18 @@ export default async function SearchPage({
               <div>
                 <h4 className="text-sm font-semibold text-on-surface mb-4">Nutri-Score</h4>
                 <div className="flex flex-wrap gap-2">
-                  {["A", "B", "C", "D", "E"].map((s) => (
-                    <a key={s} href={`/search?score=${s}`}
-                      className={`w-8 h-8 flex items-center justify-center rounded font-bold text-white text-sm transition-opacity ${scoreColors[s]} ${params.score === s ? "ring-2 ring-offset-1 ring-on-surface" : "opacity-60 hover:opacity-100"}`}>
-                      {s}
-                    </a>
-                  ))}
+                  {(["A", "B", "C", "D", "E"] as const).map((s) => {
+                    const active = params.score === s;
+                    const href = active
+                      ? (params.q ? `/search?q=${params.q}` : "/search")
+                      : `/search?score=${s}${params.q ? `&q=${params.q}` : ""}`;
+                    return (
+                      <a key={s} href={href}
+                        className={`w-8 h-8 flex items-center justify-center rounded font-bold text-white text-sm transition-opacity ${scoreColors[s]} ${active ? "ring-2 ring-offset-1 ring-on-surface" : "opacity-60 hover:opacity-100"}`}>
+                        {s}
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -71,10 +111,35 @@ export default async function SearchPage({
             </form>
           </aside>
 
-          {/* Grid */}
-          <section className="flex-1 space-y-6">
+          {/* Grille produits */}
+          <section className="flex-1 space-y-5">
+
+            {/* Profile awareness banner */}
+            {activeConditions.length > 0 && (
+              <div className="flex items-start gap-3 bg-[#004f54]/5 border border-[#004f54]/15 rounded-xl px-5 py-3">
+                <span
+                  className="material-symbols-outlined text-[#004f54] text-lg shrink-0 mt-0.5"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  health_and_safety
+                </span>
+                <p className="text-sm text-[#181c1d]">
+                  <span className="font-semibold">Catalogue libre</span> —{" "}
+                  SmartHeart signale les produits à surveiller pour votre profil{" "}
+                  <span className="font-semibold">
+                    ({activeConditions.map((c) => conditionLabels[c] ?? c).join(", ")})
+                  </span>.
+                </p>
+              </div>
+            )}
+
             <div className="flex items-center justify-between">
-              <p className="text-sm text-outline">{total} produit{total > 1 ? "s" : ""} trouvé{total > 1 ? "s" : ""}</p>
+              <p className="text-sm text-outline">
+                {total} produit{total > 1 ? "s" : ""} trouvé{total > 1 ? "s" : ""}
+              </p>
+              {totalPages > 1 && (
+                <p className="text-sm text-outline">Page {page} sur {totalPages}</p>
+              )}
             </div>
 
             {products.length === 0 ? (
@@ -87,6 +152,15 @@ export default async function SearchPage({
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {products.map((product) => {
                   const saved = savedIds.includes(product.id);
+                  const warning = getProductProfileWarning(
+                    {
+                      glycemic_index: product.glycemic_index,
+                      nutri_score: product.nutri_score,
+                      labels: product.labels,
+                      compatible_with: product.compatible_with,
+                    },
+                    activeConditions,
+                  );
                   return (
                     <article key={product.id} className="bg-white rounded-xl overflow-hidden custom-shadow group flex flex-col">
                       <div className="relative h-48 bg-surface-container-low">
@@ -114,10 +188,19 @@ export default async function SearchPage({
                         </div>
                       </div>
                       <div className="p-5 flex-1 flex flex-col">
-                        <div className="flex justify-between items-start mb-2">
-                          <h3 className="text-base font-semibold leading-tight text-on-surface">{product.name}</h3>
-                        </div>
-                        {product.brand && <p className="text-xs text-outline mb-4">{product.brand}</p>}
+                        <h3 className="text-base font-semibold leading-tight text-on-surface mb-2">{product.name}</h3>
+                        {product.brand && <p className="text-xs text-outline mb-3">{product.brand}</p>}
+                        {warning && (
+                          <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold border mb-3 ${WARNING_STYLES[warning.level].bg} ${WARNING_STYLES[warning.level].text} ${WARNING_STYLES[warning.level].border}`}>
+                            <span
+                              className="material-symbols-outlined text-sm"
+                              style={{ fontVariationSettings: "'FILL' 1" }}
+                            >
+                              {warning.icon}
+                            </span>
+                            {warning.text}
+                          </div>
+                        )}
                         <div className="mt-auto flex gap-2">
                           <Link href={`/search/${product.id}`}
                             className="flex-1 bg-primary text-on-primary text-sm font-semibold py-2.5 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
@@ -138,19 +221,19 @@ export default async function SearchPage({
                 <span className="text-sm text-outline">Page {page} sur {totalPages}</span>
                 <div className="flex items-center gap-1">
                   {page > 1 && (
-                    <a href={`/search?${new URLSearchParams({ ...(params.q ? { q: params.q } : {}), page: String(page - 1) })}`}
+                    <a href={pageHref(page - 1)}
                       className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container">
                       <span className="material-symbols-outlined text-lg">chevron_left</span>
                     </a>
                   )}
-                  {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((p) => (
-                    <a key={p} href={`/search?${new URLSearchParams({ ...(params.q ? { q: params.q } : {}), page: String(p) })}`}
+                  {pageWindow.map((p) => (
+                    <a key={p} href={pageHref(p)}
                       className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-semibold ${p === page ? "bg-primary text-on-primary" : "hover:bg-surface-container text-outline"}`}>
                       {p}
                     </a>
                   ))}
                   {page < totalPages && (
-                    <a href={`/search?${new URLSearchParams({ ...(params.q ? { q: params.q } : {}), page: String(page + 1) })}`}
+                    <a href={pageHref(page + 1)}
                       className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container">
                       <span className="material-symbols-outlined text-lg">chevron_right</span>
                     </a>

@@ -4,6 +4,7 @@ import { requireAuth, getHealthProfile } from "@/lib/auth";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { getPartners } from "@/lib/queries/partners";
 import { getRecommendations } from "@/lib/recommendations/queries";
+import { getUserReadArticleIds } from "@/lib/queries/articles";
 import Link from "next/link";
 
 const NUTRI_BG: Record<"A" | "B" | "C" | "D" | "E", string> = {
@@ -17,13 +18,14 @@ const NUTRI_BG: Record<"A" | "B" | "C" | "D" | "E", string> = {
 export default async function DashboardPage() {
   // M-1 : un seul appel getRecommendations — un seul loadContext pour produits + recettes.
   const profile = await requireAuth();
-  const [healthProfile, reco, partners] = await Promise.all([
+  const [healthProfile, reco, partners, readArticleIds] = await Promise.all([
     getHealthProfile(),
     getRecommendations(profile.id, 6, 4),
     getPartners(),
+    getUserReadArticleIds(),
   ]);
 
-  const { products: productsRec, recipes: recipesRec } = reco;
+  const { products: productsRec, recipes: recipesRec, savedProductCount, savedRecipeCount } = reco;
   const firstName = profile.full_name?.split(" ")[0] ?? "vous";
   const profileComplete = productsRec.profileComplete;
 
@@ -38,9 +40,9 @@ export default async function DashboardPage() {
           {/* KPI Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[
-              { icon: "bookmark",   bg: "bg-teal-50",   color: "text-[#004f54]", label: "Produits sauvegardés", value: "0" },
-              { icon: "restaurant", bg: "bg-orange-50", color: "text-[#6e3815]", label: "Recettes essayées",    value: "0" },
-              { icon: "menu_book",  bg: "bg-blue-50",   color: "text-blue-600",  label: "Articles lus",         value: "0" },
+              { icon: "bookmark",   bg: "bg-teal-50",   color: "text-[#004f54]", label: "Produits sauvegardés", value: String(savedProductCount) },
+              { icon: "restaurant", bg: "bg-orange-50", color: "text-[#6e3815]", label: "Recettes sauvegardées", value: String(savedRecipeCount) },
+              { icon: "menu_book",  bg: "bg-blue-50",   color: "text-blue-600",  label: "Articles lus",          value: String(readArticleIds.length) },
               {
                 icon: "favorite", bg: "bg-red-50", color: "text-[#ae2f34]", accent: true,
                 label: "Objectif calorique",
