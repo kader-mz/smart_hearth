@@ -6,6 +6,8 @@ import { requireAuth, getHealthProfile } from "@/lib/auth";
 import { getRecipes, RECIPES_PER_PAGE } from "@/lib/queries/recipes";
 import { getSavedRecipeIds } from "@/lib/queries/favorites";
 
+export const dynamic = "force-dynamic";
+
 const difficultyLabel: Record<string, string> = { easy: "Facile", medium: "Moyen", hard: "Difficile" };
 
 const conditionLabels: Record<string, string> = {
