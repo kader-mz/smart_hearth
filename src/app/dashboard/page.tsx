@@ -120,7 +120,7 @@ export default async function DashboardPage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {productsRec.items.map(({ product, recommendation_reason }) => (
+                  {productsRec.items.map(({ product, recommendation_reason }, idx) => (
                     <Link key={product.id} href={`/search/${product.id}`}
                       className="bg-white rounded-xl overflow-hidden custom-shadow group block">
                       <div className="relative h-48 bg-surface-container-low">
@@ -128,6 +128,7 @@ export default async function DashboardPage() {
                           src={product.image_url}
                           alt={product.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          priority={idx === 0}
                         />
                         <div className="absolute top-3 left-3 flex flex-col gap-2">
                           {product.nutri_score && (
@@ -181,6 +182,7 @@ export default async function DashboardPage() {
                       className="w-full h-full object-cover"
                       placeholderClassName="w-full h-full bg-surface-container-low flex items-center justify-center"
                       iconSize="text-4xl"
+                      priority
                     />
                     <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
                     <div className="absolute bottom-4 left-4">

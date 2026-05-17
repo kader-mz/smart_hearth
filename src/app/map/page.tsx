@@ -4,6 +4,7 @@ import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
 import { requireAuth } from "@/lib/auth";
 import { getPartners, getPartnerWithInventory } from "@/lib/queries/partners";
+import PartnerCard from "./_components/PartnerCard";
 
 // Predefined visual positions on the static map image (6 slots, cycles if more partners).
 const MARKER_POSITIONS = [
@@ -158,83 +159,13 @@ export default async function MapPage({
                   <p className="text-sm">Aucun commerce partenaire disponible.</p>
                 </div>
               ) : (
-                partners.map((partner) => {
-                  const isSelected = partner.id === selectedPartnerId;
-                  const isDisabled = !partner.is_active;
-                  const statusLabel = partner.is_active ? "Ouvert" : "Fermé";
-                  const statusColor = partner.is_active
-                    ? "bg-green-100 text-green-700"
-                    : "bg-neutral-200 text-neutral-600";
-
-                  return (
-                    <Link
-                      key={partner.id}
-                      href={isSelected ? "/map" : `/map?partner=${partner.id}`}
-                      className={`block bg-white p-5 rounded-xl shadow-sm border transition-all cursor-pointer ${
-                        isSelected
-                          ? "border-[#004f54] ring-2 ring-[#004f54]/20"
-                          : "border-neutral-100 hover:border-[#004f54]/30"
-                      } ${isDisabled ? "opacity-70" : ""}`}
-                    >
-                      <div className="flex justify-between items-start mb-3">
-                        <div>
-                          <h3 className="text-lg font-bold text-[#181c1d]">{partner.name}</h3>
-                          <p className="text-xs text-neutral-500 flex items-center gap-1 mt-1">
-                            <span className="material-symbols-outlined text-sm">location_on</span>
-                            {[partner.address_line, partner.city].filter(Boolean).join(", ") || "Adresse non disponible"}
-                          </p>
-                        </div>
-                        <span className={`px-2 py-1 text-[10px] font-bold rounded uppercase tracking-wider ${statusColor}`}>
-                          {statusLabel}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-6 mb-4">
-                        {[
-                          { label: "Ville", value: partner.city ?? "—", color: "" },
-                          { label: "Téléphone", value: partner.phone ?? "—", color: "" },
-                          {
-                            label: "Statut",
-                            value: partner.is_verified ? "Vérifié" : "Non vérifié",
-                            color: partner.is_verified ? "text-[#004f54]" : "text-neutral-500",
-                          },
-                        ].map((stat) => (
-                          <div key={stat.label} className="flex flex-col">
-                            <span className="text-xs text-neutral-400">{stat.label}</span>
-                            <span className={`text-sm font-bold ${stat.color || "text-[#181c1d]"}`}>{stat.value}</span>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="flex gap-2" onClick={(e) => e.preventDefault()}>
-                        {isDisabled ? (
-                          <span className="flex-1 py-2.5 rounded-lg text-sm font-bold text-center bg-neutral-200 text-neutral-500 cursor-not-allowed">
-                            Indisponible
-                          </span>
-                        ) : (
-                          <Link
-                            href="/search"
-                            className="flex-1 py-2.5 rounded-lg text-sm font-bold text-center bg-[#004f54] text-white hover:bg-[#01696f] transition-colors"
-                          >
-                            Voir les produits
-                          </Link>
-                        )}
-                        {partner.latitude && partner.longitude ? (
-                          <a
-                            href={`https://www.google.com/maps/dir/?api=1&destination=${partner.latitude},${partner.longitude}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={`w-10 h-10 border border-[#bec8c9] flex items-center justify-center rounded-lg hover:bg-neutral-50 transition-colors ${isDisabled ? "text-neutral-400" : "text-[#004f54]"}`}
-                          >
-                            <span className="material-symbols-outlined">directions</span>
-                          </a>
-                        ) : (
-                          <span className="w-10 h-10 border border-[#bec8c9] flex items-center justify-center rounded-lg text-neutral-300 cursor-not-allowed">
-                            <span className="material-symbols-outlined">directions</span>
-                          </span>
-                        )}
-                      </div>
-                    </Link>
-                  );
-                })
+                partners.map((partner) => (
+                  <PartnerCard
+                    key={partner.id}
+                    partner={partner}
+                    isSelected={partner.id === selectedPartnerId}
+                  />
+                ))
               )}
             </div>
           </div>

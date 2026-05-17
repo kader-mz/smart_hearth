@@ -150,7 +150,7 @@ export default async function SearchPage({
               </div>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {products.map((product) => {
+                {products.map((product, idx) => {
                   const saved = savedIds.includes(product.id);
                   const warning = getProductProfileWarning(
                     {
@@ -168,6 +168,7 @@ export default async function SearchPage({
                           src={product.image_url}
                           alt={product.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          priority={idx === 0}
                         />
                         <div className="absolute top-3 left-3 flex flex-col gap-2">
                           {product.nutri_score && (

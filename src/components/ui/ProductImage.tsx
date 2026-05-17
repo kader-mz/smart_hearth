@@ -7,13 +7,15 @@ interface ProductImageProps {
   src: string | null;
   alt: string;
   /**
-   * "card"   → fill mode, adapté aux grilles (parent doit avoir position:relative + hauteur fixe)
-   * "detail" → width/height explicites, adapté aux pages détail (pas besoin de relative sur le parent)
+   * "card"   -> fill mode, adapte aux grilles (parent doit avoir position:relative + hauteur fixe)
+   * "detail" -> width/height explicites, adapte aux pages detail (pas besoin de relative sur le parent)
    */
   size?: "card" | "detail";
   className?: string;
   placeholderClassName?: string;
   iconSize?: string;
+  /** Marquer comme LCP (above the fold) pour eviter le warning Next.js */
+  priority?: boolean;
 }
 
 export function ProductImage({
@@ -23,6 +25,7 @@ export function ProductImage({
   className = "w-full h-full object-cover",
   placeholderClassName = "w-full h-full flex items-center justify-center bg-surface-container-low",
   iconSize = "text-5xl",
+  priority = false,
 }: ProductImageProps) {
   const [failed, setFailed] = useState(false);
 
@@ -47,12 +50,13 @@ export function ProductImage({
         width={600}
         height={400}
         className={className}
+        priority={priority}
         onError={() => setFailed(true)}
       />
     );
   }
 
-  // size === "card" — fill mode pour les grilles de cartes
+  // size === "card" - fill mode pour les grilles de cartes
   return (
     <Image
       src={src}
@@ -60,6 +64,7 @@ export function ProductImage({
       fill
       className={className}
       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      priority={priority}
       onError={() => setFailed(true)}
     />
   );

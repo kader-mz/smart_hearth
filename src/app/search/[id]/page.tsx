@@ -48,6 +48,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     className="w-full h-full object-contain p-8"
                     placeholderClassName="w-full h-full flex items-center justify-center bg-surface-container-low"
                     iconSize="text-7xl"
+                    priority
                   />
                 </div>
                 <div className="grid grid-cols-2 w-full gap-4">
@@ -58,8 +59,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                   <div className="bg-surface-container-low p-4 rounded-lg">
                     <span className="text-xs font-semibold text-outline block mb-1">Labels</span>
                     <div className="flex flex-wrap gap-1">
-                      {product.labels.length > 0
-                        ? product.labels.map((l: string) => <span key={l} className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded uppercase">{l}</span>)
+                      {(product.labels ?? []).length > 0
+                        ? (product.labels ?? []).map((l: string) => <span key={l} className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded uppercase">{l}</span>)
                         : <span className="text-sm text-outline">—</span>}
                     </div>
                   </div>
@@ -82,9 +83,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 </button>
               </div>
 
-              {product.compatible_with.length > 0 && (
+              {(product.compatible_with ?? []).length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                  {product.compatible_with.map((c: string) => (
+                  {(product.compatible_with ?? []).map((c: string) => (
                     <span key={c} className="bg-[#e7f5e9] text-[#2e7d32] font-bold px-3 py-1 rounded-full text-xs flex items-center gap-1">
                       <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                       Compatible {c}
