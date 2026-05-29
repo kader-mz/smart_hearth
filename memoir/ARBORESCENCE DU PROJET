@@ -1,0 +1,81 @@
+smartheart-workspace/
+├── hearth/                          # Application Next.js principale
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── (auth)/              # Groupe de routes authentification
+│   │   │   │   ├── layout.tsx
+│   │   │   │   ├── login/
+│   │   │   │   │   ├── _actions/    # login.action.ts, logout.action.ts, register.action.ts
+│   │   │   │   │   ├── _components/ # AuthTabs.tsx, LoginForm.tsx, RegisterForm.tsx
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── profile-setup-step-1/
+│   │   │   │   │   ├── _actions/    # save-step1.action.ts
+│   │   │   │   │   ├── _components/ # Step1Form.tsx
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── profile-setup-step-2/
+│   │   │   │       ├── _actions/    # save-step2.action.ts
+│   │   │   │       ├── _components/ # Step2Form.tsx
+│   │   │   │       └── page.tsx
+│   │   │   ├── dashboard/           # page.tsx
+│   │   │   ├── dashboard-dark/      # page.tsx
+│   │   │   ├── learn/
+│   │   │   │   ├── [slug]/quiz/     # page.tsx
+│   │   │   │   ├── _actions/        # read.action.ts
+│   │   │   │   └── page.tsx
+│   │   │   ├── map/
+│   │   │   │   ├── _components/     # PartnerCard.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── partners/
+│   │   │   │   ├── _actions/        # inventory.action.ts
+│   │   │   │   ├── _components/     # InventoryRow.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── profile/
+│   │   │   │   ├── _components/     # LogoutButton.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── recipes/
+│   │   │   │   ├── _actions/        # favorites.action.ts
+│   │   │   │   └── page.tsx
+│   │   │   ├── search/
+│   │   │   │   ├── [id]/            # page.tsx (détail produit)
+│   │   │   │   ├── _actions/        # favorites.action.ts
+│   │   │   │   └── page.tsx
+│   │   │   ├── globals.css
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx
+│   │   ├── components/
+│   │   │   ├── layout/              # Sidebar.tsx, TopBar.tsx
+│   │   │   └── ui/                  # ProductImage.tsx
+│   │   ├── lib/
+│   │   │   ├── supabase/            # admin.ts, client.ts, server.ts
+│   │   │   ├── queries/             # articles.ts, favorites.ts, partners.ts, products.ts, recipes.ts
+│   │   │   ├── recommendations/     # queries.ts, reasons.ts, scoring.ts, types.ts
+│   │   │   ├── nutrition/           # productWarnings.ts
+│   │   │   ├── auth.ts
+│   │   │   └── database.types.ts
+│   │   └── proxy.ts
+│   ├── design/                      # Maquettes HTML/PNG (10 écrans)
+│   │   ├── component_library/
+│   │   ├── education_hub/
+│   │   ├── home_dashboard_dark/
+│   │   ├── home_dashboard_light/
+│   │   ├── login_onboarding/
+│   │   ├── partner_dashboard/
+│   │   ├── product_catalog/
+│   │   ├── product_detail/
+│   │   ├── profile_setup_step_1/
+│   │   ├── profile_setup_step_2/
+│   │   ├── recipe_recommender/
+│   │   └── store_locator_map/
+│   ├── scripts/                     # seed-images.mjs
+│   ├── public/                      # Assets SVG
+│   ├── SCHEMA.sql                   # Schéma base de données
+│   ├── CLAUDE.md
+│   ├── AGENTS.md
+│   └── package.json
+└── memoir/                          # Mémoire PFE
+    ├── chapitres/                   # 00-preliminaires.md
+    ├── figures/
+    ├── plan-smartheart.md
+    ├── analyse-code.md
+    └── prompt.md
+Résumé : Le projet est une app Next.js 14 (App Router) avec Supabase comme backend. Il comprend 8 sections principales (auth, dashboard, search/produits, recettes, apprentissage, carte partenaires, profil, espace partenaire), une couche de recommandations personnalisées, et un dossier memoir/ pour le rapport de PFE.
